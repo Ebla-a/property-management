@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Customer\ReviewController;
 use Illuminate\Support\Facades\Route;
-use App\Services\RatingService;
 
 Route::middleware(['auth', 'role:customer'])->group(function () {
-    Route::post('/ratings', [RatingService::class, 'store'])
+    Route::post('/ratings', [ReviewController::class, 'store'])
         ->name('customer.ratings.store');
 });
