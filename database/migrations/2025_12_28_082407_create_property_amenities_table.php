@@ -11,8 +11,6 @@ return new class extends Migration
         Schema::create('property_amenities', function (Blueprint $table) {
             $table->foreignId('property_id')->constrained('properties')->cascadeOnDelete();
             $table->foreignId('amenity_id')->constrained('amenities')->cascadeOnDelete();
-
-            $table->primary(['property_id', 'amenity_id']);
         });
     }
 
