@@ -22,7 +22,7 @@ class AuthController extends Controller
         // ✅ Spatie role
         $user->assignRole('customer');
 
-        // إنشاء توكن
+        // 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
