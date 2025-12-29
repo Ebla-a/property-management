@@ -18,7 +18,7 @@ class BookingResource extends JsonResource
         return [
             'id' =>$this->id,
             'status' =>$this->status,
-            'scheduled_at' => $this->shscheduled_at->format('Y-m-d H:i'),
+            'scheduled_at' => $this->scheduled_at?->format('Y-m-d H:i'),
             'notes' =>$this->notes,
 
             'property'=>[

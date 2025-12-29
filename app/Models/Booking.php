@@ -15,13 +15,17 @@ class Booking extends Model
         'status',
         'notes',
     ];
+    protected $casts = [
+    'scheduled_at' => 'datetime',
+];
+
     public function customer()
     {
-        $this->belongsTo(User::class, 'user_id');
+         return $this->belongsTo(User::class, 'user_id');
     }
     public function property()
     {
-        return $this->belongsTo(Property::class ,'property-id');
+        return $this->belongsTo(Property::class ,'property_id');
     }
     public function employee(){
         return $this->belongsTo(User::class,'employee_id');

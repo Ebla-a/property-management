@@ -49,7 +49,7 @@ class BookingController extends Controller
      */
     public function show(Booking $booking)
     {
-         if($booking->user->id !== auth()->id()) {
+         if($booking->customer->id !== auth()->id()) {
             return response()->json([
                 'message' =>'Unauthorized'
             ],403);
