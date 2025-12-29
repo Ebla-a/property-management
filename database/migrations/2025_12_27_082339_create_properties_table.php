@@ -10,24 +10,18 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            // Owner (optional) — اربطه ب users إذا موجود
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-
             $table->string('title');
             $table->foreignId('property_type_id')->nullable()->constrained('property_types')->cascadeOnDelete();
-
             $table->string('city')->nullable();
             $table->string('neighborhood')->nullable();
             $table->string('address')->nullable();
-
-            $table->unsignedInteger('rooms')->default(0);
+            $table->unsignedInteger('rooms')->default(1);
             $table->decimal('area', 10, 2)->nullable()->comment('Area in square meters (or units)');
             $table->decimal('price', 12, 2)->default(0);
             $table->enum('status', ['available', 'booked', 'rented', 'hidden'])->default('available');
-
             $table->text('description')->nullable();
             $table->boolean('is_furnished')->default(false);
-
             $table->timestamps();
         });
     }
