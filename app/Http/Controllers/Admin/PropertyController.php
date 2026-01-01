@@ -8,6 +8,7 @@ use App\Http\Requests\StorePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
 use App\Models\Property;
 use App\Services\PropertyService;
+use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
@@ -22,10 +23,12 @@ class PropertyController extends Controller
      * Display a listing of the resource.
      * GET /admin/properties
      */
-    public function index()
+    public function index(Request $request)
     {
-        $properties = $this->propertyService->getAll();
+        // Pass query params to service for filtering/sorting/pagination
+        $properties = $this->propertyService->getAll($request->all());
 
+        // PropertyResource::collection works with paginators too
         return PropertyResource::collection($properties);
     }
 
