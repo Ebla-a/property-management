@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -22,13 +23,13 @@ class AuthController extends Controller
         // ✅ Spatie role
         $user->assignRole('customer');
 
-        // 
+        //
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'User registered successfully',
             'token'   => $token,
-            'roles'   => $user->getRoleNames(), // 
+            'roles'   => $user->getRoleNames(), //
         ], 201);
     }
 

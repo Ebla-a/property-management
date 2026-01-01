@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController as AdminAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,8 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
     */
     Route::middleware('role:admin')->prefix('admin')->group(function () {
 
-        Route::get('/dashboard', [AdminController::class, 'dashboard']);
-        Route::post('/add-employee', [AdminController::class, 'addEmployee']);
+        Route::get('/dashboard', [AdminAdminController::class, 'dashboard']);
+        Route::post('/add-employee', [AdminAdminController::class, 'addEmployee']);
 
         // Property CRUD (protected) — exclude index & show because they are public above
         Route::apiResource('properties', PropertyController::class)

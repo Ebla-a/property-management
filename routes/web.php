@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\PropertyController as AdminPropertyController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\View\PropertyController as PropertyViewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +23,9 @@ Route::middleware(['auth', 'checkRole:admin'])
 
         // CRUD Views for Properties
         // index, create, store, show, edit, update, destroy
-        Route::resource('properties', PropertyViewController::class);
+        Route::resource('properties', AdminPropertyController::class);
 
         // Property types management page
-        Route::get('properties/types', [PropertyViewController::class, 'types'])
+        Route::get('properties/types', [AdminPropertyController::class, 'types'])
             ->name('properties.types');
     });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Visitor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyResource;

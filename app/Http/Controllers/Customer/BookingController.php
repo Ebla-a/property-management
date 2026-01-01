@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
 use App\Http\Requests\BookingRequest;
 use App\Http\Resources\BookingResource;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class BookingController extends Controller
 {
     /**
-     *  to get data organized for each element from BookingResource instead of json 
+     *  to get data organized for each element from BookingResource instead of json
      * collection()->get all bookings
      * when(condition,callback) — Conditional Query Method -> if condition true ->applay callback
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
@@ -24,7 +24,7 @@ class BookingController extends Controller
         {
             $q->where('status' ,$request->status);
         })->latest()->paginate(10);
-         return BookingResource::collection($bookings); 
+         return BookingResource::collection($bookings);
     }
     public function store(BookingRequest $request , BookingService $service)
     {
@@ -40,7 +40,7 @@ class BookingController extends Controller
             return response()->json([
                 'message' =>$e->getMessage()
             ] ,422);
-        }  
+        }
     }
     /**
      * add (if)=>   only the user can see his booking
@@ -55,7 +55,7 @@ class BookingController extends Controller
             ],403);
          }
         return new BookingResource($booking);
-       
+
 
     }
     public function cancel(Booking $booking)

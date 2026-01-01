@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +22,7 @@ class AdminController extends Controller
     // add a new employee
     public function addEmployee(StoreEmployeeRequest $request)
 {
-    
+
 
     $user = User::create([
         'name'     => $request->name,
@@ -30,7 +32,7 @@ class AdminController extends Controller
 
     return response()->json([
         'message' => 'Employee created successfully',
-        'user' => new UserResource($user)       
+        'user' => new UserResource($user)
     ], 201);
 }
 
