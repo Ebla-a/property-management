@@ -1,42 +1,64 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class BookingService
 {
     /**
-     * Create a new class instance.
+     * transcation => all or nothing 
      */
-    public function __construct()
+    public function create(array $data)
     {
-        //
-    }
-    public function create(array $data )
-    {
-        /**transaction => do it all or nothing 
-         * if there booking in the same time and date  => the procces is canclled
-         */
-        return DB::transaction(function () use($data){
-            $exists = Booking::where('property_id' ,$data['property_id'])
-            ->where('scheduled_at' , $data['scheduled_at'])
-            ->lockForUpdate() // prevent dublicate bookings in the same second
-            ->exists();
-            if($exists){
-                throw new \Exception('the appointment is already taken');
+        return DB::transaction(function () use ($data) {
+
+            // prevent same property + same time booking
+            $exists = Booking::where('property_id', $data['property_id'])
+                ->where('scheduled_at', $data['scheduled_at'])
+                ->lockForUpdate()
+                ->exists();
+
+            if ($exists) {
+                throw new \Exception('This appointment is already booked for this property');
             }
-            $booking = Booking::create(
-                [
-                    'user_id' => auth()->id(),
-                    'property_id' =>$data['property_id'],
-                    'scheduled_at' =>$data['scheduled_at'],
-                    'status' => 'pending',
-                    'notes' =>$data['notes'] ?? null
-                ]);
-          return $booking;
-        }
-    );
-}
+
+            // auto assign employee (if available)
+            $employee = User::role('employee')
+                ->whereDoesntHave('assignedBookings', function ($q) use ($data) {
+                    $q->where('scheduled_at', $data['scheduled_at'])
+                      ->whereIn('status', ['pending','approved']);
+                })
+                ->withCount('assignedBookings')
+                ->orderBy('assigned_bookings_count')
+                ->first();
+
+            return Booking::create([
+                'user_id'      => auth('sanctum')->id(), 
+                'property_id'  => $data['property_id'],
+                'scheduled_at' => $data['scheduled_at'],
+                'status'       => 'pending',
+                'employee_id'  => $employee?->id,
+                'notes'        => $data['notes'] ?? null,
+            ]);
+        });
+    }
+     public function show(Booking $booking)
+    {
+        return $booking->load([
+            'property',
+            'employee',
+            'customer',
+        ]);
+    }
+
+    public function cancel(Booking $booking)
+    {
+        $booking->update([
+            'status' => 'cancelled',
+        ]);
+
+        return $booking;
+    }
 }
