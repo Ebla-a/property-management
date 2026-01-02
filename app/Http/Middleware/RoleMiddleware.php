@@ -4,26 +4,24 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = $request->user();
 
-        // Check if user is not authenticated
+        // Not logged in
         if (!$user) {
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
-        // Check if user does NOT have any of the allowed roles
-        // hasAnyRole() is provided by Spatie Permission
+        // User does not have required roles
         if (!$user->hasAnyRole($roles)) {
             return response()->json(['message' => 'Forbidden - Access denied'], 403);
         }
 
-        // Allow request to continue
+        // Allow request
         return $next($request);
     }
 }
