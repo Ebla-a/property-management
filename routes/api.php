@@ -62,3 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/properties/{property}/images', [PropertyImageController::class, 'store']);
     });
 });
+
+require __DIR__ . '/customer.php';
+
+

@@ -22,7 +22,14 @@ return new class extends Migration
           ->cascadeOnDelete();
 
     $table->dateTime('scheduled_at');
-    $table->enum('status',['pending','approved','cancelled'])->default('pending');
+    $table->enum('status',
+    [
+    'pending',
+    'approved',
+    'rescheduled',
+    'canceled',
+    'rejected',
+    'completed'])->default('pending');
 
     $table->foreignId('employee_id')
           ->nullable()
@@ -31,6 +38,9 @@ return new class extends Migration
 
     $table->text('notes')->nullable();
             $table->timestamps();
+            $table->text('reason')->nullable();
+            $table->text('rejection_reason')->nullable();
+             $table->timestamp('rejected_at')->nullable();
         });
     }
 
