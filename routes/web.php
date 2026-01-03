@@ -10,12 +10,13 @@ use App\Http\Controllers\Admin\PropertyController;
 
 Route::prefix('dashboard')
     ->name('dashboard.')
-    ->middleware(['auth', 'can:admin'])
+    ->middleware(['auth', 'checkRole:admin'])
+
     ->group(function () {
 
         Route::resource('amenities', AmenityController::class)->except(['show']);
         Route::resource('properties', PropertyController::class);
-});
+    });
 
 
 /*
@@ -24,10 +25,9 @@ Route::prefix('dashboard')
 |--------------------------------------------------------------------------
 */
 
-// Home page
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -55,14 +55,14 @@ Route::middleware(['auth', 'checkRole:admin'])
     ->prefix('dashboard')
     ->name('admin.')
     ->group(function () {
-          // Reports
-    Route::view('/reports', 'dashboard.reports.index')->name('reports.index');
+        // Reports
+        Route::view('/reports', 'dashboard.reports.index')->name('reports.index');
 
-    Route::view('/reports/properties', 'dashboard.reports.properties')
-        ->name('reports.properties');
+        Route::view('/reports/properties', 'dashboard.reports.properties')
+            ->name('reports.properties');
 
-    Route::view('/reports/bookings', 'dashboard.reports.bookings')
-        ->name('reports.bookings');
+        Route::view('/reports/bookings', 'dashboard.reports.bookings')
+            ->name('reports.bookings');
 
         // CRUD Views for Properties
         // index, create, store, show, edit, update, destroy
@@ -72,7 +72,7 @@ Route::middleware(['auth', 'checkRole:admin'])
         Route::get('properties/types', [AdminPropertyController::class, 'types'])
             ->name('properties.types');
 
-            // Property Images (protected)
+        // Property Images (protected)
         Route::post('/properties/{property}/images', [PropertyImageController::class, 'store']);
     });
 

@@ -39,5 +39,5 @@ Route::middleware(['auth', 'role:employee|admin'])
         Route::patch('/bookings/{id}/reject', [EmployeeBookingController::class, 'reject'])
             ->name('bookings.reject');
 
-           
+
     });
