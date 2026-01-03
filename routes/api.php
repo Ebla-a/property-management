@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyImageController;
 
@@ -23,6 +24,46 @@ use App\Http\Controllers\Admin\PropertyImageController;
 // Auth (public)
 Route::post('/register', [AdminAuthController::class, 'register']);
 Route::post('/login', [AdminAuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
+
+
+Route::middleware(['auth:sanctum', 'check.active'])->group(function () {
+
+    Route::middleware(['role:admin'])->get('/dashboard', function() {
+        return response()->json([
+            'message' => 'Welcome Admin to Dashboard'
+        ]);
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
+Route::middleware([
+    'auth:sanctum',
+    'check.active',
+    'role:admin'
+])->prefix('admin')->group(function () {
+
+    // Create employee
+    Route::post('/employees', [AdminController::class, 'store'])
+        ->name('admin.employees.store');
+
+    // Change user role
+    Route::patch('/users/{id}/role', [AdminController::class, 'changeRole'])
+        ->name('admin.users.change-role');
+
+    // Activate / Deactivate user
+    Route::patch('/users/{userId}/status', [AdminController::class, 'toggleUserStatus'])
+        ->name('admin.users.toggle-status');
+
+    // Change admin password
+    Route::patch('/change-password', [AdminController::class, 'changePassword'])
+        ->name('admin.change-password');
+
+});
+
 
 // Public Property endpoints (visitor – no auth)
 

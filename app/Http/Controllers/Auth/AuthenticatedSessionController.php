@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Http\Controllers\Auth\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -37,6 +38,27 @@ class AuthenticatedSessionController extends Controller
 
     return redirect()->route('dashboard');
 }
+
+    public function store(LoginRequest $request): RedirectResponse
+{
+    $request->authenticate();
+
+    $user = $request->user();
+
+    if (!$user->is_active) {
+        Auth::logout();
+
+        return back()->withErrors([
+            'email' => 'Your account is disabled by admin.',
+        ]);
+    }
+
+    $request->session()->regenerate();
+
+    return redirect()->intended('/dashboard');
+
+}
+
 
     /**
      * Destroy an authenticated session.

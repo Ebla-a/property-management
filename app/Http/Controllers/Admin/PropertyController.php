@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
 use App\Models\Property;
+use App\Services\AmenityService;
 use App\Services\PropertyService;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class PropertyController extends Controller
 {
@@ -15,121 +17,109 @@ class PropertyController extends Controller
      * Property service instance
      */
     protected PropertyService $propertyService;
+    protected AmenityService $amenityService;
 
     /**
-     * Constructor
+     * PropertyController constructor.
      *
-     * Apply authentication and admin role middleware
+     * @param PropertyService $propertyService
+     * @param AmenityService $amenityService
      */
-    public function __construct(PropertyService $propertyService)
+    public function __construct(PropertyService $propertyService, AmenityService $amenityService)
     {
         $this->propertyService = $propertyService;
-
-        // Ensure only authenticated admin users can access these pages
-        $this->middleware(['auth', 'checkRole:admin']);
+        $this->amenityService = $amenityService;
     }
 
     /**
-     * Display a listing of properties
+     * Display a listing of properties with optional filters.
      *
-     * GET /dashboard/admin/properties
+     * Filter input is read from the request query via the request() helper.
+     *
+     * @return View
      */
-    public function index(Request $request)
+    public function index(): View
     {
-        // Retrieve properties with filters (pagination, search, etc.)
-        $properties = $this->propertyService->getAll($request->all());
+        // Read filters from query string (no FormRequest used here)
+        $filters = request()->only(['amenity_ids']);
 
-        // Note: No "admin" folder in views
-        return view('dashboard.properties.index', compact('properties'));
+        $properties = $this->propertyService->getAllWithFilters($filters);
+        $amenities = $this->amenityService->getAll();
+
+        return view('dashboard.properties.index', compact('properties', 'amenities', 'filters'));
     }
 
     /**
-     * Show the form for creating a new property
+     * Show the form for creating a new property.
      *
-     * GET /dashboard/admin/properties/create
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
-        return view('dashboard.properties.create');
+        $amenities = $this->amenityService->getAll();
+        // Add other supporting data (property types, users, etc.) as needed
+        return view('dashboard.properties.create', compact('amenities'));
     }
 
     /**
-     * Store a newly created property in storage
+     * Store a newly created property using StorePropertyRequest.
      *
-     * POST /dashboard/admin/properties
+     * Validation is handled by the FormRequest.
+     *
+     * @param StorePropertyRequest $request
+     * @return RedirectResponse
      */
-    public function store(StorePropertyRequest $request)
+    public function store(StorePropertyRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
         $this->propertyService->create($data);
 
-        return redirect()
-            ->route('admin.properties.index')
-            ->with('success', 'Property has been successfully added.');
+        return redirect()->route('dashboard.properties.index')->with('success', 'Property created.');
     }
 
     /**
-     * Display the specified property
+     * Show the form for editing the specified property.
      *
-     * GET /dashboard/admin/properties/{property}
+     * @param Property $property
+     * @return View
      */
-    public function show(Property $property)
+    public function edit(Property $property): View
     {
-        $property->load(['propertyType', 'mainImage', 'amenities']);
+        $property->load('amenities');
+        $amenities = $this->amenityService->getAll();
 
-        return view('dashboard.properties.show', compact('property'));
+        return view('dashboard.properties.edit', compact('property', 'amenities'));
     }
 
     /**
-     * Show the form for editing the specified property
+     * Update the specified property using UpdatePropertyRequest.
      *
-     * GET /dashboard/admin/properties/{property}/edit
-     */
-    public function edit(Property $property)
-    {
-        $property->load(['propertyType', 'amenities']);
-
-        return view('dashboard.properties.edit', compact('property'));
-    }
-
-    /**
-     * Update the specified property in storage
+     * Validation is handled by the FormRequest.
      *
-     * PUT /dashboard/admin/properties/{property}
+     * @param UpdatePropertyRequest $request
+     * @param Property $property
+     * @return RedirectResponse
      */
-    public function update(UpdatePropertyRequest $request, Property $property)
+    public function update(UpdatePropertyRequest $request, Property $property): RedirectResponse
     {
         $data = $request->validated();
 
         $this->propertyService->update($property, $data);
 
-        return redirect()
-            ->route('admin.properties.index')
-            ->with('success', 'Property has been successfully updated.');
+        return redirect()->route('dashboard.properties.index')->with('success', 'Property updated.');
     }
 
     /**
-     * Remove the specified property from storage
+     * Remove the specified property.
      *
-     * DELETE /dashboard/admin/properties/{property}
+     * @param Property $property
+     * @return RedirectResponse
      */
-    public function destroy(Property $property)
+    public function destroy(Property $property): RedirectResponse
     {
         $this->propertyService->delete($property);
 
-        return redirect()
-            ->route('admin.properties.index')
-            ->with('success', 'Property has been successfully deleted.');
-    }
-
-    /**
-     * Display property types management page
-     *
-     * GET /dashboard/admin/properties/types
-     */
-    public function types()
-    {
-        return view('dashboard.properties.types');
+        return redirect()->route('dashboard.properties.index')->with('success', 'Property deleted.');
     }
 }
