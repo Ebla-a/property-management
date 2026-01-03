@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
 
+namespace App\Http\Controllers\Admin\Reports;
+
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class PropertiesReportController extends Controller
@@ -11,5 +13,5 @@ class PropertiesReportController extends Controller
         return view('dashboard.reports.properties');
 
     }
-    
+
 }
