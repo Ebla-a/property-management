@@ -4,30 +4,40 @@ namespace App\Services;
 
 use App\Models\Property;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class PropertyService
 {
     /**
-     * Get all properties with relations.
+     * Get all properties with relations (no pagination).
      *
      * @return Collection
      */
     public function getAll(): Collection
+    {
+        return Property::with([
+            'propertyType',
+            'mainImage',
+            'amenities'
+        ])->get();
+    }
+
+    /**
      * Get all properties with filtering, sorting and pagination.
      *
-     * Supported filters (from query params):
+     * Supported filters:
      * - type -> property_type_id
      * - city
      * - min_price
      * - max_price
-     * - sort (allowed: price, created_at)
+     * - sort (price, created_at)
      * - order (asc|desc)
-     * - limit (pagination size)
+     * - limit
      *
      * @param array $filters
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
-    public function getAll(array $filters = [])
+    public function getPaginated(array $filters = []): LengthAwarePaginator
     {
         $query = Property::with([
             'propertyType',
@@ -54,10 +64,9 @@ class PropertyService
 
         // Sorting
         $allowedSorts = ['price', 'created_at'];
-        $sortBy = $filters['sort'] ?? 'created_at';
-        if (!in_array($sortBy, $allowedSorts)) {
-            $sortBy = 'created_at';
-        }
+        $sortBy = in_array($filters['sort'] ?? null, $allowedSorts)
+            ? $filters['sort']
+            : 'created_at';
 
         $order = strtolower($filters['order'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
 
@@ -72,39 +81,23 @@ class PropertyService
     }
 
     /**
-     * Get properties with filters.
-     *
-     * Supports filtering by amenity_ids (array of ids).
-     * When amenity_ids provided, returned properties must have ALL selected amenities (AND logic).
-     *
-     * @param array $filters
-     * @return Collection
+     * Get properties filtered by amenities (AND logic).
      */
     public function getAllWithFilters(array $filters = []): Collection
     {
         $query = Property::with(['propertyType', 'mainImage', 'amenities'])->latest();
 
-        // Filter by amenity ids (AND logic: property must have all selected amenities)
         if (!empty($filters['amenity_ids'])) {
-            $amenityIds = array_filter((array) $filters['amenity_ids']);
-            foreach ($amenityIds as $id) {
+            foreach ((array) $filters['amenity_ids'] as $id) {
                 $query->whereHas('amenities', function ($q) use ($id) {
                     $q->where('amenities.id', $id);
                 });
             }
         }
 
-        // Additional filters can be added here (city, price range, rooms, etc.)
-
         return $query->get();
     }
 
-    /**
-     * Create a new property and sync amenities if provided.
-     *
-     * @param array $data
-     * @return Property
-     */
     public function create(array $data): Property
     {
         $amenities = $data['amenity_ids'] ?? [];
@@ -112,21 +105,13 @@ class PropertyService
 
         $property = Property::create($data);
 
-        if (!empty($amenities)) {
+        if ($amenities) {
             $property->amenities()->sync($amenities);
         }
 
         return $property;
     }
 
-    /**
-     * Update an existing property and sync amenities if provided.
-     * Update an existing property.
-     *
-     * @param Property $property
-     * @param array $data
-     * @return Property
-     */
     public function update(Property $property, array $data): Property
     {
         $amenities = $data['amenity_ids'] ?? null;
@@ -141,12 +126,6 @@ class PropertyService
         return $property;
     }
 
-    /**
-     * Delete a property.
-     *
-     * @param Property $property
-     * @return void
-     */
     public function delete(Property $property): void
     {
         $property->delete();
