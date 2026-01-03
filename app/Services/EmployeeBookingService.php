@@ -89,7 +89,7 @@ class EmployeeBookingService
         abort(403, 'Forbidden');
         }
 
-        if ($booking->status !== ['approved','rescheduled']) {
+        if ( !in_array($booking->status, ['approved','rescheduled'])) {
             abort(422,'Action not allowed');
         }
 

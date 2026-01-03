@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController as AdminAdminController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyImageController;
@@ -20,6 +22,8 @@ use App\Http\Controllers\Admin\PropertyImageController;
 */
 
 // Auth (public)
+Route::post('/register', [AdminAuthController::class, 'register']);
+Route::post('/login', [AdminAuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -87,19 +91,12 @@ Route::middleware('auth:sanctum')->group(function () {
     | Admin Routes (protected)
     |--------------------------------------------------------------------------
     */
-    Route::middleware('role:admin')->prefix('admin')->group(function () {
 
-        Route::get('/dashboard', [AdminAdminController::class, 'dashboard']);
-        Route::post('/add-employee', [AdminAdminController::class, 'addEmployee']);
 
-        // Property CRUD (protected) — exclude index & show because they are public above
-        Route::apiResource('properties', PropertyController::class)
-            ->except(['index', 'show']);
 
-        // Property Images (protected)
-        Route::post('/properties/{property}/images', [PropertyImageController::class, 'store']);
+        
     });
-});
+
 
 require __DIR__ . '/customer.php';
 
