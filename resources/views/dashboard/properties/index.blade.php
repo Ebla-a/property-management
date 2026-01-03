@@ -1,6 +1,8 @@
-{{-- resources/views/dashboard/properties/index.blade.php --}}
-@extends('layouts.dashboard')
+@extends('dashboard.layout')
 
 @section('content')
-    <h1 class="text-2xl font-bold">Properties</h1>
+<div class="p-6">
+    <h2 class="text-xl font-semibold mb-3">Properties Report</h2>
+    <p>Report content will be added later.</p>
+</div>
 @endsection
