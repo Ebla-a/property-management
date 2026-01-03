@@ -2,6 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+use App\Http\Controllers\Admin\AmenityController;
+use App\Http\Controllers\Admin\PropertyController;
+
+Route::prefix('dashboard')
+    ->name('dashboard.')
+    ->middleware(['auth', 'can:admin'])
+    ->group(function () {
+
+        Route::resource('amenities', AmenityController::class)->except(['show']);
+        Route::resource('properties', PropertyController::class);
 });
+
+

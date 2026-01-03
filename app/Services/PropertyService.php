@@ -3,17 +3,16 @@
 namespace App\Services;
 
 use App\Models\Property;
+use Illuminate\Database\Eloquent\Collection;
 
 class PropertyService
 {
     /**
-     * Get all properties with their relations.
+     * Get all properties with relations.
      *
-     * Loads propertyType, mainImage, and amenities for each property.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function getAll()
+    public function getAll(): Collection
     {
         return Property::with([
             'propertyType',
@@ -23,24 +22,46 @@ class PropertyService
     }
 
     /**
-     * Create a new property.
+     * Get properties with filters.
      *
-     * Separates 'amenity_ids' from the main data to avoid mass assignment issues,
-     * then syncs them in the pivot table.
+     * Supports filtering by amenity_ids (array of ids).
+     * When amenity_ids provided, returned properties must have ALL selected amenities (AND logic).
+     *
+     * @param array $filters
+     * @return Collection
+     */
+    public function getAllWithFilters(array $filters = []): Collection
+    {
+        $query = Property::with(['propertyType', 'mainImage', 'amenities'])->latest();
+
+        // Filter by amenity ids (AND logic: property must have all selected amenities)
+        if (!empty($filters['amenity_ids'])) {
+            $amenityIds = array_filter((array) $filters['amenity_ids']);
+            foreach ($amenityIds as $id) {
+                $query->whereHas('amenities', function ($q) use ($id) {
+                    $q->where('amenities.id', $id);
+                });
+            }
+        }
+
+        // Additional filters can be added here (city, price range, rooms, etc.)
+
+        return $query->get();
+    }
+
+    /**
+     * Create a new property and sync amenities if provided.
      *
      * @param array $data
      * @return Property
      */
     public function create(array $data): Property
     {
-        // Extract amenity IDs if provided
         $amenities = $data['amenity_ids'] ?? [];
-        unset($data['amenity_ids']); // Remove from main data to prevent mass assignment error
+        unset($data['amenity_ids']);
 
-        // Create the property
         $property = Property::create($data);
 
-        // Sync amenities in the pivot table
         if (!empty($amenities)) {
             $property->amenities()->sync($amenities);
         }
@@ -49,10 +70,7 @@ class PropertyService
     }
 
     /**
-     * Update an existing property.
-     *
-     * Separates 'amenity_ids' before updating the property,
-     * then syncs them if provided.
+     * Update an existing property and sync amenities if provided.
      *
      * @param Property $property
      * @param array $data
@@ -60,14 +78,11 @@ class PropertyService
      */
     public function update(Property $property, array $data): Property
     {
-        // Extract amenity IDs if provided
         $amenities = $data['amenity_ids'] ?? null;
-        unset($data['amenity_ids']); // Remove from main data to prevent mass assignment error
+        unset($data['amenity_ids']);
 
-        // Update property attributes
         $property->update($data);
 
-        // Sync amenities in the pivot table if provided
         if ($amenities !== null) {
             $property->amenities()->sync($amenities);
         }

@@ -3,84 +3,120 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PropertyResource;
 use App\Http\Requests\StorePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
 use App\Models\Property;
+use App\Services\AmenityService;
 use App\Services\PropertyService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class PropertyController extends Controller
 {
     protected PropertyService $propertyService;
+    protected AmenityService $amenityService;
 
-    public function __construct(PropertyService $propertyService)
+    /**
+     * PropertyController constructor.
+     *
+     * @param PropertyService $propertyService
+     * @param AmenityService $amenityService
+     */
+    public function __construct(PropertyService $propertyService, AmenityService $amenityService)
     {
         $this->propertyService = $propertyService;
+        $this->amenityService = $amenityService;
     }
 
     /**
-     * Display a listing of the resource.
-     * GET /admin/properties
+     * Display a listing of properties with optional filters.
+     *
+     * Filter input is read from the request query via the request() helper.
+     *
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
-        $properties = $this->propertyService->getAll();
+        // Read filters from query string (no FormRequest used here)
+        $filters = request()->only(['amenity_ids']);
 
-        return PropertyResource::collection($properties);
+        $properties = $this->propertyService->getAllWithFilters($filters);
+        $amenities = $this->amenityService->getAll();
+
+        return view('dashboard.properties.index', compact('properties', 'amenities', 'filters'));
     }
 
     /**
-     * Store a newly created resource in storage.
-     * POST /admin/properties
+     * Show the form for creating a new property.
+     *
+     * @return View
      */
-    public function store(StorePropertyRequest $request)
+    public function create(): View
     {
-        $property = $this->propertyService->create(
-            $request->validated()
-        );
-
-        return new PropertyResource(
-            $property->load(['propertyType', 'mainImage', 'amenities'])
-        );
+        $amenities = $this->amenityService->getAll();
+        // Add other supporting data (property types, users, etc.) as needed
+        return view('dashboard.properties.create', compact('amenities'));
     }
 
     /**
-     * Display the specified resource.
-     * GET /admin/properties/{property}
+     * Store a newly created property using StorePropertyRequest.
+     *
+     * Validation is handled by the FormRequest.
+     *
+     * @param StorePropertyRequest $request
+     * @return RedirectResponse
      */
-    public function show(Property $property)
+    public function store(StorePropertyRequest $request): RedirectResponse
     {
-        return new PropertyResource(
-            $property->load(['propertyType', 'mainImage', 'amenities'])
-        );
+        $data = $request->validated();
+
+        $this->propertyService->create($data);
+
+        return redirect()->route('dashboard.properties.index')->with('success', 'Property created.');
     }
 
     /**
-     * Update the specified resource in storage.
-     * PUT /admin/properties/{property}
+     * Show the form for editing the specified property.
+     *
+     * @param Property $property
+     * @return View
      */
-    public function update(UpdatePropertyRequest $request, Property $property)
+    public function edit(Property $property): View
     {
-        $property = $this->propertyService->update(
-            $property,
-            $request->validated()
-        );
+        $property->load('amenities');
+        $amenities = $this->amenityService->getAll();
 
-        return new PropertyResource(
-            $property->load(['propertyType', 'mainImage', 'amenities'])
-        );
+        return view('dashboard.properties.edit', compact('property', 'amenities'));
     }
 
     /**
-     * Remove the specified resource from storage.
-     * DELETE /admin/properties/{property}
+     * Update the specified property using UpdatePropertyRequest.
+     *
+     * Validation is handled by the FormRequest.
+     *
+     * @param UpdatePropertyRequest $request
+     * @param Property $property
+     * @return RedirectResponse
      */
-    public function destroy(Property $property)
+    public function update(UpdatePropertyRequest $request, Property $property): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $this->propertyService->update($property, $data);
+
+        return redirect()->route('dashboard.properties.index')->with('success', 'Property updated.');
+    }
+
+    /**
+     * Remove the specified property.
+     *
+     * @param Property $property
+     * @return RedirectResponse
+     */
+    public function destroy(Property $property): RedirectResponse
     {
         $this->propertyService->delete($property);
 
-        return response()->json([
-            'message' => 'Property deleted successfully'
-        ]);
+        return redirect()->route('dashboard.properties.index')->with('success', 'Property deleted.');
     }
 }
