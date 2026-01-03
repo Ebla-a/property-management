@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RejectBookingRequest;
 use App\Http\Requests\RescheduleBookingRequest;
+use App\Models\Booking;
 use App\Services\EmployeeBookingService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeBookingController extends Controller
 {
@@ -20,22 +21,31 @@ class EmployeeBookingController extends Controller
     /**
      * List bookings for logged-in employee
      */
-    public function index(Request $request)
-    {
-        $bookings = $this->employeeBookingService
-            ->getEmployeeBooking($request->user()->id);
+   public function index()
+{
+    $user = auth()->user();
 
-        return view('dashboard.employee.bookings.index', [
-            'bookings' => $bookings
-        ]);
+    // Admin  can see all bookings
+    if ($user->hasRole('admin')) {
+        $bookings = Booking::latest()->paginate(10);
     }
+    // Employee  sees only his bookings
+    elseif ($user->hasRole('employee')) {
+        $bookings = Booking::where('assigned_to', $user->id)
+                           ->latest()
+                           ->paginate(10);
+    }
+
+    return view('dashboard.bookings.index', compact('bookings'));
+}
+
 
     /**
      * Show booking details
      */
-    public function show($id)
+    public function show(Booking $booking)
     {
-        $booking = $this->employeeBookingService->getBookingDetails($id);
+        $booking = $this->employeeBookingService->getBookingDetails($booking);
 
         return view('dashboard.employee.bookings.show', [
             'booking' => $booking
@@ -45,9 +55,9 @@ class EmployeeBookingController extends Controller
     /**
      * Approve booking
      */
-    public function approve($id)
+    public function approve(Booking $booking)
     {
-        $booking = $this->employeeBookingService->approve($id);
+        $booking = $this->employeeBookingService->approve($booking);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
@@ -57,9 +67,9 @@ class EmployeeBookingController extends Controller
     /**
      * Cancel booking
      */
-    public function cancel($id)
+    public function cancel(Booking $booking)
     {
-        $booking = $this->employeeBookingService->cancel($id);
+        $booking = $this->employeeBookingService->cancel($booking);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
@@ -69,10 +79,10 @@ class EmployeeBookingController extends Controller
     /**
      * Reschedule booking
      */
-    public function reschedule(RescheduleBookingRequest $request, $id)
+    public function reschedule(RescheduleBookingRequest $request, Booking $booking)
     {
         $booking = $this->employeeBookingService
-            ->reschedule($id, $request->scheduled_at);
+            ->reschedule($booking, $request->scheduled_at);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
@@ -82,9 +92,9 @@ class EmployeeBookingController extends Controller
     /**
      * Mark booking as completed
      */
-    public function complete($id)
+    public function complete(Booking $booking)
     {
-        $booking = $this->employeeBookingService->complete($id);
+        $booking = $this->employeeBookingService->complete($booking);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
@@ -94,10 +104,10 @@ class EmployeeBookingController extends Controller
     /**
      * Reject booking with reason
      */
-    public function reject(RejectBookingRequest $request, $id)
+    public function reject(RejectBookingRequest $request, Booking $booking)
     {
         $booking = $this->employeeBookingService->reject(
-            $id,
+            $booking,
             $request->reason
         );
 

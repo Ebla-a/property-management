@@ -19,4 +19,4 @@ class RoleSeeder extends Seeder
         Role::firstOrCreate(['name' => 'customer','guard_name' => 'web']);
     }
     }
-
+ 

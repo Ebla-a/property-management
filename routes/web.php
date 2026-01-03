@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\PropertyController as AdminPropertyController;
+use App\Http\Controllers\Admin\PropertyImageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,16 +12,44 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Home page
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-// Admin dashboard routes (Properties Views)
-// Protected by auth + role:admin
+/*
+|--------------------------------------------------------------------------
+| Dashboard (for admin and employee)
+|--------------------------------------------------------------------------
+|
+|
+|
+*/
+
+Route::middleware(['auth'])
+    ->get('/dashboard', function () {
+        return view('dashboard.index');
+    })
+    ->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Admin dashboard routes (Properties Views)
+| Protected by auth + role:admin
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth', 'checkRole:admin'])
-    ->prefix('dashboard/admin')
+    ->prefix('dashboard')
     ->name('admin.')
     ->group(function () {
+          // Reports
+    Route::view('/reports', 'dashboard.reports.index')->name('reports.index');
+
+    Route::view('/reports/properties', 'dashboard.reports.properties')
+        ->name('reports.properties');
+
+    Route::view('/reports/bookings', 'dashboard.reports.bookings')
+        ->name('reports.bookings');
 
         // CRUD Views for Properties
         // index, create, store, show, edit, update, destroy
@@ -29,10 +58,16 @@ Route::middleware(['auth', 'checkRole:admin'])
         // Property types management page
         Route::get('properties/types', [AdminPropertyController::class, 'types'])
             ->name('properties.types');
+
+            // Property Images (protected)
+        Route::post('/properties/{property}/images', [PropertyImageController::class, 'store']);
     });
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Profile Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -40,4 +75,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/employee.php';

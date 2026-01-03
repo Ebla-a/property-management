@@ -12,12 +12,12 @@ class AdminController extends Controller
 {
     //
      //dashboard
-    public function dashboard()
-    {
-        return response()->json([
-            'message' => 'Welcome to Admin Dashboard'
-        ]);
-    }
+    // public function dashboard()
+    // {
+    //     return response()->json([
+    //         'message' => 'Welcome to Admin Dashboard'
+    //     ]);
+    // }
 
     // add a new employee
     public function addEmployee(StoreEmployeeRequest $request)
