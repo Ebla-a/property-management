@@ -23,6 +23,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_furnished')->default(false);
             $table->timestamps();
+            $table->unsignedInteger('rating_count')->default(0);
+            $table->unsignedInteger('rating_sum')->default(0);
+            $table->decimal('rating_avg', 3, 2)->default(0);
+
         });
     }
 

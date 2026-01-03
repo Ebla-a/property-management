@@ -13,12 +13,62 @@ class PropertyService
      * @return Collection
      */
     public function getAll(): Collection
+     * Get all properties with filtering, sorting and pagination.
+     *
+     * Supported filters (from query params):
+     * - type -> property_type_id
+     * - city
+     * - min_price
+     * - max_price
+     * - sort (allowed: price, created_at)
+     * - order (asc|desc)
+     * - limit (pagination size)
+     *
+     * @param array $filters
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getAll(array $filters = [])
     {
-        return Property::with([
+        $query = Property::with([
             'propertyType',
             'mainImage',
             'amenities'
-        ])->latest()->get();
+        ]);
+
+        // Filtering
+        if (!empty($filters['type'])) {
+            $query->where('property_type_id', $filters['type']);
+        }
+
+        if (!empty($filters['city'])) {
+            $query->where('city', $filters['city']);
+        }
+
+        if (isset($filters['min_price']) && $filters['min_price'] !== '') {
+            $query->where('price', '>=', $filters['min_price']);
+        }
+
+        if (isset($filters['max_price']) && $filters['max_price'] !== '') {
+            $query->where('price', '<=', $filters['max_price']);
+        }
+
+        // Sorting
+        $allowedSorts = ['price', 'created_at'];
+        $sortBy = $filters['sort'] ?? 'created_at';
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'created_at';
+        }
+
+        $order = strtolower($filters['order'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
+        $query->orderBy($sortBy, $order);
+
+        // Pagination
+        $perPage = isset($filters['limit']) && is_numeric($filters['limit'])
+            ? (int) $filters['limit']
+            : 10;
+
+        return $query->paginate($perPage);
     }
 
     /**
@@ -71,6 +121,7 @@ class PropertyService
 
     /**
      * Update an existing property and sync amenities if provided.
+     * Update an existing property.
      *
      * @param Property $property
      * @param array $data

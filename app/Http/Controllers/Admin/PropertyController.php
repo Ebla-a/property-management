@@ -13,6 +13,9 @@ use Illuminate\View\View;
 
 class PropertyController extends Controller
 {
+    /**
+     * Property service instance
+     */
     protected PropertyService $propertyService;
     protected AmenityService $amenityService;
 
