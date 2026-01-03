@@ -30,21 +30,6 @@ class AuthenticatedSessionController extends Controller
 
     $user = $request->user();   
 
-    // redirect dashbord
-    if ($user->hasRole('employee') || $user->hasRole('admin') ) {
-        return redirect()->route('dashboard');
-
-    }
-
-    return redirect()->route('dashboard');
-}
-
-    public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
-
-    $user = $request->user();
-
     if (!$user->is_active) {
         Auth::logout();
 
@@ -57,7 +42,16 @@ class AuthenticatedSessionController extends Controller
 
     return redirect()->intended('/dashboard');
 
+    // redirect dashbord
+    if ($user->hasRole('employee') || $user->hasRole('admin') ) {
+        return redirect()->route('dashboard');
+
+    }
+
+    return redirect()->route('dashboard');
 }
+
+ 
 
 
     /**
