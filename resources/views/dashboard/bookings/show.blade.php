@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="lg:ml-64 px-6 py-8">
+<div class="lg:ml-50 px-6 py-8" style="direction:ltr">
 
     {{-- Header --}}
     <div class="mb-6">
@@ -17,10 +17,10 @@
 
 
     {{-- Card --}}
-    <div class="bg-white border rounded-xl shadow-sm p-6">
+    <div class="p-6 bg-white border rounded-xl shadow-sm" >
 
-        {{-- Booking Status --}}
-        <div class="flex justify-between items-center mb-4">
+        {{-- Top Row : Booking ID + Status --}}
+        <div class="flex items-center justify-between mb-6">
 
             <h3 class="text-lg font-semibold">
                 Booking #{{ $booking->id }}
@@ -44,78 +44,98 @@
         </div>
 
 
-        {{-- Customer --}}
-        <div class="mb-4">
-            <h4 class="font-medium text-gray-800 mb-1">Customer</h4>
+        {{-- Grid Layout --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            <div class="flex items-start gap-2">
+            {{-- Customer --}}
+            <div class="p-4 border rounded-xl">
+                <h4 class="font-medium text-gray-800 mb-2">Customer</h4>
 
-                {{-- Filled User Icon --}}
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="w-6 h-6 text-black"
-                     viewBox="0 0 24 24" fill="currentColor">
-                    <path fill-rule="evenodd"
-                          d="M12 2.25a4.5 4.5 0 014.5 4.5v.75a4.5 4.5 0 11-9 0V6.75a4.5 4.5 0 014.5-4.5zm-7.5 17.1a7.5 7.5 0 0115 0v.15A2.25 2.25 0 0117.25 21h-10.5A2.25 2.25 0 014.5 19.5v-.15z"
-                          clip-rule="evenodd" />
-                </svg>
+                <div class="flex items-start gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-6 h-6 text-black"
+                         viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M12 2.25a4.5 4.5 0 014.5 4.5v.75a4.5 4.5 0 11-9 0V6.75a4.5 4.5 0 014.5-4.5zm-7.5 17.1a7.5 7.5 0 0115 0v.15A2.25 2.25 0 0117.25 21h-10.5A2.25 2.25 0 014.5 19.5v-.15z"
+                              clip-rule="evenodd" />
+                    </svg>
 
-                <div>
-                    <p class="text-sm text-gray-700 font-medium">
-                        {{ $booking->customer->name ?? 'N/A' }}
-                    </p>
-
-                    <p class="text-xs text-gray-500">
-                        {{ $booking->customer->email ?? '' }}
-                    </p>
+                    <div>
+                        <p class="text-sm font-medium text-gray-700">
+                            {{ $booking->customer->name ?? 'N/A' }}
+                        </p>
+                        <p class="text-xs text-gray-500">
+                            {{ $booking->customer->email ?? '' }}
+                        </p>
+                    </div>
                 </div>
-
             </div>
-        </div>
 
 
-        {{-- Property --}}
-        <div class="mb-4">
-            <h4 class="font-medium text-gray-800 mb-1">Property</h4>
+            {{-- Property --}}
+            <div class="p-4 border rounded-xl">
+                <h4 class="font-medium text-gray-800 mb-2">Property</h4>
 
-            <p class="text-sm font-semibold">
-                {{ $booking->property->title ?? 'Unknown Property' }}
-            </p>
-
-            <p class="text-xs text-gray-500">
-                {{ $booking->property->city ?? '' }}
-                — {{ $booking->property->address ?? '' }}
-            </p>
-        </div>
-
-
-        {{-- Schedule --}}
-        <div class="mb-4">
-            <h4 class="font-medium text-gray-800 mb-1">Scheduled Visit</h4>
-
-            <div class="flex items-center gap-2">
-
-                {{-- Filled Calendar Icon --}}
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="w-6 h-6 text-black"
-                     viewBox="0 0 24 24" fill="currentColor">
-                    <path fill-rule="evenodd"
-                          d="M6.75 2.25a.75.75 0 01.75.75V4.5h9V3a.75.75 0 011.5 0v1.5h.75A2.25 2.25 0 0121 6.75v12A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75v-12A2.25 2.25 0 015.25 4.5H6V3a.75.75 0 01.75-.75zM3.75 9h16.5v9.75a.75.75 0 01-.75.75H4.5a.75.75 0 01-.75-.75V9z"
-                          clip-rule="evenodd" />
-                </svg>
-
-                <p class="text-sm text-gray-700">
-                    {{ $booking->scheduled_at }}
+                <p class="text-sm font-semibold">
+                    {{ $booking->property->title ?? 'Unknown Property' }}
                 </p>
 
+                <p class="text-xs text-gray-500 mt-1">
+                    {{ $booking->property->city ?? '' }} —
+                    {{ $booking->property->address ?? '' }}
+                </p>
             </div>
+
+
+            {{-- Schedule --}}
+            <div class="p-4 border rounded-xl">
+                <h4 class="font-medium text-gray-800 mb-2">Scheduled Visit</h4>
+
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-6 h-6 text-black"
+                         viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M6.75 2.25a.75.75 0 01.75.75V4.5h9V3a.75.75 0 011.5 0v1.5h.75A2.25 2.25 0 0121 6.75v12A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75v-12A2.25 2.25 0 015.25 4.5H6V3a.75.75 0 01.75-.75zM3.75 9h16.5v9.75a.75.75 0 01-.75.75H4.5a.75.75 0 01-.75-.75V9z"
+                              clip-rule="evenodd" />
+                    </svg>
+
+                    <p class="text-sm text-gray-700">
+                        {{ $booking->scheduled_at }}
+                    </p>
+                </div>
+            </div>
+
+
+            {{-- Employee --}}
+            @if($booking->employee)
+            <div class="p-4 border rounded-xl">
+                <h4 class="font-medium text-gray-800 mb-2">Assigned Employee</h4>
+
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="w-6 h-6 text-black"
+                         viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 2.25h6A2.25 2.25 0 0117.25 4.5V6H6.75V4.5A2.25 2.25 0 019 2.25z" />
+                        <path fill-rule="evenodd"
+                              d="M3.75 7.5A2.25 2.25 0 016 5.25h12A2.25 2.25 0 0120.25 7.5v9A2.25 2.25 0 0118 18.75H6A2.25 2.25 0 013.75 16.5v-9z"
+                              clip-rule="evenodd" />
+                    </svg>
+
+                    <p class="text-sm text-gray-500">
+                        {{ $booking->employee->name }}
+                    </p>
+                </div>
+            </div>
+            @endif
+
         </div>
 
 
         {{-- Notes --}}
         @if($booking->notes)
-        <div class="mb-4">
+        <div class="mt-4 p-4 border rounded-xl">
             <h4 class="font-medium text-gray-800 mb-1">Notes</h4>
-
             <p class="text-sm text-gray-600">
                 {{ $booking->notes }}
             </p>
@@ -123,37 +143,10 @@
         @endif
 
 
-        {{-- Employee --}}
-        @if($booking->employee)
-        <div class="mb-4">
-            <h4 class="font-medium text-gray-800 mb-1">Assigned Employee</h4>
-
-            <div class="flex items-center gap-2">
-
-                {{-- Filled Briefcase / Worker Icon --}}
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="w-6 h-6 text-black"
-                     viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 2.25h6A2.25 2.25 0 0117.25 4.5V6H6.75V4.5A2.25 2.25 0 019 2.25z" />
-                    <path fill-rule="evenodd"
-                          d="M3.75 7.5A2.25 2.25 0 016 5.25h12A2.25 2.25 0 0120.25 7.5v9A2.25 2.25 0 0118 18.75H6A2.25 2.25 0 013.75 16.5v-9z"
-                          clip-rule="evenodd" />
-                </svg>
-
-                <p class="text-sm text-gray-700">
-                    {{ $booking->employee->name }}
-                </p>
-
-            </div>
-        </div>
-        @endif
-
-
-        {{-- Action Buttons --}}
-        <div class="mt-4 flex gap-2">
+        {{-- Actions --}}
+        <div class="mt-5 flex flex-wrap gap-2">
 
             @if($booking->status == 'pending')
-
                 <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
                     @csrf @method('PATCH')
                     <button class="px-3 py-1.5 text-xs rounded-lg bg-green-600 text-white">
@@ -167,31 +160,28 @@
                         Reject
                     </button>
                 </form>
-
             @endif
 
 
             @if($booking->status == 'approved')
-
                 <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
                     @csrf @method('PATCH')
-                    <button class="px-3 py-1.5 text-xs rounded-lg bg-blue-600 text-white">
+                    <button class="px-3 py-1.5 text-xs rounded-lg bg-indigo-600 text-white">
                         Mark as Completed
                     </button>
                 </form>
 
                 <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
                     @csrf @method('PATCH')
-                    <button class="px-3 py-1.5 text-xs rounded-lg bg-gray-700 text-white">
+                    <button class="px-3 py-1.5 text-xs rounded-lg bg-gray-500 text-white">
                         Cancel
                     </button>
                 </form>
-
             @endif
 
 
             <a href="{{ route('employee.bookings.index') }}"
-               class="px-3 py-1.5 text-xs rounded-lg border hover:bg-gray-50">
+               class="px-3 py-1.5 text-xs rounded-lg border hover:bg-gray-500">
                 Back to list
             </a>
 

@@ -21,9 +21,7 @@
         <main class="flex-1 min-h-screen pt-6 px-6 lg:px-12" style="margin-left:260px; margin-top:60px;">
             <div class="max-w-7xl mx-auto">
                 {{-- Page title --}}
-                <div class="mb-6">
-                    <h2 class="text-2xl font-extrabold text-gray-900">@yield('page_title', 'Dashboard')</h2>
-                </div>
+               
 
                 {{-- Page content --}}
                 <div class="space-y-6">
