@@ -12,35 +12,36 @@
 <nav class="bg-white shadow-md">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-
             <!-- Logo / Brand -->
             <a href="/" class="flex items-center gap-3">
-                <span class="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-indigo-600 text-white font-bold">
+                <span class="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-indigo-600 text-white font-bold shadow-sm">
                     RS
                 </span>
                 <span class="text-2xl font-bold text-indigo-600">RealEstateSys</span>
             </a>
 
-            <!-- Navigation Links -->
-            <div class="hidden md:flex items-center gap-6">
-                <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600 font-medium transition">
+            <!-- Navigation Links (desktop) -->
+            <div class="hidden md:flex items-center gap-4">
+                <!-- Login button in navbar (prominent) -->
+                <a href="{{ route('login') }}"
+                   class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold px-4 py-2 rounded-full shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-200">
+                    <!-- optional icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
                     Login
-                </a>
-                <a href="{{ route('register') }}" class="text-gray-700 hover:text-indigo-600 font-medium transition">
-                    Register
                 </a>
             </div>
 
             <!-- Mobile Menu Button -->
             <div class="md:hidden flex items-center">
-                <button type="button" class="text-gray-700 hover:text-indigo-600 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="button" aria-label="Open menu" class="text-gray-700 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200 rounded-md p-2">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
             </div>
-
         </div>
     </div>
 </nav>
@@ -51,25 +52,27 @@
     <img src="{{ asset('Estate.webp') }}" alt="Real Estate Background" class="absolute inset-0 w-full h-full object-cover z-0">
 
     <!-- Light Overlay -->
-    <div class="absolute inset-0 bg-white bg-opacity-20 z-10"></div> <!-- تم تخفيف الشفافية -->
+    <div class="absolute inset-0 bg-white bg-opacity-20 z-10"></div>
 
     <!-- Content -->
-    <div class="relative z-20 text-center px-6 sm:px-8 lg:px-12">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg mb-4">
+    <div class="relative z-20 text-center px-6 sm:px-8 lg:px-12 max-w-4xl">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg mb-4 leading-tight">
             Manage Your Properties Easily
         </h1>
         <p class="text-lg sm:text-xl text-white drop-shadow mb-8">
             Track properties, bookings, and clients all in one place.
         </p>
         <div class="flex justify-center gap-4 flex-wrap">
+
+            <!-- Hero Login Button (updated style) -->
             <a href="{{ route('login') }}"
-               class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-lg shadow-lg transition transform hover:-translate-y-1">
-                Login Now
+               class="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold px-8 py-4 rounded-full text-lg shadow-2xl transform transition hover:-translate-y-1 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-indigo-200">
+
+                <span>Login Now</span>
             </a>
-            <a href="{{ route('register') }}"
-               class="bg-white hover:bg-gray-100 text-indigo-600 font-bold px-6 py-3 rounded-lg shadow-lg transition transform hover:-translate-y-1">
-                Create Account
-            </a>
+
+
+
         </div>
     </div>
 </section>
