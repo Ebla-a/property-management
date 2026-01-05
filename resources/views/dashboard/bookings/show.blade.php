@@ -144,7 +144,16 @@
 
 
         {{-- Actions --}}
-        <div class="mt-5 flex flex-wrap gap-2">
+        <div class="mt-6 flex flex-wrap gap-2">
+            {{-- Reschedule  --}}
+            @if(in_array($booking->status, ['pending','approved']))
+            <a href="{{ route('employee.reschedule.form', $booking->id) }}"
+                
+                class="px-3 py-1.5 text-xs rounded-lg bg-gray-500 text-white inline-flex items-center">
+                Reschedule
+            </a>
+            @endif
+
 
             @if($booking->status == 'pending')
                 <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">

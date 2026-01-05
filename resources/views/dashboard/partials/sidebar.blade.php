@@ -15,6 +15,7 @@
                 </svg>
                 <span>Home</span>
             </a>
+            @role('admin')
 
             {{-- Properties --}}
             <a href="{{ url('dashboard/properties') }}"
@@ -74,6 +75,26 @@
                 <span>Users</span>
             </a>
         </nav>
+       
+   @elserole('employee')
+
+<nav class="space-y-2">
+
+    <a href="{{ route('employee.bookings.my') }}"
+       class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-50">
+        My Bookings
+    </a>
+
+    <a href="{{ route('employee.bookings.pending') }}"
+       class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-50">
+        Pending Bookings
+    </a>
+
+</nav>
+
+@endrole
+
+
 
         <div class="mt-6 pt-4 border-t text-xs text-gray-500">
             © {{ date('Y') }} RealEstateSys
