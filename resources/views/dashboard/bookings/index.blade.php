@@ -184,7 +184,7 @@
                           action="{{ route('employee.bookings.approve', $booking->id) }}">
                         @csrf
                         @method('PATCH')
-                        <button class="px-3 py-1.5 text-xs rounded-lg bg-green-600 text-white hover:bg-green-700">
+                        <button class="px-3 py-1 bg-green-50 border border-green-100 rounded-full text-sm text-green-600 hover:bg-green-100 transition">
                             Approve
                         </button>
                     </form>
@@ -193,7 +193,7 @@
                           action="{{ route('employee.bookings.reject', $booking->id) }}">
                         @csrf
                         @method('PATCH')
-                        <button class="px-3 py-1.5 text-xs rounded-lg bg-red-600 text-white hover:bg-red-700">
+                        <button class="px-3 py-1 bg-red-50 border border-red-100 rounded-full text-sm text-red-600 hover:bg-red-100 transition">
                             Reject
                         </button>
                     </form>
@@ -201,7 +201,7 @@
                 @endif
 
                 <a href="{{ route('employee.bookings.show', $booking->id) }}"
-                   class="px-3 py-1.5 text-xs rounded-lg border hover:bg-gray-50">
+                   class="px-2 py-1 bg-blue-50 border border-blue-100 rounded-full text-sm text-blue-700 hover:bg-blue-100 transition">
                     View Details
                 </a>
 
@@ -216,10 +216,15 @@
     </div>
 
 
-    {{-- Pagination --}}
-    <div class="mt-6">
+   {{-- Pagination --}}
+<div class="mt-8 flex justify-center">
+    <div class="bg-white border rounded-xl px-4 py-2 shadow-sm">
         {{ $bookings->links() }}
     </div>
+</div>
+
+
+  
 
 </div>
 

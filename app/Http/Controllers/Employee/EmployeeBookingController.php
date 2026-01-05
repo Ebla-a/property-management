@@ -16,14 +16,14 @@ class EmployeeBookingController extends Controller
     public function __construct(EmployeeBookingService $employeeBookingService)
     {
         $this->employeeBookingService = $employeeBookingService;
-    }
+    } 
 
     /**
      * List bookings for logged-in employee or admin
      *
      * Supports status filtering:
-     * - Admin   → sees all bookings
-     * - Employee → sees only assigned bookings
+     * - Admin    sees all bookings
+     * - Employee  sees only assigned bookings
      */
     public function index(Request $request)
     {
@@ -36,7 +36,7 @@ class EmployeeBookingController extends Controller
             $bookings = Booking::with(['user','property','employee'])
                 ->when($status, fn($q) => $q->where('status', $status))
                 ->latest()
-                ->paginate(10);
+                ->paginate(6);
         }
 
         // Employee
@@ -126,6 +126,13 @@ class EmployeeBookingController extends Controller
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking rescheduled successfully');
     }
+    public function rescheduleForm(Booking $booking)
+{
+    $this->authorize('reschedule', $booking);
+
+    return view('dashboard.bookings.reschedule', compact('booking'));
+}
+
 
 
     /**
@@ -162,5 +169,25 @@ class EmployeeBookingController extends Controller
         return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking rejected');
+    }
+
+  public function myBookings()
+{
+    $employee = auth()->id();
+
+    $bookings = Booking::where('employee_id', $employee)
+        ->latest()
+        ->paginate(6);
+
+    return view('dashboard.bookings.employeebookings', compact('bookings'));
+}
+
+
+    public function pending(){
+        $bookings = Booking::whereNull('employee_id')
+        ->where('status','pending')->latest()->paginate(6);
+
+        return view('dashboard.bookings.pending', compact('bookings'));
+
     }
 }
