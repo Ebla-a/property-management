@@ -50,8 +50,7 @@ class EmployeeBookingService
         }
 
         $booking->update([
-            'status' => 'cancelled
-'
+            'status' => 'canceled'
         ]);
 
         return $booking;

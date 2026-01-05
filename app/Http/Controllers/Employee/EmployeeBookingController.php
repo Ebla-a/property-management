@@ -7,7 +7,7 @@ use App\Http\Requests\RejectBookingRequest;
 use App\Http\Requests\RescheduleBookingRequest;
 use App\Models\Booking;
 use App\Services\EmployeeBookingService;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class EmployeeBookingController extends Controller
 {
@@ -19,95 +19,143 @@ class EmployeeBookingController extends Controller
     }
 
     /**
-     * List bookings for logged-in employee
+     * List bookings for logged-in employee or admin
+     *
+     * Supports status filtering:
+     * - Admin   → sees all bookings
+     * - Employee → sees only assigned bookings
      */
-   public function index()
-{
-    $user = auth()->user();
+    public function index(Request $request)
+    {
+        $user   = auth()->user();
+        $status = $request->get('status');
 
-    // Admin  can see all bookings
-    if ($user->hasRole('admin')) {
-        $bookings = Booking::latest()->paginate(10);
-    }
-    // Employee  sees only his bookings
-    elseif ($user->hasRole('employee')) {
-        $bookings = Booking::where('assigned_to', $user->id)
-                           ->latest()
-                           ->paginate(10);
-    }
+        // Admin
+        if ($user->hasRole('admin')) {
 
-    return view('dashboard.bookings.index', compact('bookings'));
-}
+            $bookings = Booking::with(['user','property','employee'])
+                ->when($status, fn($q) => $q->where('status', $status))
+                ->latest()
+                ->paginate(10);
+        }
+
+        // Employee
+        elseif ($user->hasRole('employee')) {
+
+            $bookings = Booking::with(['user','property'])
+                ->where('employee_id', $user->id)
+                ->when($status, fn($q) => $q->where('status', $status))
+                ->latest()
+                ->paginate(10);
+        }
+
+        return view('dashboard.bookings.index', compact('bookings','status'));
+    }
 
 
     /**
      * Show booking details
+     *
+     * Authorization rules:
+     * - Assigned employee
+     * - Customer who owns booking
+     * - Admin
      */
-    public function show(Booking $booking)
+    public function show($id)
     {
-        $booking = $this->employeeBookingService->getBookingDetails($booking);
+        $booking = $this->employeeBookingService->getBookingDetails($id);
 
-        return view('dashboard.employee.bookings.show', [
-            'booking' => $booking
-        ]);
+        $this->authorize('view', $booking);
+
+        return view('dashboard.bookings.show', compact('booking'));
     }
 
+
     /**
-     * Approve booking
+     * Approve booking (employee only)
+     *
+     * Allowed when:
+     * - user has role employee
+     * - is assigned to booking
+     * - booking is pending
      */
-    public function approve(Booking $booking)
+    public function approve($id)
     {
-        $booking = $this->employeeBookingService->approve($booking);
+        $booking = $this->employeeBookingService->getBookingDetails($id);
+
+        $this->authorize('approve', $booking);
+
+        $booking = $this->employeeBookingService->approve($id);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking approved successfully');
     }
 
+
     /**
-     * Cancel booking
+     * Cancel booking (employee allowed for pending/approved)
      */
-    public function cancel(Booking $booking)
+    public function cancel($id)
     {
-        $booking = $this->employeeBookingService->cancel($booking);
+        $booking = $this->employeeBookingService->getBookingDetails($id);
+
+        $this->authorize('employeeCancel', $booking);
+
+        $booking = $this->employeeBookingService->cancel($id);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking cancelled');
     }
 
+
     /**
-     * Reschedule booking
+     * Reschedule booking (employee)
      */
-    public function reschedule(RescheduleBookingRequest $request, Booking $booking)
+    public function reschedule(RescheduleBookingRequest $request, $id)
     {
+        $booking = $this->employeeBookingService->getBookingDetails($id);
+
+        $this->authorize('reschedule', $booking);
+
         $booking = $this->employeeBookingService
-            ->reschedule($booking, $request->scheduled_at);
+            ->reschedule($id, $request->scheduled_at);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking rescheduled successfully');
     }
 
+
     /**
-     * Mark booking as completed
+     * Mark booking as completed (employee)
      */
-    public function complete(Booking $booking)
+    public function complete($id)
     {
-        $booking = $this->employeeBookingService->complete($booking);
+        $booking = $this->employeeBookingService->getBookingDetails($id);
+
+        $this->authorize('complete', $booking);
+
+        $booking = $this->employeeBookingService->complete($id);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking completed');
     }
 
+
     /**
-     * Reject booking with reason
+     * Reject booking with reason (employee)
      */
-    public function reject(RejectBookingRequest $request, Booking $booking)
+    public function reject(RejectBookingRequest $request, $id)
     {
+        $booking = $this->employeeBookingService->getBookingDetails($id);
+
+        $this->authorize('approve', $booking);
+
         $booking = $this->employeeBookingService->reject(
-            $booking,
+            $id,
             $request->reason
         );
 

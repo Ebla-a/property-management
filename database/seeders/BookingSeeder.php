@@ -28,9 +28,38 @@ class BookingSeeder extends Seeder
         $customers->each(fn($u) => $u->assignRole('customer'));
 
         // create properties
-        $properties = Property::factory()->count(8)->create();
+        // $properties = Property::factory()->count(8)->create();
+        // create a default property (temporary)
+$property = Property::create([
+    'title' => 'Test Property',
+    'city' => 'Demo City',
+    'address' => 'Sample Address',
+    'price' => 1200,
+]);
 
-        // create bookings
-        Booking::factory()->count(40)->create();
+
+
+// create bookings linked to it
+Booking::factory()->count(40)->create([
+    'property_id' => $property->id
+]);
+
+    // create bookings
+Booking::factory()->count(40)->make()->each(function ($booking) use ($customers) {
+
+    $booking->user_id = $customers->random()->id;
+    
+
+    $booking->status = fake()->randomElement([
+        'pending',
+        'approved',
+        'rejected',
+        'canceled',
+        'completed'
+    ]);
+
+    $booking->save();
+
+});
     }
-}
+    }
