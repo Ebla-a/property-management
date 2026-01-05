@@ -20,9 +20,6 @@
         {{-- Main content area --}}
         <main class="flex-1 min-h-screen pt-6 px-6 lg:px-12" style="margin-left:260px; margin-top:60px;">
             <div class="max-w-7xl mx-auto">
-                {{-- Page title --}}
-               
-
                 {{-- Page content --}}
                 <div class="space-y-6">
                     @yield('content')

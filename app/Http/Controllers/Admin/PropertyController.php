@@ -13,18 +13,9 @@ use Illuminate\View\View;
 
 class PropertyController extends Controller
 {
-    /**
-     * Property service instance
-     */
     protected PropertyService $propertyService;
     protected AmenityService $amenityService;
 
-    /**
-     * PropertyController constructor.
-     *
-     * @param PropertyService $propertyService
-     * @param AmenityService $amenityService
-     */
     public function __construct(PropertyService $propertyService, AmenityService $amenityService)
     {
         $this->propertyService = $propertyService;
@@ -32,58 +23,46 @@ class PropertyController extends Controller
     }
 
     /**
-     * Display a listing of properties with optional filters.
-     *
-     * Filter input is read from the request query via the request() helper.
+     * Display a listing of properties with optional filters (paginated).
      *
      * @return View
      */
     public function index(): View
     {
-        // Read filters from query string (no FormRequest used here)
-        $filters = request()->only(['amenity_ids']);
+        $filters = request()->only([
+            'amenity_ids', 'type', 'city', 'min_price', 'max_price', 'sort', 'order', 'limit'
+        ]);
 
-        $properties = $this->propertyService->getAllWithFilters($filters);
+        $properties = $this->propertyService->getPaginated($filters);
+
         $amenities = $this->amenityService->getAll();
 
         return view('dashboard.properties.index', compact('properties', 'amenities', 'filters'));
     }
 
-    /**
-     * Show the form for creating a new property.
-     *
-     * @return View
-     */
     public function create(): View
     {
         $amenities = $this->amenityService->getAll();
-        // Add other supporting data (property types, users, etc.) as needed
         return view('dashboard.properties.create', compact('amenities'));
     }
 
-    /**
-     * Store a newly created property using StorePropertyRequest.
-     *
-     * Validation is handled by the FormRequest.
-     *
-     * @param StorePropertyRequest $request
-     * @return RedirectResponse
-     */
     public function store(StorePropertyRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
-        $this->propertyService->create($data);
+        $property = $this->propertyService->create($data);
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'Property created.');
+        if ($request->hasFile('images')) {
+            app(\App\Services\ImageService::class)->uploadPropertyImages(
+                $property->id,
+                $request->file('images'),
+                null
+            );
+        }
+
+        return redirect()->route('dashboard.properties.index')->with('success', 'Property created with images.');
     }
 
-    /**
-     * Show the form for editing the specified property.
-     *
-     * @param Property $property
-     * @return View
-     */
     public function edit(Property $property): View
     {
         $property->load('amenities');
@@ -92,15 +71,6 @@ class PropertyController extends Controller
         return view('dashboard.properties.edit', compact('property', 'amenities'));
     }
 
-    /**
-     * Update the specified property using UpdatePropertyRequest.
-     *
-     * Validation is handled by the FormRequest.
-     *
-     * @param UpdatePropertyRequest $request
-     * @param Property $property
-     * @return RedirectResponse
-     */
     public function update(UpdatePropertyRequest $request, Property $property): RedirectResponse
     {
         $data = $request->validated();
@@ -110,16 +80,17 @@ class PropertyController extends Controller
         return redirect()->route('dashboard.properties.index')->with('success', 'Property updated.');
     }
 
-    /**
-     * Remove the specified property.
-     *
-     * @param Property $property
-     * @return RedirectResponse
-     */
     public function destroy(Property $property): RedirectResponse
     {
         $this->propertyService->delete($property);
 
         return redirect()->route('dashboard.properties.index')->with('success', 'Property deleted.');
+    }
+
+    public function show(Property $property): View
+    {
+        $property->load(['images', 'amenities']);
+
+        return view('dashboard.properties.show', compact('property'));
     }
 }

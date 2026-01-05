@@ -30,28 +30,30 @@ class PropertyService
      * - city
      * - min_price
      * - max_price
+     * - amenity_ids (array) -> AND logic
      * - sort (price, created_at)
      * - order (asc|desc)
      * - limit
      *
      * @param array $filters
-     * @return LengthAwarePaginator
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getPaginated(array $filters = []): LengthAwarePaginator
+    public function getPaginated(array $filters = [])
     {
         $query = Property::with([
             'propertyType',
             'mainImage',
-            'amenities'
+            'amenities',
+            'images'
         ]);
 
-        // Filtering
+        // Filtering basic fields
         if (!empty($filters['type'])) {
             $query->where('property_type_id', $filters['type']);
         }
 
         if (!empty($filters['city'])) {
-            $query->where('city', $filters['city']);
+            $query->where('city', 'like', $filters['city']);
         }
 
         if (isset($filters['min_price']) && $filters['min_price'] !== '') {
@@ -62,20 +64,23 @@ class PropertyService
             $query->where('price', '<=', $filters['max_price']);
         }
 
+        // Filter by amenities (AND)
+        if (!empty($filters['amenity_ids'])) {
+            foreach ((array)$filters['amenity_ids'] as $amenityId) {
+                $query->whereHas('amenities', function ($q) use ($amenityId) {
+                    $q->where('amenities.id', $amenityId);
+                });
+            }
+        }
+
         // Sorting
         $allowedSorts = ['price', 'created_at'];
-        $sortBy = in_array($filters['sort'] ?? null, $allowedSorts)
-            ? $filters['sort']
-            : 'created_at';
-
+        $sortBy = in_array($filters['sort'] ?? null, $allowedSorts) ? $filters['sort'] : 'created_at';
         $order = strtolower($filters['order'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
-
         $query->orderBy($sortBy, $order);
 
-        // Pagination
-        $perPage = isset($filters['limit']) && is_numeric($filters['limit'])
-            ? (int) $filters['limit']
-            : 10;
+        // Pagination size
+        $perPage = isset($filters['limit']) && is_numeric($filters['limit']) ? (int)$filters['limit'] : 3;
 
         return $query->paginate($perPage);
     }
