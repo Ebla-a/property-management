@@ -1,27 +1,14 @@
 <?php
 
-use App\Http\Controllers\Admin\PropertyController as AdminPropertyController;
-use App\Http\Controllers\Admin\PropertyImageController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\PropertyController;
-
-Route::prefix('dashboard')
-    ->name('dashboard.')
-    ->middleware(['auth', 'checkRole:admin'])
-
-    ->group(function () {
-
-        Route::resource('amenities', AmenityController::class)->except(['show']);
-        Route::resource('properties', PropertyController::class);
-    });
-
+use App\Http\Controllers\Admin\PropertyImageController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Public Routes
 |--------------------------------------------------------------------------
 */
 
@@ -31,49 +18,58 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Dashboard (for admin and employee)
-|--------------------------------------------------------------------------
-|
-|
-|
-*/
-
-Route::middleware(['auth'])
-    ->get('/dashboard', function () {
-        return view('dashboard.index');
-    })
-    ->name('dashboard');
-
-/*
-|--------------------------------------------------------------------------
-| Admin dashboard routes (Properties Views)
-| Protected by auth + role:admin
+| Dashboard Routes (Admin only)
+| URL prefix: /dashboard
+| Route name prefix: dashboard.*
 |--------------------------------------------------------------------------
 */
 
 Route::middleware(['auth', 'checkRole:admin'])
     ->prefix('dashboard')
-    ->name('admin.')
+    ->name('dashboard.')
     ->group(function () {
-        // Reports
-        Route::view('/reports', 'dashboard.reports.index')->name('reports.index');
 
-        Route::view('/reports/properties', 'dashboard.reports.properties')
-            ->name('reports.properties');
+        /*
+        | Dashboard Home
+        */
+        Route::get('/', function () {
+            return view('dashboard.index');
+        })->name('index');
 
-        Route::view('/reports/bookings', 'dashboard.reports.bookings')
-            ->name('reports.bookings');
+        /*
+        | Amenities CRUD
+        */
+        Route::resource('amenities', AmenityController::class)
+            ->except(['show']);
 
-        // CRUD Views for Properties
-        // index, create, store, show, edit, update, destroy
-        Route::resource('properties', AdminPropertyController::class);
+        /*
+        | Properties CRUD
+        */
+        Route::resource('properties', PropertyController::class);
 
-        // Property types management page
-        Route::get('properties/types', [AdminPropertyController::class, 'types'])
+        /*
+        | Property Types Page
+        */
+        Route::get('properties/types', [PropertyController::class, 'types'])
             ->name('properties.types');
 
-        // Property Images (protected)
-        Route::post('/properties/{property}/images', [PropertyImageController::class, 'store']);
+        /*
+        | Property Images
+        */
+        Route::post('properties/{property}/images', [PropertyImageController::class, 'store'])
+            ->name('properties.images.store');
+
+        /*
+        | Reports Pages
+        */
+        Route::view('reports', 'dashboard.reports.index')
+            ->name('reports.index');
+
+        Route::view('reports/properties', 'dashboard.reports.properties')
+            ->name('reports.properties');
+
+        Route::view('reports/bookings', 'dashboard.reports.bookings')
+            ->name('reports.bookings');
     });
 
 /*
@@ -83,10 +79,21 @@ Route::middleware(['auth', 'checkRole:admin'])
 */
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Auth & Employee Routes
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/employee.php';
