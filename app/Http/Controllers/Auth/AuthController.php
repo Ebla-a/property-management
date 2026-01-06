@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +19,7 @@ public function register(RegisterUserRequest $request)
         'email'=>$request->email,
         'password'=>Hash::make($request->password)
     ]);
-     $user->assignRole('customer'); 
+     $user->assignRole('customer');
         $token = $user->createToken(
             'auth_token',
             $user->getRoleNames()->toArray()

@@ -2,32 +2,30 @@
 
 namespace App\Services;
 
+use App\Models\Property;
 use App\Models\PropertyImage;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 
 class ImageService
 {
-    /**
-     * @param int $propertyId
-     * @param UploadedFile[] $images
-     * @param string|null $alt
-     * @return PropertyImage[]
-     */
-    public function uploadPropertyImages(int $propertyId, array $images, ?string $alt = null): array
+    public function uploadPropertyImages(int $propertyId, array $files, ?string $alt = null)
     {
-        $created = [];
+        $images = [];
 
-        foreach ($images as $image) {
-            $path = $image->store("properties/{$propertyId}", 'public');
+        foreach ($files as $file) {
+            if (!$file instanceof UploadedFile) continue;
 
-            $created[] = PropertyImage::create([
+            $path = $file->store('properties', 'public'); // folder storage/app/public/properties
+
+            $images[] = PropertyImage::create([
                 'property_id' => $propertyId,
                 'path' => $path,
-                'is_main' => false,
                 'alt' => $alt,
+                'is_main' => false,
             ]);
         }
 
-        return $created;
+        return $images;
     }
 }

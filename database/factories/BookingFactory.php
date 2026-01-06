@@ -28,7 +28,7 @@ class BookingFactory extends Factory
                 'pending',
                 'approved',
                 'rescheduled',
-                'cancelled',
+                'canceled',
                 'completed',
             ]),
         ];
