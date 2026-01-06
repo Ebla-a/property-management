@@ -32,7 +32,7 @@ class AmenityController extends Controller
     public function index(): View
     {
         $amenities = $this->amenityService->getAll();
-        return view('admin.amenities.index', compact('amenities'));
+        return view('dashboard.amenities.index', compact('amenities'));
     }
 
     /**
@@ -42,7 +42,7 @@ class AmenityController extends Controller
      */
     public function create(): View
     {
-        return view('admin.amenities.create');
+        return view('dashboard.amenities.create');
     }
 
     /**
@@ -57,7 +57,7 @@ class AmenityController extends Controller
 
         $this->amenityService->create($data);
 
-        return redirect()->route('admin.amenities.index')->with('success', 'Amenity added.');
+        return redirect()->route('dashboard.amenities.index')->with('success', 'Amenity added.');
     }
 
     /**
@@ -68,7 +68,7 @@ class AmenityController extends Controller
      */
     public function edit(Amenity $amenity): View
     {
-        return view('admin.amenities.edit', compact('amenity'));
+        return view('dashboard.amenities.edit', compact('amenity'));
     }
 
     /**
@@ -84,7 +84,7 @@ class AmenityController extends Controller
 
         $this->amenityService->update($amenity, $data);
 
-        return redirect()->route('admin.amenities.index')->with('success', 'Amenity updated.');
+        return redirect()->route('dashboard.amenities.index')->with('success', 'Amenity updated.');
     }
 
     /**
@@ -97,6 +97,6 @@ class AmenityController extends Controller
     {
         $this->amenityService->delete($amenity);
 
-        return redirect()->route('admin.amenities.index')->with('success', 'Amenity deleted.');
+        return redirect()->route('dashboard.amenities.index')->with('success', 'Amenity deleted.');
     }
 }
