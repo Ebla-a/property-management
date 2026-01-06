@@ -24,15 +24,12 @@ Route::get('/', function () {
 | Route name prefix: dashboard.*
 |--------------------------------------------------------------------------
 */
-
-Route::middleware(['auth', 'checkRole:admin'])
+Route::middleware(['auth', 'check.status', 'role:admin'])
     ->prefix('dashboard')
     ->name('dashboard.')
     ->group(function () {
 
-        /*
-        | Dashboard Home
-        */
+        // Home dashboard
         Route::get('/', function () {
             return view('dashboard.index');
         })->name('index');
@@ -88,9 +85,6 @@ Route::middleware(['auth', 'checkRole:admin'])
     // Change admin password
     Route::patch('/change-password', [AdminController::class, 'changePassword'])
         ->name('admin.change-password');
-     
-    // add employee
-    Route::post('/add-employee', [AdminController::class, 'store']);
 
     });
 
