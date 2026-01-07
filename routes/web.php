@@ -73,7 +73,28 @@ Route::middleware(['auth', 'checkRole:admin'])
             ->name('properties.types');
 
         // Property Images (protected)
-        Route::post('/properties/{property}/images', [PropertyImageController::class, 'store']);
+        // Property Images (Admin - Blade)
+Route::get('/properties/{property}/images', [PropertyImageController::class, 'index'])
+    ->name('properties.images.index');
+
+Route::post('/properties/{property}/images', [PropertyImageController::class, 'store'])
+    ->name('properties.images.store');
+
+Route::patch('/properties/{property}/images/{image}/main', [PropertyImageController::class, 'setMain'])
+    ->name('properties.images.setMain');
+
+Route::delete('/properties/{property}/images/{image}', [PropertyImageController::class, 'destroy'])
+    ->name('properties.images.destroy');
+
+Route::delete('/properties/{property}/images/{image}/force', [PropertyImageController::class, 'forceDestroy'])
+    ->name('properties.images.forceDestroy');
+// Trashed Property Images (Admin - Blade)
+Route::get('/properties/{property}/images/trashed', [PropertyImageController::class, 'trashed'])
+    ->name('properties.images.trashed');
+Route::patch('/properties/{property}/images/{image}/restore', [PropertyImageController::class, 'restore'])
+    ->name('properties.images.restore');
+
+
     });
 
 /*

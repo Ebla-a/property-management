@@ -15,6 +15,7 @@ return new class extends Migration
             $table->boolean('is_main')->default(false);
             $table->string('alt')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::table('property_images', function (Blueprint $table) {
