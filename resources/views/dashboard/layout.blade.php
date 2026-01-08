@@ -28,11 +28,11 @@
 
         {{-- Main content area --}}
         <main class="flex-1 min-h-screen pt-6 px-6 lg:px-12" style="margin-left:260px; margin-top:60px;">
-            <div class="max-w-7xl mx-auto">
+            <div class="max-w-8xl mx-auto">
                 @yield('content')
             </div>
         </main>
     </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
