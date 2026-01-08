@@ -33,7 +33,7 @@ class EmployeeBookingController extends Controller
         // Admin
         if ($user->hasRole('admin')) {
 
-            $bookings = Booking::with(['user','property','employee'])
+            $bookings = Booking::with(['user','property','employee','review.user'])
                 ->when($status, fn($q) => $q->where('status', $status))
                 ->latest()
                 ->paginate(6);
@@ -42,11 +42,11 @@ class EmployeeBookingController extends Controller
         // Employee
         elseif ($user->hasRole('employee')) {
 
-            $bookings = Booking::with(['user','property'])
+            $bookings = Booking::with(['user','property','review.user'])
                 ->where('employee_id', $user->id)
                 ->when($status, fn($q) => $q->where('status', $status))
                 ->latest()
-                ->paginate(10);
+                ->paginate(6);
         }
 
         return view('dashboard.bookings.index', compact('bookings','status'));
@@ -171,16 +171,18 @@ class EmployeeBookingController extends Controller
             ->with('status', 'Booking rejected');
     }
 
-  public function myBookings()
+ public function myBookings()
 {
     $employee = auth()->id();
 
-    $bookings = Booking::where('employee_id', $employee)
+    $bookings = Booking::with(['user','property'])
+        ->where('employee_id', $employee)
         ->latest()
         ->paginate(6);
 
     return view('dashboard.bookings.employeebookings', compact('bookings'));
 }
+
 
 
     public function pending(){

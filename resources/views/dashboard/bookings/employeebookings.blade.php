@@ -4,17 +4,86 @@
 
 <div class="lg:ml-50 px-6 py-8 text-left" style="direction:ltr">
 
-    {{-- Page Title --}}
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 mb-4">
         My Bookings
     </h1>
 
-    {{-- Cards Grid --}}
+    {{-- ================= Quick Tabs ================= --}}
+    <div class="flex flex-wrap gap-2 mb-6 justify-center">
+
+        @php
+            $current = request('status');
+            $tabClasses = "px-3 py-1 rounded-full text-sm border transition";
+        @endphp
+
+        <a href="{{ route('employee.bookings.index') }}"
+           class="{{ $tabClasses }}
+           {{ $current=='' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100' }}">
+            All
+        </a>
+
+        <a href="?status=pending"
+           class="{{ $tabClasses }}
+           {{ $current=='pending' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100' }}">
+            Pending
+        </a>
+
+        <a href="?status=approved"
+           class="{{ $tabClasses }}
+           {{ $current=='approved' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100' }}">
+            Approved
+        </a>
+
+        <a href="?status=rescheduled"
+           class="{{ $tabClasses }}
+           {{ $current=='rescheduled' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100' }}">
+            Rescheduled
+        </a>
+
+        <a href="?status=completed"
+           class="{{ $tabClasses }}
+           {{ $current=='completed' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100' }}">
+            Completed
+        </a>
+
+        <a href="?status=rejected"
+           class="{{ $tabClasses }}
+           {{ $current=='rejected' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100' }}">
+            Rejected
+        </a>
+
+        <a href="?status=canceled"
+           class="{{ $tabClasses }}
+           {{ $current=='canceled' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100' }}">
+            Canceled
+        </a>
+
+    </div>
+
+    {{--  Filters select   --}}
+    <div class="flex flex-wrap items-center gap-3 w-full justify-center mb-10">
+
+        <form method="GET">
+            <select name="status"
+                    onchange="this.form.submit()"
+                    class="border rounded-xl px-3 py-2 text-sm bg-white shadow-sm hover:border-gray-400 focus:ring-1 focus:ring-indigo-300 transition">
+                <option value="">All Status</option>
+                <option value="pending"     {{ request('status')=='pending' ? 'selected' : '' }}>Pending</option>
+                <option value="approved"    {{ request('status')=='approved' ? 'selected' : '' }}>Approved</option>
+                <option value="rescheduled" {{ request('status')=='rescheduled' ? 'selected' : '' }}>Rescheduled</option>
+                <option value="completed"   {{ request('status')=='completed' ? 'selected' : '' }}>Completed</option>
+                <option value="rejected"    {{ request('status')=='rejected' ? 'selected' : '' }}>Rejected</option>
+                <option value="canceled"    {{ request('status')=='canceled' ? 'selected' : '' }}>Canceled</option>
+            </select>
+        </form>
+
+    </div>
+
+    {{--  Cards Grid  --}}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         @forelse($bookings as $booking)
 
-        {{-- Card --}}
         <div class="bg-white border rounded-2xl shadow-sm p-5 hover:shadow-lg transition">
 
             {{-- Header --}}
@@ -30,7 +99,7 @@
                     </p>
                 </div>
 
-                {{-- Status --}}
+                {{-- Status Badge --}}
                 <span class="px-3 py-1 rounded-lg text-xs border
                     @if($booking->status=='pending')
                         bg-yellow-50 text-yellow-700 border-yellow-300
@@ -52,83 +121,119 @@
 
             <div class="border-t border-gray-200 my-3"></div>
 
-            {{-- Customer --}}
+            {{-- User --}}
             <div class="flex items-center gap-3">
-
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="w-5 h-5 text-gray-600"
-                     viewBox="0 0 24 24" fill="currentColor">
-                    <path fill-rule="evenodd"
-                          d="M12 2.25a4.5 4.5 0 014.5 4.5v.75a4.5 4.5 0 11-9 0V6.75a4.5 4.5 0 014.5-4.5zm-7.5 17.1a7.5 7.5 0 0115 0v.15A2.25 2.25 0 0117.25 21h-10.5A2.25 2.25 0 014.5 19.5v-.15z"
-                          clip-rule="evenodd" />
-                </svg>
-
-                <div>
-                    <p class="text-sm font-medium text-gray-800">
-                        {{ $booking->user->name }}
-                    </p>
-
-                    <p class="text-xs text-gray-500">
-                        {{ $booking->user->email }}
-                    </p>
-                </div>
+                <p class="text-sm font-medium text-gray-800">
+                    {{ $booking->user->name }}
+                </p>
+                <p class="text-xs text-gray-500">
+                    {{ $booking->user->email }}
+                </p>
             </div>
 
             {{-- Schedule --}}
-            <div class="mt-3 flex items-center gap-2">
-
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="w-5 h-5 text-gray-600"
-                     viewBox="0 0 24 24" fill="currentColor">
-                    <path fill-rule="evenodd"
-                          d="M6.75 2.25a.75.75 0 01.75.75V4.5h9V3a.75.75 0 011.5 0v1.5h.75A2.25 2.25 0 0121 6.75v12A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75v-12A2.25 2.25 0 015.25 4.5H6V3a.75.75 0 01.75-.75zM3.75 9h16.5v9.75a.75.75 0 01-.75.75H4.5a.75.75 0 01-.75-.75V9z"
-                          clip-rule="evenodd" />
-                </svg>
-
-                <p class="text-sm text-gray-700">
-                    <span class="font-medium">
-                        {{ $booking->scheduled_at }}
-                    </span>
-                </p>
-
+            <div class="mt-3 text-sm text-gray-700">
+                <span class="font-medium">
+                    {{ $booking->scheduled_at }}
+                </span>
             </div>
 
-            {{-- Actions --}}
-            <div class="mt-6 flex flex-wrap gap-2 ">
+            {{--  Actions --}}
+            <div class="mt-6 flex flex-wrap items-center gap-2">
 
-                {{-- Approve / Reject --}}
-                @if(
-                    $booking->status == 'pending' &&
-                    $booking->employee_id == auth()->id()
-                )
+                @php
+                    $isOwner = $booking->employee_id === auth()->id();
+                    $status  = $booking->status;
+                @endphp
 
-                    <form method="POST"
-                          action="{{ route('employee.bookings.approve', $booking->id) }}">
-                        @csrf
-                        @method('PATCH')
+                {{-- Always View --}}
+                <a href="{{ route('employee.bookings.show', $booking->id) }}"
+                   class="px-2 py-1 rounded-full text-sm
+                          bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 transition">
+                    View
+                </a>
 
-                        <button class="px-3 py-1.5 text-xs rounded-lg bg-green-600 text-white hover:bg-green-700">
-                            Approve
-                        </button>
-                    </form>
+                @if($isOwner)
 
-                    <form method="POST"
-                          action="{{ route('employee.bookings.reject', $booking->id) }}">
-                        @csrf
-                        @method('PATCH')
+                    @if($status === 'pending')
 
-                        <button class="px-3 py-1.5 text-xs rounded-lg bg-red-600 text-white hover:bg-red-700">
-                            Reject
-                        </button>
-                    </form>
+                        <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-green-50 border border-green-200 text-green-700 hover:bg-green-100">
+                                Approve
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.reject', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-red-50 border border-red-200 text-red-700 hover:bg-red-100">
+                                Reject
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-gray-100 border text-gray-700 hover:bg-gray-200">
+                                Cancel
+                            </button>
+                        </form>
+
+                    @elseif($status === 'approved')
+
+                        <a href="{{ route('employee.reschedule.form', $booking->id) }}"
+                           class="px-3 py-1 rounded-full text-sm
+                                  bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100">
+                            Reschedule
+                        </a>
+
+                        <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100">
+                                Complete
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-gray-100 border text-gray-700 hover:bg-gray-200">
+                                Cancel
+                            </button>
+                        </form>
+
+                    @elseif($status === 'rescheduled')
+
+                        <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-green-50 border border-green-200 text-green-700 hover:bg-green-100">
+                                Approve
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100">
+                                Complete
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-gray-100 border text-gray-700 hover:bg-gray-200">
+                                Cancel
+                            </button>
+                        </form>
+
+                    @endif
 
                 @endif
-
-                {{-- Details --}}
-                <a href="{{ route('employee.bookings.show', $booking->id) }}"
-                   class="px-3 py-1.5 text-xs rounded-lg border hover:bg-gray-50">
-                    View Details
-                </a>
 
             </div>
 

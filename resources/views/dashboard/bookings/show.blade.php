@@ -141,58 +141,148 @@
             </p>
         </div>
         @endif
+        <td class="px-4 py-3">
+    @if ($booking->status !== 'completed')
+        <span class="text-gray-400">
+            Review will be available after completion
+        </span>
+
+    @elseif (! $booking->review)
+        <span class="text-gray-500 font-medium">
+            Awaiting customer review
+        </span>
+
+    @else
+        <div class="flex flex-col gap-1">
+
+            {{-- Rating Stars --}}
+            <div class="flex items-center">
+                @for ($i = 1; $i <= 5; $i++)
+                    @if ($i <= $booking->review->rating)
+                        ⭐
+                    @else
+                        ☆
+                    @endif
+                @endfor
+            </div>
+
+            {{-- Review comment --}}
+            <span class="text-sm text-gray-700">
+                "{{ $booking->review->comment }}"
+            </span>
+
+            {{-- Reviewer --}}
+            <span class="text-xs text-gray-500">
+                by {{ $booking->review->user->name }}
+            </span>
+
+        </div>
+    @endif
+</td>
+
 
 
         {{-- Actions --}}
         <div class="mt-6 flex flex-wrap gap-2">
-            {{-- Reschedule  --}}
-            @if(in_array($booking->status, ['pending','approved']))
-            <a href="{{ route('employee.reschedule.form', $booking->id) }}"
-                
-                class="px-3 py-1.5 text-xs rounded-lg bg-gray-500 text-white inline-flex items-center">
-                Reschedule
-            </a>
-            @endif
-
-
-            @if($booking->status == 'pending')
-                <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
-                    @csrf @method('PATCH')
-                    <button class="px-3 py-1.5 text-xs rounded-lg bg-green-600 text-white">
-                        Approve
-                    </button>
-                </form>
-
-                <form method="POST" action="{{ route('employee.bookings.reject', $booking->id) }}">
-                    @csrf @method('PATCH')
-                    <button class="px-3 py-1.5 text-xs rounded-lg bg-red-600 text-white">
-                        Reject
-                    </button>
-                </form>
-            @endif
-
-
-            @if($booking->status == 'approved')
-                <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
-                    @csrf @method('PATCH')
-                    <button class="px-3 py-1.5 text-xs rounded-lg bg-indigo-600 text-white">
-                        Mark as Completed
-                    </button>
-                </form>
-
-                <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
-                    @csrf @method('PATCH')
-                    <button class="px-3 py-1.5 text-xs rounded-lg bg-gray-500 text-white">
-                        Cancel
-                    </button>
-                </form>
-            @endif
-
-
-            <a href="{{ route('employee.bookings.index') }}"
+          
+            <div class="mt-6 flex flex-wrap items-center gap-2">
+                  <a href="{{ route('employee.bookings.index') }}"
                class="px-3 py-1.5 text-xs rounded-lg border hover:bg-gray-500">
                 Back to list
             </a>
+
+                @php
+                    $isOwner = $booking->employee_id === auth()->id();
+                    $status  = $booking->status;
+                @endphp
+
+
+                @if($isOwner)
+
+                    @if($status === 'pending')
+
+                        <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-green-50 border border-green-200 text-green-700 hover:bg-green-100">
+                                Approve
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.reject', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-red-50 border border-red-200 text-red-700 hover:bg-red-100">
+                                Reject
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-gray-100 border text-gray-700 hover:bg-gray-200">
+                                Cancel
+                            </button>
+                        </form>
+
+                    @elseif($status === 'approved')
+
+                        <a href="{{ route('employee.reschedule.form', $booking->id) }}"
+                           class="px-3 py-1 rounded-full text-sm
+                                  bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100">
+                            Reschedule
+                        </a>
+
+                        <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100">
+                                Complete
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-gray-100 border text-gray-700 hover:bg-gray-200">
+                                Cancel
+                            </button>
+                        </form>
+
+                    @elseif($status === 'rescheduled')
+
+                        <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-green-50 border border-green-200 text-green-700 hover:bg-green-100">
+                                Approve
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100">
+                                Complete
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
+                            @csrf @method('PATCH')
+                            <button class="px-3 py-1 rounded-full text-sm
+                                           bg-gray-100 border text-gray-700 hover:bg-gray-200">
+                                Cancel
+                            </button>
+                        </form>
+
+                    @endif
+
+                @endif
+
+            </div>
+
+        </div>
+
 
         </div>
 

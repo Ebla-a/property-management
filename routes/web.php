@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PropertyImageController;
+use App\Http\Controllers\Admin\Reports\BookingsReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,9 +70,9 @@ Route::middleware(['auth', 'checkRole:admin'])
         Route::view('reports/properties', 'dashboard.reports.properties')
             ->name('reports.properties');
 
-        Route::view('reports/bookings', 'dashboard.reports.bookings')
-            ->name('reports.bookings');
-
+        
+Route::get('reports/bookings', [BookingsReportController::class, 'index'])
+    ->name('reports.bookings');
             
     // Create employee
     Route::post('/employees', [AdminController::class, 'store'])
