@@ -48,6 +48,7 @@ class AdminController extends Controller
             $userId,
             $request->is_active
         );
+        return view('dashboard.users.account');
     }
 
     // Change the password
@@ -63,8 +64,19 @@ class AdminController extends Controller
 
         $this->adminService->changePassword( $admin,$request->old_password,$request->new_password);
 
-        return response()->json([
-            'message' => 'Password changed successfully'
-        ]);
+        return view('dashboard.profile.password');
+    }
+
+    // Real estate report
+
+    public function propertiesReport(Request $request)
+    {
+    $filters = $request->validate([
+        'status' => 'nullable|in:available,booked,rented,hidden',
+        'city'   => 'nullable|string',
+        'from'   => 'nullable|date',
+        'to'     => 'nullable|date',
+    ]);
+    $this->adminService->PropertiesReport($filters);
     }
 }
