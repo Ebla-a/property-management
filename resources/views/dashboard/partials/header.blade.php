@@ -35,10 +35,10 @@
 
         {{-- Right --}}
         <div class="flex items-center gap-3">
-            <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold">
-                RS
+            <span class="text-lg font-bold text-indigo-600 text-[32px]">RealEstate</span>
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white font-bold">
+                <img src="/logo.png" alt="logo">
             </span>
-            <span class="text-lg font-bold text-indigo-600">RealEstateSys</span>
         </div>
     </div>
 </header>

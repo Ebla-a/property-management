@@ -1,7 +1,6 @@
 <aside class="hidden lg:block">
     <div class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-white border-r shadow-sm overflow-auto px-4 py-6">
         <div class="mb-6">
-            <h3 class="text-[28px] font-bold text-indigo-700">Dashboard</h3>
             <p class="text-xs text-gray-500 mt-1">Property Management System</p>
         </div>
 
