@@ -36,9 +36,9 @@ Route::middleware(['auth', 'check.active', 'role:admin'])
 
 
         // Home dashboard
-        Route::get('/', function () {
-            return view('dashboard.index');
-        })->name('index');
+Route::get('/', [DashboardController::class, 'index'])
+    ->name('index');
+
 
         /*
         | Amenities CRUD
@@ -75,7 +75,7 @@ Route::middleware(['auth', 'check.active', 'role:admin'])
         Route::view('reports/bookings', 'dashboard.reports.bookings')
             ->name('reports.bookings');
 
-        
+
         Route::get('reports/bookings', [BookingsReportController::class, 'index'])
             ->name('reports.bookings');
 
