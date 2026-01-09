@@ -79,6 +79,14 @@ Route::get('/', [DashboardController::class, 'index'])
         Route::get('reports/bookings', [BookingsReportController::class, 'index'])
             ->name('reports.bookings');
 
+      // Export PDf
+    Route::get('reports/bookings/export',
+    [BookingsReportController::class, 'export'])
+    ->name('reports.bookings.export');
+    Route::get('admin/reports/properties/export', [PropertiesReportController::class, 'export'])
+     ->name('dashboard.reports.properties.export');
+
+
         Route::get('reports/properties', [PropertiesReportController::class, 'index'])
             ->name('reports.properties');
 
