@@ -90,6 +90,8 @@
                             {{ $booking->property->city ?? '' }}
                         </p>
                     </div>
+       
+
 
                     {{-- Status Badge --}}
                     <span class="px-3 py-1 rounded-lg text-xs border font-medium

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RejectBookingRequest;
 use App\Http\Requests\RescheduleBookingRequest;
 use App\Models\Booking;
+use App\Models\User;
 use App\Services\EmployeeBookingService;
 use Illuminate\Http\Request;
 
@@ -27,9 +28,9 @@ class EmployeeBookingController extends Controller
      */
     public function index(Request $request)
     {
-        $user   = auth()->user();
+        $user   = $request->user();
         $status = $request->get('status');
-
+    
         // Admin
         if ($user->hasRole('admin')) {
 
@@ -48,6 +49,8 @@ class EmployeeBookingController extends Controller
                 ->latest()
                 ->paginate(6);
         }
+
+
 
         return view('dashboard.bookings.index', compact('bookings','status'));
     }
@@ -171,9 +174,9 @@ class EmployeeBookingController extends Controller
             ->with('status', 'Booking rejected');
     }
 
- public function myBookings()
+ public function myBookings(Request $request)
 {
-    $employee = auth()->id();
+    $employee =$request->employee();  
 
     $bookings = Booking::with(['user','property'])
         ->where('employee_id', $employee)
