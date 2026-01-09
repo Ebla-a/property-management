@@ -61,37 +61,4 @@ class AdminService
         $admin->save();
     });
     }
-
-    public function propertiesReport(array $filters): array
-    {
-    $query = Property::query();
-
-    if (!empty($filters['status'])) {
-        $query->where('status', $filters['status']);
-    }
-
-    if (!empty($filters['city'])) {
-        $query->where('city', $filters['city']);
-    }
-
-    if (!empty($filters['from']) && !empty($filters['to'])) {
-        $query->whereBetween('created_at', [
-            $filters['from'],
-            $filters['to']
-        ]);
-    }
-
-    return [
-        'total_properties' => $query->count(),
-
-        'by_status' => [
-            'available' => Property::where('status', 'available')->count(),
-            'booked'    => Property::where('status', 'booked')->count(),
-            'rented'    => Property::where('status', 'rented')->count(),
-            'hidden'    => Property::where('status', 'hidden')->count(),
-        ],
-
-        'properties' => $query->latest()->get(),
-    ];
-    }
 }

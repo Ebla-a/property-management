@@ -66,17 +66,4 @@ class AdminController extends Controller
 
         return view('dashboard.profile.password');
     }
-
-    // Real estate report
-
-    public function propertiesReport(Request $request)
-    {
-    $filters = $request->validate([
-        'status' => 'nullable|in:available,booked,rented,hidden',
-        'city'   => 'nullable|string',
-        'from'   => 'nullable|date',
-        'to'     => 'nullable|date',
-    ]);
-    $this->adminService->PropertiesReport($filters);
-    }
 }
