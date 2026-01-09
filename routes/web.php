@@ -85,7 +85,10 @@ Route::middleware(['auth', 'check.status', 'role:admin'])
     // Change admin password
     Route::patch('/change-password', [AdminController::class, 'changePassword'])
         ->name('admin.change-password');
-
+       
+    //Real estate property
+    Route::patch('/estate-property', [AdminController::class,'propertiesReport'])
+        ->name('admin.estate-property');
     });
 
 /*
