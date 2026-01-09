@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController;
 
 
 use App\Http\Controllers\Admin\Reports\BookingsReportController;
+use App\Http\Controllers\Admin\Reports\PropertiesReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,22 +29,16 @@ Route::get('/', function () {
 | Route name prefix: dashboard.*
 |--------------------------------------------------------------------------
 */
-
-Route::middleware(['auth', 'checkRole:admin'])
+Route::middleware(['auth', 'check.active', 'role:admin'])
     ->prefix('dashboard')
     ->name('dashboard.')
     ->group(function () {
 
-        /*
-        | Dashboard Home
-        */
 
-
-
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
-
-
-
+        // Home dashboard
+        Route::get('/', function () {
+            return view('dashboard.index');
+        })->name('index');
 
         /*
         | Amenities CRUD
@@ -81,12 +76,11 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
             ->name('reports.bookings');
 
         
-Route::get('reports/bookings', [BookingsReportController::class, 'index'])
-    ->name('reports.bookings');
-            
-    // Create employee
-    Route::post('/employees', [AdminController::class, 'store'])
-        ->name(name: 'admin.employees.store');
+        Route::get('reports/bookings', [BookingsReportController::class, 'index'])
+            ->name('reports.bookings');
+
+        Route::get('reports/properties', [PropertiesReportController::class, 'index'])
+            ->name('reports.properties');
 
         // Create employee
         Route::post('/employees', [AdminController::class, 'store'])

@@ -48,6 +48,7 @@ class AdminController extends Controller
             $userId,
             $request->is_active
         );
+        return view('dashboard.users.account');
     }
 
     // Change the password
@@ -63,8 +64,6 @@ class AdminController extends Controller
 
         $this->adminService->changePassword( $admin,$request->old_password,$request->new_password);
 
-        return response()->json([
-            'message' => 'Password changed successfully'
-        ]);
+        return view('dashboard.profile.password');
     }
 }

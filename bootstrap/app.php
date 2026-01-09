@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckActive;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
     'role' => RoleOrPermissionMiddleware::class,
     'permission' => RoleOrPermissionMiddleware::class,
     'role_or_permission' =>RoleOrPermissionMiddleware::class,
+    'check.active'=>CheckActive::class,
 
 
 ]);

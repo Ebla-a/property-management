@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Booking;
+use App\Models\Property;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\ValidationException;
-
 class AdminService
 {
     public function addEmployee(array $data): User
