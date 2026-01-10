@@ -9,8 +9,7 @@
     </h1>
 
     {{-- ================= Quick Tabs ================= --}}
-    <div class="flex flex-wrap gap-2 mb-6 justify-center">
-
+    <div class="flex flex-wrap items-center gap-3 mb-8">
         @php
             $current = request('status');
             $tabClasses = "px-3 py-1 rounded-full text-sm border transition";
@@ -58,10 +57,8 @@
             Canceled
         </a>
 
-    </div>
 
     {{--  Filters select   --}}
-    <div class="flex flex-wrap items-center gap-3 w-full justify-center mb-10">
 
         <form method="GET">
             <select name="status"

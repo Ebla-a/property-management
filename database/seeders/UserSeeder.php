@@ -21,14 +21,14 @@ class UserSeeder extends Seeder
         // Employees
         // User::factory(4)->create()->each(function ($user) {
         //     $user->assignRole('employee');
-        // });
-        $user = User::create([
-    'name'  => 'Test Employee',
-    'email' => 'employee@test.com',
-    'password' => bcrypt('12345678'),
-]);
+   
+            $employee = User::create([
+                'name' => 'Test Employee',
+                'email' => 'employee@test.com',
+                'password' => bcrypt('12345678'),
+            ]);
+            $employee->assignRole('employee');
 
-$user->assignRole('employee');
 
         // Customers
         User::factory(10)->create()->each(function ($user) {
@@ -36,3 +36,5 @@ $user->assignRole('employee');
         });
     }
 }
+
+

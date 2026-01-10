@@ -4,7 +4,7 @@
 @section('page_title', 'Dashboard')
 
 @section('content')
-@role('admin')
+
 
 {{-- Outer: full viewport, no vertical scroll --}}
 <div class="h-screen overflow-hidden flex flex-col p-6">
@@ -298,5 +298,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-@endrole
 @endsection

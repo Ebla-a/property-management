@@ -1,65 +1,38 @@
 <?php
+
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Booking;
-use App\Models\Property;
-use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\PermissionRegistrar;
+use App\Models\Booking;
+use App\Models\User;
+use App\Models\Property;
 
 class BookingSeeder extends Seeder
 {
     public function run(): void
     {
-        // Reload roles from the database, clear the cache
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        // get the  employee
+        $employee = User::where('email', 'employee@test.com')->firstOrFail();
 
-        // create roles if not exist
-         Role::firstOrCreate(['name' => 'employee']);
-         Role::firstOrCreate(['name' => 'customer']);
+        // get all properties
+        $properties = Property::all();
 
-        // create employees
-        $employees = User::factory()->count(5)->create();
-        $employees->each(fn($u) => $u->assignRole('employee'));
+        // ensure there are  properties
+        if ($properties->isEmpty()) {
+            $this->command->error('No properties found. Run PropertySeeder first.');
+            return;
+        }
 
-        // create customers
-        $customers = User::factory()->count(10)->create();
-        $customers->each(fn($u) => $u->assignRole('customer'));
+        //  create factory
+        Booking::factory()
+            ->count(40)
+            ->make()
+            ->each(function ($booking) use ($employee, $properties) {
 
-        // create properties
-        // $properties = Property::factory()->count(8)->create();
-        // create a default property (temporary)
-$property = Property::create([
-    'title' => 'Test Property',
-    'city' => 'Demo City',
-    'address' => 'Sample Address',
-    'price' => 1200,
-]);
+                $booking->employee_id = $employee->id;
+                $booking->property_id = $properties->random()->id;
 
-
-
-// create bookings linked to it
-Booking::factory()->count(40)->create([
-    'property_id' => $property->id
-]);
-
-    // create bookings
-Booking::factory()->count(40)->make()->each(function ($booking) use ($customers) {
-
-    $booking->user_id = $customers->random()->id;
-    
-
-    $booking->status = fake()->randomElement([
-        'pending',
-        'approved',
-        'rejected',
-        'canceled',
-        'completed'
-    ]);
-
-    $booking->save();
-
-});
+                $booking->save();
+            });
     }
-    }
+}

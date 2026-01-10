@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 class Property extends Model
 {
     use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      * These fields can be filled using create() or update().

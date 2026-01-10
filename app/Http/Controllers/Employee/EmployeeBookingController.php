@@ -176,7 +176,7 @@ class EmployeeBookingController extends Controller
 
  public function myBookings(Request $request)
 {
-    $employee =$request->employee();  
+    $employee =$request->user();  
 
     $bookings = Booking::with(['user','property'])
         ->where('employee_id', $employee)
