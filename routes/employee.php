@@ -6,13 +6,15 @@ use App\Http\Controllers\Employee\EmployeeBookingController;
 use App\Http\Controllers\PropertiesReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Employee\EmployeeDashboardController;
 
 Route::middleware(['auth', 'role:admin|employee'])
     ->prefix('dashboard')
     ->name('employee.')
     ->group(function () {
 
-
+   Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
+            ->name('dashboard.employee');
 
         // Bookings List
         Route::get('/bookings', [EmployeeBookingController::class, 'index'])

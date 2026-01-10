@@ -3,24 +3,26 @@
         <div class="mb-6">
             <p class="text-xs text-gray-500 mt-1">Property Management System</p>
         </div>
-
+   @role('admin')
         <nav class="space-y-2">
             {{-- Dashboard --}}
             <a href="{{ url('dashboard') }}"
                 class="flex items-center gap-3 p-3 rounded-lg transition-colors {{ request()->is('dashboard') ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-gray-50' }}">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    class="h-7 w-7 flex-shrink-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3.75 3.75h6.5v6.5h-6.5v-6.5zm0 9.75h6.5v6.5h-6.5v-6.5zm9.75-9.75h6.5v6.5h-6.5v-6.5zm0 9.75h6.5v6.5h-6.5v-6.5z" />
-                </svg>
+
+              
+<svg xmlns="http://www.w3.org/2000/svg"
+     class="h-7 w-7 flex-shrink-0"
+     fill="none"
+     viewBox="0 0 24 24"
+     stroke="currentColor"
+     stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3.75 3.75h6.5v6.5h-6.5v-6.5zm0 9.75h6.5v6.5h-6.5v-6.5zm9.75-9.75h6.5v6.5h-6.5v-6.5zm0 9.75h6.5v6.5h-6.5v-6.5z" />
+</svg>
 
                 <span>Home</span>
             </a>
-            @role('admin')
+           
 
             {{-- Properties --}}
             <a href="{{ url('dashboard/properties') }}"
@@ -88,30 +90,72 @@
             </a>
 
         </nav>
+@elserole('employee')
 
-        @elserole('employee')
+<nav class="space-y-2">
+                 
 
-        <nav class="space-y-2">
+    <a href="{{ route('employee.dashboard.employee') }}"
+   class="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-50">
+   <svg xmlns="http://www.w3.org/2000/svg"
+     class="h-7 w-7 flex-shrink-0"
+     fill="none"
+     viewBox="0 0 24 24"
+     stroke="currentColor"
+     stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3.75 3.75h6.5v6.5h-6.5v-6.5zm0 9.75h6.5v6.5h-6.5v-6.5zm9.75-9.75h6.5v6.5h-6.5v-6.5zm0 9.75h6.5v6.5h-6.5v-6.5z" />
+</svg>
+    Home
+</a>
 
+
+    {{-- My Bookings --}}
     <a href="{{ route('employee.bookings.my') }}"
-       class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-50">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <rect x="3" y="5" width="18" height="16" rx="2" ry="2" />
-                    <path d="M16 3v4M8 3v4M3 11h18" />
-                </svg>
-        Bookings
+       class="flex items-center gap-3 p-3 rounded-lg transition-colors
+              {{ request()->is('dashboard/bookings/my') 
+                    ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                    : 'text-gray-700 hover:bg-gray-50' }}">
+
+        {{-- icon --}}
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="h-6 w-6 flex-shrink-0"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor"
+             stroke-width="1.5">
+            <rect x="3" y="5" width="18" height="16" rx="2" ry="2"/>
+            <path d="M16 3v4M8 3v4M3 11h18"/>
+        </svg>
+
+        <span>My Bookings</span>
     </a>
 
-            <a href="{{ route('employee.bookings.pending') }}"
-                class="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-50">
-                Pending Bookings
-            </a>
+    {{-- Pending Bookings --}}
+    <a href="{{ route('employee.bookings.pending') }}"
+       class="flex items-center gap-3 p-3 rounded-lg transition-colors
+              {{ request()->is('dashboard/bookings/pending') 
+                    ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                    : 'text-gray-700 hover:bg-gray-50' }}">
+
+        {{-- icon --}}
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="h-6 w-6 flex-shrink-0"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor"
+             stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 8v4l3 3"/>
+            <circle cx="12" cy="12" r="9"/>
+        </svg>
+
+        <span>Pending Bookings</span>
+    </a>
 
         </nav>
 
         @endrole
-
-
 
         <div class="mt-6 pt-4 border-t text-xs text-gray-500">
             © {{ date('Y') }} RealEstateSys
