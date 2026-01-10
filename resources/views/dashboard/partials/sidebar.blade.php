@@ -93,10 +93,14 @@
 
         <nav class="space-y-2">
 
-            <a href="{{ route('employee.bookings.my') }}"
-                class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-50">
-                My Bookings
-            </a>
+    <a href="{{ route('employee.bookings.my') }}"
+       class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-50">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="5" width="18" height="16" rx="2" ry="2" />
+                    <path d="M16 3v4M8 3v4M3 11h18" />
+                </svg>
+        Bookings
+    </a>
 
             <a href="{{ route('employee.bookings.pending') }}"
                 class="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-50">

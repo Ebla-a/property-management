@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -16,8 +17,8 @@ class BookingSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // create roles if not exist
-         Role::firstOrCreate(['name' => 'employee']);
-         Role::firstOrCreate(['name' => 'customer']);
+        Role::firstOrCreate(['name' => 'employee']);
+        Role::firstOrCreate(['name' => 'customer']);
 
         // create employees
         $employees = User::factory()->count(5)->create();
@@ -30,36 +31,31 @@ class BookingSeeder extends Seeder
         // create properties
         // $properties = Property::factory()->count(8)->create();
         // create a default property (temporary)
-$property = Property::create([
-    'title' => 'Test Property',
-    'city' => 'Demo City',
-    'address' => 'Sample Address',
-    'price' => 1200,
-]);
+        $property = Property::create([
+            'title' => 'Test Property',
+            'city' => 'Demo City',
+            'address' => 'Sample Address',
+            'price' => 1200,
+        ]);
 
 
 
-// create bookings linked to it
-Booking::factory()->count(40)->create([
-    'property_id' => $property->id
-]);
+        // create bookings linked to it
+        Booking::factory()->count(40)->create([
+            'property_id' => $property->id
+        ]);
 
-    // create bookings
-Booking::factory()->count(40)->make()->each(function ($booking) use ($customers) {
-
-    $booking->user_id = $customers->random()->id;
-    
-
-    $booking->status = fake()->randomElement([
-        'pending',
-        'approved',
-        'rejected',
-        'canceled',
-        'completed'
-    ]);
-
-    $booking->save();
-
-});
+        // create bookings
+        Booking::factory()->count(40)->make()->each(function ($booking) use ($customers) {
+            $booking->user_id = $customers->random()->id;
+            $booking->status = fake()->randomElement([
+                'pending',
+                'approved',
+                'rejected',
+                'canceled',
+                'completed'
+            ]);
+            $booking->save();
+        });
     }
-    }
+}

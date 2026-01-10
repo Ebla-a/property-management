@@ -2,46 +2,92 @@
 @extends('dashboard.layout')
 
 @section('content')
-<!--
-  User Account Status Page
-  Allows admin to activate or deactivate a user account
--->
-<div class="p-6 max-w-xl mx-auto" dir="ltr">
-    <h1 class="text-2xl font-semibold mb-6">User Account Status</h1>
+<div class="container mx-auto p-6 max-w-3xl">
 
-    <div class="mb-4 bg-white p-4 rounded shadow">
-        <p><strong>Name:</strong> {{ $user->name }}</p>
-        <p><strong>Email:</strong> {{ $user->email }}</p>
-        <p><strong>Current Status:</strong>
-            {{ $user->is_active ? 'Active' : 'Inactive' }}
-        </p>
+    {{-- Icon above the card --}}
+    <div class="flex justify-center mt-8 mb-6">
+        <!-- account status icon -->
+        <svg xmlns="http://www.w3.org/2000/svg"
+             class="h-20 w-20 text-indigo-600"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <!-- user -->
+            <circle cx="12" cy="7" r="3" stroke-width="1.5"/>
+            <path d="M5 20c0-3.866 3.134-7 7-7s7 3.134 7 7"
+                  stroke-width="1.5" stroke-linecap="round"/>
+            <!-- status circle -->
+            <circle cx="18.5" cy="18.5" r="2.5"
+                    stroke-width="1.5"/>
+        </svg>
     </div>
 
-    <form method="POST" action="{{ route('dashboard.admin.users.toggle-status', $user->id) }}">
-        @csrf
-        @method('PATCH')
+    <div class="bg-white shadow-xl rounded-2xl p-8">
+        <h1 class="text-3xl font-extrabold text-indigo-600 mb-6 text-center">
+            User Account Status
+        </h1>
 
-        <div class="mb-6">
-            <label class="inline-flex items-center">
+        {{-- User Info --}}
+        <div class="mb-6 p-5 bg-gray-50 border border-gray-200 rounded-xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+                <p>
+                    <span class="font-semibold text-gray-900">Name:</span>
+                    {{ $user->name }}
+                </p>
+                <p>
+                    <span class="font-semibold text-gray-900">Email:</span>
+                    {{ $user->email }}
+                </p>
+                <p class="md:col-span-2">
+                    <span class="font-semibold text-gray-900">Current Status:</span>
+                    <span class="ml-2 px-3 py-1 rounded-full text-sm font-semibold
+                        {{ $user->is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                        {{ $user->is_active ? 'Active' : 'Inactive' }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <form method="POST"
+              action="{{ route('dashboard.admin.users.toggle-status', $user->id) }}"
+              class="space-y-6">
+            @csrf
+            @method('PATCH')
+
+            {{-- Toggle --}}
+            <div class="flex items-center gap-4">
                 <input type="hidden" name="is_active" value="0">
-                <input type="checkbox" name="is_active" value="1"
-                    {{ $user->is_active ? 'checked' : '' }}
-                    class="mr-2">
-                Activate this account
-            </label>
-        </div>
 
-        <div class="flex items-center gap-3">
-            <button type="submit"
-                class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Save
-            </button>
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" name="is_active" value="1"
+                           {{ $user->is_active ? 'checked' : '' }}
+                           class="sr-only peer">
+                    <div class="relative w-11 h-6 bg-gray-300 rounded-full peer
+                                peer-checked:bg-indigo-600 transition">
+                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full
+                                    transition peer-checked:translate-x-5"></div>
+                    </div>
+                    <span class="ml-3 text-gray-700 font-medium">
+                        Activate this account
+                    </span>
+                </label>
+            </div>
 
-            <a href="{{ route('dashboard.admin.employees.index') }}"
-                class="text-sm text-gray-600 hover:underline">
-                Cancel
-            </a>
-        </div>
-    </form>
+            {{-- Buttons --}}
+            <div class="flex flex-wrap gap-4 justify-end">
+                <a href="{{ route('dashboard.admin.employees.index') }}"
+                   class="px-6 py-3 bg-gray-200 rounded-full text-gray-700 font-semibold
+                          hover:bg-gray-300 transition">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500
+                               text-white rounded-full font-bold shadow-2xl
+                               hover:scale-[1.03] transform transition
+                               focus:outline-none focus:ring-4 focus:ring-indigo-200">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection

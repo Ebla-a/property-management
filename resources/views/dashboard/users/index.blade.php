@@ -8,7 +8,7 @@
 -->
 <div class="p-6" dir="ltr">
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-semibold text-gray-800">Users Management</h1>
+        <h1 class="text-2xl font-semibold text-indigo-600">Users Management</h1>
 
         <a href="{{ route('dashboard.admin.employees.create') }}"
            class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
