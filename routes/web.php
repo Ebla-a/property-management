@@ -2,13 +2,23 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+
+/*
+|--------------------------------------------------------------------------
+| Admin Controllers
+|--------------------------------------------------------------------------
+*/
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\PropertyController;
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PropertyImageController;
-use App\Http\Controllers\Admin\DashboardController;
 
-
+/*
+|--------------------------------------------------------------------------
+| Reports Controllers
+|--------------------------------------------------------------------------
+*/
 use App\Http\Controllers\Admin\Reports\BookingsReportController;
 use App\Http\Controllers\Admin\Reports\PropertiesReportController;
 
@@ -17,16 +27,15 @@ use App\Http\Controllers\Admin\Reports\PropertiesReportController;
 | Public Routes
 |--------------------------------------------------------------------------
 */
-
 Route::get('/', function () {
     return view('welcome');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Dashboard Routes (Admin only)
-| URL prefix: /dashboard
-| Route name prefix: dashboard.*
+| Dashboard Routes (Admin Only)
+| Prefix: /dashboard
+| Name prefix: dashboard.*
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'check.active'])
@@ -44,82 +53,115 @@ Route::get('/', [DashboardController::class, 'index'])
 
 
         /*
+        |--------------------------------------------------------------------------
         | Amenities CRUD
+        |--------------------------------------------------------------------------
         */
         Route::resource('amenities', AmenityController::class)
             ->except(['show']);
 
         /*
+        |--------------------------------------------------------------------------
         | Properties CRUD
+        |--------------------------------------------------------------------------
         */
         Route::resource('properties', PropertyController::class);
 
         /*
-        | Property Types Page
+        |--------------------------------------------------------------------------
+        | Property Types
+        |--------------------------------------------------------------------------
         */
         Route::get('properties/types', [PropertyController::class, 'types'])
             ->name('properties.types');
 
         /*
+        |--------------------------------------------------------------------------
         | Property Images
+        |--------------------------------------------------------------------------
         */
         Route::post('properties/{property}/images', [PropertyImageController::class, 'store'])
             ->name('properties.images.store');
 
         /*
+        |--------------------------------------------------------------------------
         | Reports Pages
+        |--------------------------------------------------------------------------
         */
         Route::view('reports', 'dashboard.reports.index')
             ->name('reports.index');
 
-        Route::view('reports/properties', 'dashboard.reports.properties')
+        Route::get('reports/properties', [PropertiesReportController::class, 'index'])
             ->name('reports.properties');
-
-        Route::view('reports/bookings', 'dashboard.reports.bookings')
-            ->name('reports.bookings');
-
 
         Route::get('reports/bookings', [BookingsReportController::class, 'index'])
             ->name('reports.bookings');
 
-      // Export PDf
-    Route::get('reports/bookings/export',
-    [BookingsReportController::class, 'export'])
-    ->name('reports.bookings.export');
-    Route::get('admin/reports/properties/export', [PropertiesReportController::class, 'export'])
-     ->name('dashboard.reports.properties.export');
+        /*
+        |--------------------------------------------------------------------------
+        | Reports Export
+        |--------------------------------------------------------------------------
+        */
+        Route::get('reports/bookings/export', [BookingsReportController::class, 'export'])
+            ->name('reports.bookings.export');
 
+        Route::get('reports/properties/export', [PropertiesReportController::class, 'export'])
+            ->name('reports.properties.export');
 
-        Route::get('reports/properties', [PropertiesReportController::class, 'index'])
-            ->name('reports.properties');
+        /*
+        |--------------------------------------------------------------------------
+        | Users & Employees Management (AdminController)
+        |--------------------------------------------------------------------------
+        */
 
-        // Create employee
-        Route::post('/employees', [AdminController::class, 'store'])
-            ->name(name: 'admin.employees.store');
+        // List all users
+        Route::get('users', [AdminController::class, 'index'])
+            ->name('admin.employees.index');
 
-        // Change user role
-        Route::patch('/users/{id}/role', [AdminController::class, 'changeRole'])
+        // Show create employee page
+        Route::get('employees/create', [AdminController::class, 'create'])
+            ->name('admin.employees.create');
+
+        // Store new employee
+        Route::post('employees', [AdminController::class, 'store'])
+            ->name('admin.employees.store');
+
+        // Show edit role page
+        Route::get('users/{id}/role', [AdminController::class, 'editRole'])
+            ->name('admin.users.edit-role');
+
+        // Update user role
+        Route::patch('users/{id}/role', [AdminController::class, 'changeRole'])
             ->name('admin.users.change-role');
 
-        // Activate / Deactivate user
-        Route::patch('/users/{userId}/status', [AdminController::class, 'toggleUserStatus'])
+        // Show account status page
+        Route::get('users/{userId}/status', [AdminController::class, 'editAccount'])
+            ->name('admin.users.edit-status');
+
+        // Toggle user active / inactive
+        Route::patch('users/{userId}/status', [AdminController::class, 'toggleUserStatus'])
             ->name('admin.users.toggle-status');
 
-        // Change admin password
-        Route::patch('/change-password', [AdminController::class, 'changePassword'])
-            ->name('admin.change-password');
+        // Delete a user
+        Route::delete('users/{userId}', [AdminController::class, 'destroy'])
+            ->name('admin.users.destroy');
 
-        // add employee
-        Route::post('/add-employee', [AdminController::class, 'store']);
+        /*
+        |--------------------------------------------------------------------------
+        | Admin Password
+        |--------------------------------------------------------------------------
+        */
+        Route::patch('change-password', [AdminController::class, 'changePassword'])
+            ->name('admin.change-password');
     });
 
 /*
 |--------------------------------------------------------------------------
-| Profile Routes
+| Profile Routes (Authenticated Users)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware('auth')->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -130,6 +172,10 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
-
+/*
+|--------------------------------------------------------------------------
+| Auth & Employee Routes
+|--------------------------------------------------------------------------
+*/
 require __DIR__ . '/auth.php';
 require __DIR__ . '/employee.php';
