@@ -3,95 +3,154 @@
 
 @section('content')
 <!--
-  Users Index Page
-  Displays a paginated list of all users with management actions
+  Users Index Page (Styled)
+  Primary colors: indigo-600 & white with subtle indigo accents
 -->
 <div class="p-6" dir="ltr">
+    {{-- Page header --}}
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-semibold text-indigo-600">Users Management</h1>
+        <div class="flex items-center gap-4">
+            <div class="rounded-full bg-indigo-600 p-3 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14v9a2 2 0 01-2 2H7a2 2 0 01-2-2v-9z" />
+                </svg>
+            </div>
 
-        <a href="{{ route('dashboard.admin.employees.create') }}"
-           class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-            + Add Employee
-        </a>
+            <div>
+                <h1 class="text-2xl font-semibold text-indigo-600">Users Management</h1>
+                <p class="text-sm text-gray-500">Manage employees, roles and account status</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="{{ route('dashboard.admin.employees.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                 Add Employee
+            </a>
+        </div>
     </div>
+
 
     {{-- Success & Error Messages --}}
     @if(session('success'))
-        <div class="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-300">
+        <div class="mb-4 p-3 rounded bg-green-50 text-green-800 border border-green-100">
             {{ session('success') }}
         </div>
     @endif
 
     @if(session('error'))
-        <div class="mb-4 p-3 rounded bg-red-100 text-red-800 border border-red-300">
+        <div class="mb-4 p-3 rounded bg-red-50 text-red-800 border border-red-100">
             {{ session('error') }}
         </div>
     @endif
 
-    {{-- Users Table --}}
-    <div class="overflow-x-auto bg-white rounded shadow">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Name</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Email</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Role</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Active</th>
-                    <th class="px-4 py-3 text-left font-medium text-gray-600">Actions</th>
-                </tr>
-            </thead>
-
-            <tbody class="divide-y divide-gray-100">
-                @foreach($users as $user)
+    {{-- Card container --}}
+    <div class="bg-white rounded-2xl shadow-lg ring-1 ring-gray-100 overflow-hidden">
+        {{-- Table header (sticky) --}}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-white">
                     <tr>
-                        <td class="px-4 py-3">{{ $user->name }}</td>
-                        <td class="px-4 py-3">{{ $user->email }}</td>
-                        <td class="px-4 py-3 capitalize">
-                            {{ $user->getRoleNames()->first() ?? '—' }}
-                        </td>
-                        <td class="px-4 py-3">
-                            @if($user->is_active)
-                                <span class="text-green-600 font-medium">Yes</span>
-                            @else
-                                <span class="text-red-600 font-medium">No</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3 space-x-2">
-                            <a href="{{ route('dashboard.admin.users.edit-role', $user->id) }}"
-                               class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200">
-                                Change Role
-                            </a>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Name</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Email</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Role</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Active</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Actions</th>
+                    </tr>
+                </thead>
 
-                            <a href="{{ route('dashboard.admin.users.edit-status', $user->id) }}"
-                               class="px-3 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200">
-                                Account Status
-                            </a>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($users as $user)
+                        <tr class="hover:bg-indigo-50/40 transition-colors">
+                            <td class="px-4 py-3 flex items-center gap-3">
+                                {{-- Avatar: initials --}}
+                                <div class="h-9 w-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-medium">{{ strtoupper(substr($user->name, 0, 1)) }}</div>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-gray-800">{{ $user->name }}</span>
+                                    <span class="text-xs text-gray-500">Joined {{ $user->created_at->format('M j, Y') }}</span>
+                                </div>
+                            </td>
 
-                            @if(auth()->id() === $user->id)
-                                <!-- Prevent deleting yourself -->
-                                <button disabled class="px-3 py-1 bg-gray-200 text-gray-500 rounded cursor-not-allowed" title="You cannot delete your own account">
-                                    Delete
-                                </button>
-                            @else
-                                <form action="{{ route('dashboard.admin.users.destroy', $user->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                            <td class="px-4 py-3 text-gray-600">{{ $user->email }}</td>
+
+                            <td class="px-4 py-3">
+                                @php $role = $user->getRoleNames()->first(); @endphp
+                                @if($role)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">{{ ucwords($role) }}</span>
+                                @else
+                                    <span class="text-gray-400">—</span>
+                                @endif
+                            </td>
+
+                            <td class="px-4 py-3">
+                                @if($user->is_active)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-100">Active</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-100">Inactive</span>
+                                @endif
+                            </td>
+
+                            <td class="px-4 py-3 space-x-2">
+                                <a href="{{ route('dashboard.admin.users.edit-role', $user->id) }}" class="inline-flex items-center gap-2 px-3 py-1 bg-white ring-1 ring-yellow-100 text-yellow-800 rounded hover:bg-yellow-50">
+                                    Change Role
+                                </a>
+
+                                <a href="{{ route('dashboard.admin.users.edit-status', $user->id) }}" class="inline-flex items-center gap-2 px-3 py-1 bg-white ring-1 ring-blue-100 text-blue-800 rounded hover:bg-blue-50">
+                                    Account Status
+                                </a>
+
+                                @if(auth()->id() === $user->id)
+                                    <button disabled class="px-3 py-1 bg-gray-200 text-gray-500 rounded cursor-not-allowed" title="You cannot delete your own account">Delete</button>
+                                @else
+                                    {{-- Trigger button: dispatch 'open-modal' event with matching modal id --}}
+                                    <button
+                                        type="button"
+                                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                                        onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'confirm-delete-{{ $user->id }}' }))"
+                                    >
                                         Delete
                                     </button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
 
-    {{-- Pagination --}}
-    <div class="mt-4">
-        {{ $users->links() }}
+                                    {{-- Include reusable confirm modal component (components/confirm-modal.blade.php)
+                                         Expected props: id, action, method, title, message, confirmText --}}
+<x-confirm-modal
+    id="confirm-delete-{{ $user->id }}"
+    title="Delete user"
+    message="Are you sure you want to delete user this action cannot be undone."
+    cancelText="Cancel"
+>
+    <form action="{{ route('dashboard.admin.users.destroy', $user->id) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition">
+            Delete
+        </button>
+    </form>
+</x-confirm-modal>
+
+
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Empty state --}}
+        @if($users->isEmpty())
+            <div class="p-6 text-center text-gray-500">No users found.</div>
+        @endif
+
+        {{-- Pagination footer --}}
+        <div class="px-4 py-4 border-t border-gray-100 bg-white flex items-center justify-between">
+            <div class="text-sm text-gray-500">Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} users</div>
+            <div>
+                {{ $users->links() }}
+            </div>
+        </div>
     </div>
 </div>
 @endsection
