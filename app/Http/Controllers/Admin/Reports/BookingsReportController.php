@@ -23,7 +23,7 @@ public function index()
         return view('dashboard.reports.bookings', compact('stats'));
 }
 
-  
+
 public function getStats(){
         
         return  [

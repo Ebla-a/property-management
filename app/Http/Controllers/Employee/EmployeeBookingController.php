@@ -174,16 +174,35 @@ class EmployeeBookingController extends Controller
             ->with('status', 'Booking rejected');
     }
 
- public function myBookings(Request $request)
+public function myBookings(Request $request)
 {
-    $employee =$request->user();  
+    $employee = $request->user();
+    
+   
+    
+    $status = $request->query('status');
+    
+    $query = Booking::with(['user', 'property'])
+        ->where('employee_id', $employee->id);
+    
+    if ($status && in_array($status, ['pending', 'approved', 'completed', 'rejected', 'canceled', 'rescheduled'])) {
+        $query->where('status', $status);
+    }
+    
+    $bookings = $query->latest()->paginate(6);
+    
 
-    $bookings = Booking::with(['user','property'])
-        ->where('employee_id', $employee)
-        ->latest()
-        ->paginate(6);
-
-    return view('dashboard.bookings.employeebookings', compact('bookings'));
+    $counts = [
+        'all' => Booking::where('employee_id', $employee->id)->count(),
+        'pending' => Booking::where('employee_id', $employee->id)->where('status', 'pending')->count(),
+        'approved' => Booking::where('employee_id', $employee->id)->where('status', 'approved')->count(),
+        'rescheduled' => Booking::where('employee_id', $employee->id)->where('status', 'rescheduled')->count(),
+        'completed' => Booking::where('employee_id', $employee->id)->where('status', 'completed')->count(),
+        'rejected' => Booking::where('employee_id', $employee->id)->where('status', 'rejected')->count(),
+        'canceled' => Booking::where('employee_id', $employee->id)->where('status', 'canceled')->count(),
+    ];
+    
+    return view('dashboard.bookings.employeebookings', compact('bookings', 'employee', 'counts'));
 }
 
 
