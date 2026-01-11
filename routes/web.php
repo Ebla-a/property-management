@@ -162,6 +162,7 @@ Route::get('/', [DashboardController::class, 'index'])
         */
         Route::patch('change-password', [AdminController::class, 'changePassword'])
             ->name('admin.change-password');
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -187,3 +188,4 @@ Route::middleware('auth')->group(function () {
 */
 require __DIR__ . '/auth.php';
 require __DIR__ . '/employee.php';
+    

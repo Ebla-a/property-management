@@ -34,8 +34,8 @@ class StorePropertyRequest extends FormRequest
             'neighborhood' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
 
-            // rooms has a DB default (0), allow nullable on input
-            'rooms' => 'nullable|integer|min:0',
+            // rooms has a DB default (1), allow nullable on input
+            'rooms' => 'nullable|integer|min:1',
 
             // area is nullable in the DB
             'area' => 'nullable|numeric|min:0',
