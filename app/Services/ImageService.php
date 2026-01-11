@@ -6,7 +6,6 @@ use App\Models\Property;
 use App\Models\PropertyImage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 class ImageService
 {
@@ -22,7 +21,7 @@ class ImageService
      */
     public function upload(Property $property, array $images, ?string $alt = null): array
     {
-        $images = [];
+        $created = [];
 
         // if property has no main image, first uploaded image becomes main
         $hasMain = PropertyImage::where('property_id', $property->id)
@@ -37,11 +36,10 @@ class ImageService
                 'path' => $path,
                 'is_main' => (!$hasMain && $i === 0),
                 'alt' => $alt,
-                'is_main' => false,
             ]);
         }
 
-        return $images;
+        return $created;
     }
 
     public function setMain(Property $property, PropertyImage $image): void
