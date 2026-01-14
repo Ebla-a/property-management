@@ -5,7 +5,7 @@ A comprehensive Laravel-based platform for managing property listings, bookings,
 
 
 ## 📸 Screenshots
-*(Replace these with your actual screenshot paths after uploading images)*
+
 ![Admin Dashboard](/screenshots/Hoom.png)
 ![Property Listing](/screenshots/properties.png)
 ![Booking Management](/screenshots/amenities.png)
