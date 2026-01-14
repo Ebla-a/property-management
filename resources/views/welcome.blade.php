@@ -8,7 +8,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Optional: small utility to enable better font smoothing on some browsers -->
     <style>
         /* Prevent horizontal scroll caused by transforms/images */
         html, body {
@@ -118,11 +117,41 @@
                 Track properties, bookings, and clients all in one place.
             </p>
 
-            <a href="{{ route('login') }}"
-               class="inline-flex items-center bg-indigo-600 text-white font-bold px-8 py-4 rounded-full text-lg shadow-xl btn-cta focus:outline-none">
-                Login Now
-            </a>
+            <!-- Buttons: stacked on small screens, inline on sm+ -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <!-- Primary: Login -->
+                <a href="{{ route('login') }}"
+                   class="inline-flex items-center justify-center bg-indigo-600 text-white font-bold px-8 py-4 rounded-full text-lg shadow-xl btn-cta focus:outline-none">
+                    Login Now
+                </a>
+
+                <!-- Secondary: Our Team (button-like) -->
+<a href="{{ route('team.index') }}" target="_blank" rel="noopener"
+   class="group inline-flex items-center justify-center gap-3
+          border-[3.5px] border-white/40
+
+          bg-white/10 backdrop-blur
+          text-white font-bold
+          px-8 py-4 rounded-full text-lg
+          shadow-lg
+          btn-cta
+          focus:outline-none focus:ring-2 focus:ring-white/70">
+
+    Our Team
+
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="w-5 h-5 text-white transition-transform duration-300 group-hover:translate-x-1"
+         fill="none" viewBox="0 0 24 24"
+         stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+    </svg>
+</a>
+
+            </div>
+
         </div>
+
 
         <!-- Decorative floating cards (subtle, accessible: hidden for very small screens) -->
         <div aria-hidden="true" class="hidden lg:block absolute -left-20 -bottom-10 transform rotate-6 opacity-60 z-0">

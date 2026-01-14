@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\PropertyImageController;
 use App\Http\Controllers\Admin\Reports\BookingsReportController;
 use App\Http\Controllers\Admin\Reports\PropertiesReportController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -30,6 +31,11 @@ use App\Http\Controllers\Admin\Reports\PropertiesReportController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::view('/team', 'team')
+    ->name('team.index');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -50,7 +56,6 @@ Route::get('/', [DashboardController::class, 'index'])
 
 
  Route::middleware(['auth', 'check.active'])->get('/', [DashboardController::class, 'index'])->name('dashboard');
-
 
         /*
         |--------------------------------------------------------------------------
