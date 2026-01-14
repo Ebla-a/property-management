@@ -4,13 +4,13 @@ A comprehensive and integrated platform for browsing, booking, and managing prop
 
 
 ## 📸 Screenshots
-![AboutUs](screenshots\about us.PNG)
-![Admin Dashboard](screenshots\Home.PNG)
-![Property Listing](screenshots\properties.PNG)
-![Amenities](screenshots\amenities.PNG)
-![Booking Management](screenshots\bookings.PNG)
-![Booking Report Management](screenshots\bookings report.PNG)
-![Property Report Management](screenshots\properties report.PNG)
+![AboutUs](screenshots/about%20us.PNG)
+![Admin Dashboard](screenshots/Home.PNG)
+![Property Listing](screenshots/properties.PNG)
+![Amenities](screenshots/amenities.PNG)
+![Booking Management](screenshots/bookings.PNG)
+![Booking Report Management](screenshots/bookings%20report.PNG)
+![Property Report Management](screenshots/properties%20report.PNG)
 
 ## 📚 Table of Contents
 - [🏠 Property Management System](#-property-management-system)
