@@ -1,7 +1,7 @@
-
 # 🏠 Property Management System
+A comprehensive and integrated platform for browsing, booking, and managing properties, with robust features for both tenants and property administrators.
 
-A comprehensive Laravel-based platform for managing property listings, bookings, and user interactions with three distinct system roles (Admin, Employee, Client).
+
 
 ## 📸 Screenshots
 ![Admin Dashboard](./screenshots/Hoom.png)
@@ -12,223 +12,228 @@ A comprehensive Laravel-based platform for managing property listings, bookings,
 ![Property Report Management](./screenshots/properties%20repoert.png)
 
 ## 📚 Table of Contents
+- [🏠 Property Management System](#-property-management-system)
+- [📸 Screenshots](#-screenshots)
+- [📚 Table of Contents](#-table-of-contents)
 - [🚀 Project Overview](#-project-overview)
-- [⚙️ Tech Stack](#-tech-stack)
-- [👥 System Roles & Permissions](#-system-roles--permissions)
+- [⚙️ Requirements](#️-requirements)
 - [🛠 Installation & Setup](#-installation--setup)
+  - [1. Clone the Repository](#1-clone-the-repository)
+  - [2. Install Dependencies](#2-install-dependencies)
+  - [3. Configure Environment](#3-configure-environment)
+  - [4. Set Up the Database](#4-set-up-the-database)
+  - [5. Run the Application](#5-run-the-application)
+- [👥 System Roles](#-system-roles)
 - [🗄 Database Structure](#-database-structure)
-- [🔗 Key Features & User Flows](#-key-features--user-flows)
-- [📡 API Endpoints](#-api-endpoints)
-- [🎨 UI/UX Details](#-uiux-details)
+  - [users](#users)
+  - [properties](#properties)
+  - [bookings](#bookings)
+  - [reviews](#reviews)
+- [🔗 Interfaces & Routes](#-interfaces--routes)
+- [📚 API Documentation](#-api-documentation)
+  - [🔐 Authentication](#-authentication)
+  - [🏠 Properties](#-properties-1)
+  - [📅 Bookings](#-bookings-1)
+  - [⭐ Reviews](#-reviews-1)
+- [🧾 Sample Responses](#-sample-responses)
+  - [Property Response:](#property-response)
+  - [Booking Response:](#booking-response)
 - [🔑 Sample Credentials](#-sample-credentials)
-- [📞 Support & Contact](#-support--contact)
+  - [👨‍💼 Admin](#-admin)
+  - [👨‍💻 Employee](#-employee)
+  - [👤 Client](#-client)
+- [📞 Support \& Contributions](#-support--contributions)
+- [🏆 Acknowledgments](#-acknowledgments)
+  - [🎉 Special Thanks](#-special-thanks)
+  - [Mentors](#mentors)
+  - [Development Team](#development-team)
 
 ## 🚀 Project Overview
-A full-stack property management system built with **Laravel, Blade, and Tailwind CSS** that enables:
-- ✅ **Three-tier role system** (Admin, Employee, Client)
-- 🏠 **Property browsing and detailed views** for clients
-- 📅 **Booking system** with status tracking (Pending → Completed)
-- ⭐ **Review system** for completed bookings
-- 👔 **Employee dashboard** for managing bookings
-- ⚙️ **Admin panel** for full system control
+The Property Management System is a full-stack Laravel application designed to:
 
-## ⚙️ Tech Stack
-| Component | Technology |
-|-----------|------------|
-| **Backend Framework** | Laravel |
-| **Frontend Template** | Blade |
-| **CSS Framework** | Tailwind CSS |
-| **Database** | MySQL |
-| **Authentication** | Laravel Sanctum/Breeze |
-| **Version Control** | Git/GitHub |
+✅ **Allow user registration and authentication**  
+🏠 **Enable property browsing with detailed information**  
+📅 **Let users book properties and track booking status**  
+📊 **Provide admin dashboard for property and user management**  
+🔐 **Enforce role-based access control for admins, employees, and clients**
 
-## 👥 System Roles & Permissions
-| Role | Dashboard Route | Key Permissions |
-|------|----------------|-----------------|
-| **👑 Admin** | `/admin` | • Manage ALL system data<br>• CRUD for users, properties<br>• Full access to all bookings<br>• System configuration |
-| **👔 Employee** | `/employee` | • View and manage bookings<br>• Update booking statuses<br>• View property listings<br>• Contact clients |
-| **👤 Client** | `/dashboard` | • Register & login<br>• Browse all properties<br>• View property details<br>• Create bookings<br>• Submit reviews for completed bookings |
+## ⚙️ Requirements
+| Component | Version |
+|-----------|---------|
+| PHP | ≥ 8.2 |
+| Composer | Latest |
+| Laravel | 12.x |
+| Database | MySQL |
+| Node.js | Latest (v18+) |
 
 ## 🛠 Installation & Setup
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/Ebla-a/property-management.git
 cd property-management
-### 2. Install Dependencies
 ```
-bash
 
-composer install
-npm install
-3. Configure Environment
+### 2. Install Dependencies
+```bash
+composer install      # PHP dependencies
+npm install           # JS dependencies
 ```
-bash
+
+### 3. Configure Environment
+```bash
 cp .env.example .env
 php artisan key:generate
-Edit .env file with your database credentials:
-
-env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=property_management
-DB_USERNAME=root
-DB_PASSWORD=
-4. Set Up Database
 ```
-bash
-php artisan migrate
-php artisan db:seed  # If you have seeders
-5. Run the Application
+
+### 4. Set Up the Database
+```bash
+php artisan migrate --seed
 ```
-bash
-# Terminal 1: Start Laravel server
-``` bash
-php artisan serve
 
-# Terminal 2: Compile frontend assets with Vite
-``` bash
-npm run dev
-Visit: http://localhost:8000
+### 5. Run the Application
+```bash
+php artisan serve     # Start Laravel dev server
+npm run dev           # Compile frontend assets with Vite
+```
 
-🗄 Database Structure
+## 👥 System Roles
+| Role | Permissions | Dashboard Route |
+|------|-------------|-----------------|
+| Admin | Full system access | `/admin` |
+| Employee | Manage bookings & properties | `/employee` |
+| Client | View properties, make bookings | `/dashboard` |
 
-Core Tables
+## 🗄 Database Structure
+### users
+`id, name, email, password, role, created_at, updated_at`
 
-users (id, name, email, password, role, created_at, updated_at)
-properties (id, title, description, price, location, images, status, created_at)
-bookings (id, user_id, property_id, booking_date, status, notes, created_at)
-reviews (id, user_id, property_id, booking_id, rating, comment, created_at)
+### properties
+`id, title, description, price, location, images, status, created_at`
 
-Relationships
+### bookings
+`id, user_id, property_id, booking_date, status, notes, created_at`
 
-- User has many Bookings and Reviews
+### reviews
+`id, user_id, property_id, booking_id, rating, comment, created_at`
 
-- Property has many Bookings and Reviews
+## 🔗 Interfaces & Routes
+| Page | Route | Description |
+|------|-------|-------------|
+| Admin Dashboard | `/admin` | Full system management |
+| Employee Panel | `/employee` | Manage properties and bookings |
+| Property Browsing | `/properties` | Public property interface |
+| Login Page | `/login` | Login for all roles |
 
-- Booking belongs to User and Property
+## 📚 API Documentation
+### 🔐 Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/register` | Register a new user |
+| POST | `/api/login` | User login |
+| POST | `/api/logout` | Logout (with token) |
 
-- Review belongs to User, Property, and Booking
+### 🏠 Properties
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/properties` | List all properties (paginated) |
+| GET | `/api/properties/{id}` | Fetch property details |
+| POST | `/api/properties` | Create new property (admin only) |
+| PUT | `/api/properties/{id}` | Update property (admin only) |
+| DELETE | `/api/properties/{id}` | Delete property (admin only) |
 
-🔗 Key Features & User Flows
+### 📅 Bookings
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/bookings` | List bookings (role-based filtering) |
+| POST | `/api/bookings` | Create new booking (client) |
+| GET | `/api/bookings/{id}` | Get booking details |
+| PUT | `/api/bookings/{id}/status` | Update status (employee/admin) |
+| DELETE | `/api/bookings/{id}` | Cancel booking (employee/client/admin) |
 
-👤 Client Journey
+### ⭐ Reviews
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/properties/{id}/reviews` | Get all reviews for a property |
+| POST | `/api/reviews` | Submit a review (client) |
 
-1. Register/Login → Create account or sign in
+## 🧾 Sample Responses
+### Property Response:
+```json
+{
+  "id": 1,
+  "title": "Modern Apartment Downtown",
+  "description": "Beautiful modern apartment in city center",
+  "price": 1200,
+  "location": "City Center",
+  "images": ["apt1.jpg", "apt2.jpg"],
+  "status": "available"
+}
+```
 
-2. Browse Properties → View all available properties
+### Booking Response:
+```json
+{
+  "id": 5,
+  "booking_date": "2024-03-15",
+  "status": "confirmed",
+  "notes": "Early check-in requested",
+  "user": {
+    "id": 2,
+    "name": "Ahmed",
+    "email": "ahmed@email.com"
+  },
+  "property_id": 1,
+  "property_title": "Modern Apartment Downtown"
+}
+```
 
-3. Property Details → See full details, images, pricing
+## 🔑 Sample Credentials
+### 👨‍💼 Admin
+**Email:** admin@example.com  
+**Password:** password123
 
-4.Create Booking → Book a property (status: Pending)
+### 👨‍💻 Employee
+**Email:** employee@property.com  
+**Password:** employee123
 
-5.Track Booking → View booking status updates
+### 👤 Client
+**Email:** client@example.com  
+**Password:** client123
 
-6.Submit Review → After booking status becomes "Completed"
-
-👔 Employee Workflow
-1.View His Bookings → See pending, confirmed, completed bookings
-
-2.Update Status → Change booking status (Pending → Confirmed → Completed)
-
-3.Manage Client Info → View client details for each booking
-
-👑 Admin Capabilities
-- Full CRUD operations on all tables
-
-- User role management
-
-- System analytics and reporting
-
-- Content management (properties, pages, etc.)
-
-📡 API Endpoints
-🔐 Authentication
-
-POST    /api/register     # Register new user
-POST    /api/login        # User login
-POST    /api/logout       # User logout
-GET     /api/user         # Get authenticated user
-🏠 Properties
-
-GET     /api/properties              # List all properties
-GET     /api/properties/{id}         # Get property details
-POST    /api/properties              # Create property (Admin only)
-PUT     /api/properties/{id}         # Update property (Admin only)
-DELETE  /api/properties/{id}         # Delete property (Admin only)
-📅 Bookings
-
-GET     /api/bookings                # List bookings (role-based filtering)
-POST    /api/bookings                # Create new booking (Client)
-GET     /api/bookings/{id}           # Get booking details
-PUT     /api/bookings/{id}/status    # Update status (Employee/Admin)
-DELETE  /api/bookings/{id}           # Cancel booking (Employee/Client/Admin)
-⭐ Reviews
-
-GET     /api/properties/{id}/reviews  # Get property reviews
-POST    /api/reviews                  # Submit review (Client)
-🎨 UI/UX Details
-Design System: Tailwind CSS
-
-- Responsive Layout: Mobile-first approach
-
-- Blade Components: Reusable partials for consistency
-
-- Color Scheme: Professional blues and neutral tones
-
-- Icons: Heroicons or FontAwesome
-
-🔑 Sample Credentials
-👑 Admin Account
-
-Email: admin@example.com
-Password: password123
-👔 Employee Account
-
-Email: employee@property.com
-Password: employee123
-👤 Client Account
-
-Email: client@example.com
-Password: client123
-(Change these passwords immediately after first login!)
-
-📞 Support & Contact
+## 📞 Support & Contributions
 If you find bugs, need help, or would like to contribute:
 
-1.Open an issue on the GitHub repo
+1. **Open an issue** on the [GitHub repo](https://github.com/Ebla-a/property-management.git)
+2. **Fork and submit a pull request**
+3. **Contact the team** for feedback or collaboration
 
-2.ork and submit a pull request
-
-3.Contact the team for feedback or collaboration
-
-🏆 Acknowledgments
-🎉 Special Thanks
-Focal X Agency
+## 🏆 Acknowledgments
+### 🎉 Special Thanks
+**Focal X Agency**  
 For their commitment to student growth and learning opportunities.
 
-Mentors
-Mr. Hashim Othman
+### Mentors
+**Mr. Hashim Othman**  
+- Technical guidance
+- Concept clarification
+- Inspirational mentorship
 
-Technical guidance
-Concept clarification
-Inspirational mentorship
-Mr. Ayham Ibrahim
+**Mr. Ayham Ibrahim**  
+- Support throughout development
 
-Support throughout development
-Focal X Team
-
+**Focal X Team**  
 For building and supporting this educational journey
 
-👨‍💻 Development Team
-
+### Development Team
 | Role | Name |
-|:-----|:-----|
-| **Lead Developer** | Ebla zyab ali |
-| **Assistant Developer** | Hasan Dayoub |
-| **Backend Developer** | Wajd Heshme |
-| **Backend Developer** | Amin Ali |
-| **Backend Developer** | Enas |
-| **Backend Developer** | Abdullah Shuraitah |
+|------|------|
+| Lead Developer | Ebla zyab ali |
+| Assistant Developer | Hasan Dayoub |
+| Backend Developer | Wajd Heshme |
+| Backend Developer | Amin Ali |
+| Backend Developer | Enas |
+| Backend Developer | Abdullah Shuraitah |
 
+---
 
+*Built with Laravel, Blade, and Tailwind CSS*
