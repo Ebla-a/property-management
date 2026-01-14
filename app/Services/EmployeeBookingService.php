@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace App\Services;
 
 use App\Models\Booking;
@@ -83,7 +83,7 @@ class EmployeeBookingService
     public function complete($id)
     {
         $booking = Booking::findOrFail($id);
-         
+
         if ($booking->employee_id !== auth('sanctum')->id()) {
         abort(403, 'Forbidden');
         }
@@ -114,7 +114,7 @@ class EmployeeBookingService
             ])
             ->exists();
     }
-   
+
     public function reject($id, $reason = null)
     {
         $booking = Booking::findOrFail($id );

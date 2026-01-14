@@ -17,7 +17,7 @@ class EmployeeBookingController extends Controller
     public function __construct(EmployeeBookingService $employeeBookingService)
     {
         $this->employeeBookingService = $employeeBookingService;
-    } 
+    }
 
     /**
      * List bookings for logged-in employee or admin
@@ -30,7 +30,7 @@ class EmployeeBookingController extends Controller
     {
         $user   = $request->user();
         $status = $request->get('status');
-    
+
         // Admin
         if ($user->hasRole('admin')) {
 
@@ -177,20 +177,20 @@ class EmployeeBookingController extends Controller
 public function myBookings(Request $request)
 {
     $employee = $request->user();
-    
-   
-    
+
+
+
     $status = $request->query('status');
-    
+
     $query = Booking::with(['user', 'property'])
         ->where('employee_id', $employee->id);
-    
+
     if ($status && in_array($status, ['pending', 'approved', 'completed', 'rejected', 'canceled', 'rescheduled'])) {
         $query->where('status', $status);
     }
-    
+
     $bookings = $query->latest()->paginate(6);
-    
+
 
     $counts = [
         'all' => Booking::where('employee_id', $employee->id)->count(),
@@ -201,7 +201,7 @@ public function myBookings(Request $request)
         'rejected' => Booking::where('employee_id', $employee->id)->where('status', 'rejected')->count(),
         'canceled' => Booking::where('employee_id', $employee->id)->where('status', 'canceled')->count(),
     ];
-    
+
     return view('dashboard.bookings.employeebookings', compact('bookings', 'employee', 'counts'));
 }
 

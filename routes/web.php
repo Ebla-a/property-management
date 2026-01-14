@@ -8,11 +8,19 @@ use App\Http\Controllers\ProfileController;
 | Admin Controllers
 |--------------------------------------------------------------------------
 */
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyImageController;
+
+/*
+|--------------------------------------------------------------------------
+| Employee Controllers
+|--------------------------------------------------------------------------
+*/
+use App\Http\Controllers\Employee\EmployeeDashboardController;
+use App\Http\Controllers\Employee\EmployeeBookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +29,6 @@ use App\Http\Controllers\Admin\PropertyImageController;
 */
 use App\Http\Controllers\Admin\Reports\BookingsReportController;
 use App\Http\Controllers\Admin\Reports\PropertiesReportController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -32,59 +39,57 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-Route::view('/team', 'team')
-    ->name('team.index');
-
+Route::view('/team', 'team')->name('team.index');
 
 /*
 |--------------------------------------------------------------------------
-| Dashboard Routes (Admin Only)
+| Dashboard Routes (Admin & Employee)
 | Prefix: /dashboard
 | Name prefix: dashboard.*
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'check.active','role:admin|employee'])
-    ->prefix('/dashboard')
+Route::middleware(['auth', 'check.active', 'role:admin|employee'])
+    ->prefix('dashboard')
     ->name('dashboard.')
     ->group(function () {
 
+    // Home dashboard - unified route
+    Route::get('/', function () {
+        $user = auth()->user();
 
-        // Home dashboard
-Route::get('/', [DashboardController::class, 'index'])
-    ->name('index');
+        if ($user->hasRole('admin')) {
+            // call admin dashboard index
+            $controller = new AdminDashboardController();
+            return $controller->index(request());
+        }
 
+        if ($user->hasRole('employee')) {
+            // call employee dashboard index
+            $controller = new EmployeeDashboardController();
+            return $controller->index(request());
+        }
 
- Route::middleware(['auth', 'check.active'])->get('/', [DashboardController::class, 'index'])->name('dashboard');
+        abort(403, 'Unauthorized');
+    })->name('index');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Amenities CRUD
-        |--------------------------------------------------------------------------
-        */
-        Route::resource('amenities', AmenityController::class)
-            ->except(['show']);
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['role:admin'])->group(function () {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Properties CRUD
-        |--------------------------------------------------------------------------
-        */
+        // Amenities CRUD
+        Route::resource('amenities', AmenityController::class)->except(['show']);
+
+        // Properties CRUD
         Route::resource('properties', PropertyController::class);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Property Types
-        |--------------------------------------------------------------------------
-        */
+        // Property Types
         Route::get('properties/types', [PropertyController::class, 'types'])
             ->name('properties.types');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Property Images (Admin)
-        |--------------------------------------------------------------------------
-        */
+        // Property Images
         Route::get('properties/{property}/images', [PropertyImageController::class, 'index'])
             ->name('properties.images.index');
 
@@ -111,8 +116,7 @@ Route::get('/', [DashboardController::class, 'index'])
         | Reports Pages
         |--------------------------------------------------------------------------
         */
-        Route::view('reports', 'dashboard.reports.index')
-            ->name('reports.index');
+        Route::view('reports', 'dashboard.reports.index')->name('reports.index');
 
         Route::get('reports/properties', [PropertiesReportController::class, 'index'])
             ->name('reports.properties');
@@ -120,11 +124,7 @@ Route::get('/', [DashboardController::class, 'index'])
         Route::get('reports/bookings', [BookingsReportController::class, 'index'])
             ->name('reports.bookings');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Reports Export
-        |--------------------------------------------------------------------------
-        */
+        // Reports Export
         Route::get('reports/bookings/export', [BookingsReportController::class, 'export'])
             ->name('reports.bookings.export');
 
@@ -160,14 +160,53 @@ Route::get('/', [DashboardController::class, 'index'])
         Route::delete('users/{userId}', [AdminController::class, 'destroy'])
             ->name('admin.users.destroy');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Admin Password
-        |--------------------------------------------------------------------------
-        */
+        // Admin Password
         Route::patch('change-password', [AdminController::class, 'changePassword'])
             ->name('admin.change-password');
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Employee Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['role:employee'])->group(function () {
+        // Bookings List
+        Route::get('bookings', [EmployeeBookingController::class, 'index'])
+            ->name('bookings.index');
+
+        // My Bookings
+        Route::get('bookings/my', [EmployeeBookingController::class, 'myBookings'])
+            ->name('bookings.my');
+
+        // Pending Bookings
+        Route::get('bookings/pending', [EmployeeBookingController::class, 'pending'])
+            ->name('bookings.pending');
+
+        // Booking Details
+        Route::get('bookings/{id}', [EmployeeBookingController::class, 'show'])
+            ->name('bookings.show');
+
+        // Actions
+        Route::get('bookings/{booking}/reschedule', [EmployeeBookingController::class, 'rescheduleForm'])
+            ->name('reschedule.form');
+
+        Route::patch('bookings/{id}/approve', [EmployeeBookingController::class, 'approve'])
+            ->name('bookings.approve');
+
+        Route::patch('bookings/{id}/cancel', [EmployeeBookingController::class, 'cancel'])
+            ->name('bookings.cancel');
+
+        Route::patch('bookings/{id}/reschedule', [EmployeeBookingController::class, 'reschedule'])
+            ->name('bookings.reschedule');
+
+        Route::patch('bookings/{id}/complete', [EmployeeBookingController::class, 'complete'])
+            ->name('bookings.complete');
+
+        Route::patch('bookings/{id}/reject', [EmployeeBookingController::class, 'reject'])
+            ->name('bookings.reject');
+    });
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -175,15 +214,9 @@ Route::get('/', [DashboardController::class, 'index'])
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 /*
@@ -193,4 +226,3 @@ Route::middleware('auth')->group(function () {
 */
 require __DIR__ . '/auth.php';
 require __DIR__ . '/employee.php';
-    
