@@ -54,11 +54,14 @@ A full-stack property management system built with **Laravel, Blade, and Tailwin
 ```bash
 git clone https://github.com/Ebla-a/property-management.git
 cd property-management
-2. Install Dependencies
+### 2. Install Dependencies
+```
 bash
+
 composer install
 npm install
 3. Configure Environment
+```
 bash
 cp .env.example .env
 php artisan key:generate
@@ -72,111 +75,120 @@ DB_DATABASE=property_management
 DB_USERNAME=root
 DB_PASSWORD=
 4. Set Up Database
+```
 bash
 php artisan migrate
 php artisan db:seed  # If you have seeders
 5. Run the Application
+```
 bash
 # Terminal 1: Start Laravel server
+``` bash
 php artisan serve
 
 # Terminal 2: Compile frontend assets with Vite
+``` bash
 npm run dev
 Visit: http://localhost:8000
 
 🗄 Database Structure
+
 Core Tables
-sql
+
 users (id, name, email, password, role, created_at, updated_at)
 properties (id, title, description, price, location, images, status, created_at)
 bookings (id, user_id, property_id, booking_date, status, notes, created_at)
 reviews (id, user_id, property_id, booking_id, rating, comment, created_at)
+
 Relationships
-User has many Bookings and Reviews
 
-Property has many Bookings and Reviews
+- User has many Bookings and Reviews
 
-Booking belongs to User and Property
+- Property has many Bookings and Reviews
 
-Review belongs to User, Property, and Booking
+- Booking belongs to User and Property
+
+- Review belongs to User, Property, and Booking
 
 🔗 Key Features & User Flows
+
 👤 Client Journey
-Register/Login → Create account or sign in
 
-Browse Properties → View all available properties
+1. Register/Login → Create account or sign in
 
-Property Details → See full details, images, pricing
+2. Browse Properties → View all available properties
 
-Create Booking → Book a property (status: Pending)
+3. Property Details → See full details, images, pricing
 
-Track Booking → View booking status updates
+4.Create Booking → Book a property (status: Pending)
 
-Submit Review → After booking status becomes "Completed"
+5.Track Booking → View booking status updates
+
+6.Submit Review → After booking status becomes "Completed"
 
 👔 Employee Workflow
-View His Bookings → See pending, confirmed, completed bookings
+1.View His Bookings → See pending, confirmed, completed bookings
 
-Update Status → Change booking status (Pending → Confirmed → Completed)
+2.Update Status → Change booking status (Pending → Confirmed → Completed)
 
-Manage Client Info → View client details for each booking
+3.Manage Client Info → View client details for each booking
 
 👑 Admin Capabilities
-Full CRUD operations on all tables
+- Full CRUD operations on all tables
 
-User role management
+- User role management
 
-System analytics and reporting
+- System analytics and reporting
 
-Content management (properties, pages, etc.)
+- Content management (properties, pages, etc.)
 
 📡 API Endpoints
 🔐 Authentication
-http
+
 POST    /api/register     # Register new user
 POST    /api/login        # User login
 POST    /api/logout       # User logout
 GET     /api/user         # Get authenticated user
 🏠 Properties
-http
+
 GET     /api/properties              # List all properties
 GET     /api/properties/{id}         # Get property details
 POST    /api/properties              # Create property (Admin only)
 PUT     /api/properties/{id}         # Update property (Admin only)
 DELETE  /api/properties/{id}         # Delete property (Admin only)
 📅 Bookings
-http
+
 GET     /api/bookings                # List bookings (role-based filtering)
 POST    /api/bookings                # Create new booking (Client)
 GET     /api/bookings/{id}           # Get booking details
 PUT     /api/bookings/{id}/status    # Update status (Employee/Admin)
 DELETE  /api/bookings/{id}           # Cancel booking (Employee/Client/Admin)
 ⭐ Reviews
-http
+
 GET     /api/properties/{id}/reviews  # Get property reviews
 POST    /api/reviews                  # Submit review (Client)
 🎨 UI/UX Details
 Design System: Tailwind CSS
 
-Responsive Layout: Mobile-first approach
+- Responsive Layout: Mobile-first approach
 
-Blade Components: Reusable partials for consistency
+- Blade Components: Reusable partials for consistency
 
-Color Scheme: Professional blues and neutral tones
+- Color Scheme: Professional blues and neutral tones
 
-Icons: Heroicons or FontAwesome
+- Icons: Heroicons or FontAwesome
 
 🔑 Sample Credentials
 👑 Admin Account
-text
+
 Email: admin@example.com
 Password: password123
 👔 Employee Account
-text
+
 Email: employee@property.com
 Password: employee123
 👤 Client Account
-text
+
 Email: client@example.com
 Password: client123
 (Change these passwords immediately after first login!)
@@ -184,8 +196,39 @@ Password: client123
 📞 Support & Contact
 If you find bugs, need help, or would like to contribute:
 
-Open an issue on the GitHub repo
+1.Open an issue on the GitHub repo
 
-Fork and submit a pull request
+2.ork and submit a pull request
 
-Contact the team for feedback or collaboration
+3.Contact the team for feedback or collaboration
+
+🏆 Acknowledgments
+🎉 Special Thanks
+Focal X Agency
+For their commitment to student growth and learning opportunities.
+
+Mentors
+Mr. Hashim Othman
+
+Technical guidance
+Concept clarification
+Inspirational mentorship
+Mr. Ayham Ibrahim
+
+Support throughout development
+Focal X Team
+
+For building and supporting this educational journey
+
+👨‍💻 Development Team
+
+| Role | Name |
+|:-----|:-----|
+| **Lead Developer** | Ebla zyab ali |
+| **Assistant Developer** | Hasan Dayoub |
+| **Backend Developer** | Wajd Heshme |
+| **Backend Developer** | Amin Ali |
+| **Backend Developer** | Enas |
+| **Backend Developer** | Abdullah Shuraitah |
+
+
