@@ -4,12 +4,13 @@ A comprehensive and integrated platform for browsing, booking, and managing prop
 
 
 ## 📸 Screenshots
-![Admin Dashboard](./screenshots/Hoom.png)
-![Property Listing](./screenshots/properties.png)
-![Amenities](./screenshots/amenities.png)
-![Booking Management](./screenshots/bookings.png)
-![Booking Report Management](./screenshots/bookings%20repoert.png)
-![Property Report Management](./screenshots/properties%20repoert.png)
+![AboutUs](screenshots\about us.PNG)
+![Admin Dashboard](screenshots\Home.PNG)
+![Property Listing](screenshots\properties.PNG)
+![Amenities](screenshots\amenities.PNG)
+![Booking Management](screenshots\bookings.PNG)
+![Booking Report Management](screenshots\bookings report.PNG)
+![Property Report Management](screenshots\properties report.PNG)
 
 ## 📚 Table of Contents
 - [🏠 Property Management System](#-property-management-system)
@@ -194,11 +195,8 @@ npm run dev           # Compile frontend assets with Vite
 
 ### 👨‍💻 Employee
 **Email:** employee@property.com  
-**Password:** employee123
+**Password:** 12345678
 
-### 👤 Client
-**Email:** client@example.com  
-**Password:** client123
 
 ## 📞 Support & Contributions
 If you find bugs, need help, or would like to contribute:
@@ -236,4 +234,4 @@ For building and supporting this educational journey
 
 ---
 
-*Built with Laravel, Blade, and Tailwind CSS*
+*Thank you to all educators, mentors, and contributors who made this project a reality.*
