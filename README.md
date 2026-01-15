@@ -161,31 +161,42 @@ npm run dev           # Compile frontend assets with Vite
 ### Property Response:
 ```json
 {
-  "id": 1,
-  "title": "Modern Apartment Downtown",
-  "description": "Beautiful modern apartment in city center",
-  "price": 1200,
-  "location": "City Center",
-  "images": ["apt1.jpg", "apt2.jpg"],
-  "status": "available"
+    "data": {
+        "id": 3,
+        "title": "Hintz Rue Apartment",
+        "type": null,
+        "city": "Malloryside",
+        "neighborhood": null,
+        "address": "59578 Nakia Path Suite 684\nLake Destin, IL 55277",
+        "rooms": 1,
+        "area": null,
+        "price": "521.00",
+        "status": "hidden",
+        "is_furnished": false,
+        "description": null,
+        "main_image": null,
+        "amenities": [],
+        "created_at": "2026-01-11 20:29:21"
+    }
 }
 ```
 
 ### Booking Response:
 ```json
-{
-  "id": 5,
-  "booking_date": "2024-03-15",
-  "status": "confirmed",
-  "notes": "Early check-in requested",
-  "user": {
-    "id": 2,
-    "name": "Ahmed",
-    "email": "ahmed@email.com"
-  },
-  "property_id": 1,
-  "property_title": "Modern Apartment Downtown"
-}
+   "data": [
+        {
+            "id": 46,
+            "status": "pending",
+            "scheduled_at": "2026-02-14 15:30",
+            "notes": null,
+            "property": {
+                "id": 2,
+                "title": "Katharina Glens Apartment",
+                "city": "South Maurine"
+            },
+            "customer": null,
+            "employee": null
+        },
 ```
 
 ## 🔑 Sample Credentials

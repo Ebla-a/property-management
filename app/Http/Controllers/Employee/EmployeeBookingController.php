@@ -20,67 +20,43 @@ class EmployeeBookingController extends Controller
     }
 
     /**
-     * List bookings for logged-in employee or admin
-     *
-     * Supports status filtering:
-     * - Admin    sees all bookings
-     * - Employee  sees only assigned bookings
+     * List bookings for Admin only
      */
     public function index(Request $request)
     {
-
-       $this->authorize('viewAny', Booking::class);
+        $this->authorize('viewAny', Booking::class);
+        
         $user   = $request->user();
         $status = $request->get('status');
 
-        // Admin
+        // Admin logic
         if ($user->hasRole('admin')) {
+            $bookings = Booking::with(['user', 'property', 'employee', 'review.user'])
+                ->when($status, fn($q) => $q->where('status', $status))
+                ->latest()
+                ->paginate(6);
 
+            return view('dashboard.bookings.index', compact('bookings', 'status'));
+        }
 
-      $bookings = Booking::with(['user', 'property', 'employee', 'review.user'])
-            ->when($status, fn($q) => $q->where('status', $status))
-            ->latest()
-            ->paginate(6);
-
-        return view('dashboard.bookings.index', compact('bookings', 'status'));
-
-    
-       
+        abort(403);
     }
-
 
     /**
      * Show booking details
-     *
-     * Authorization rules:
-     * - Assigned employee
-     * - Customer who owns booking
-     * - Admin
      */
     public function show(Booking $booking)
     {
-  
-        // dd($booking->id, auth()->id());
-
         $this->authorize('view', $booking);
-
         return view('dashboard.bookings.show', compact('booking'));
     }
 
-
     /**
-     * Approve booking (employee only)
-     *
-     * Allowed when:
-     * - user has role employee
-     * - is assigned to booking
-     * - booking is pending
+     * Approve booking
      */
     public function approve(Booking $booking)
     {
-
-            $this->authorize('approve', $booking);
-        
+        $this->authorize('approve', $booking);
         $booking = $this->employeeBookingService->approve($booking);
 
         return redirect()
@@ -88,16 +64,12 @@ class EmployeeBookingController extends Controller
             ->with('status', 'Booking approved successfully');
     }
 
-
     /**
-     * Cancel booking (employee allowed for pending/approved)
+     * Cancel booking
      */
     public function cancel(Booking $booking)
     {
-       
-
         $this->authorize('employeeCancel', $booking);
-
         $booking = $this->employeeBookingService->cancel($booking);
 
         return redirect()
@@ -105,41 +77,31 @@ class EmployeeBookingController extends Controller
             ->with('status', 'Booking cancelled');
     }
 
-
     /**
-     * Reschedule booking (employee)
+     * Reschedule logic
      */
     public function reschedule(RescheduleBookingRequest $request, Booking $booking)
     {
-       
-
         $this->authorize('reschedule', $booking);
-
-        $booking = $this->employeeBookingService
-            ->reschedule($booking, $request->scheduled_at);
+        $booking = $this->employeeBookingService->reschedule($booking, $request->scheduled_at);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking rescheduled successfully');
     }
+
     public function rescheduleForm(Booking $booking)
     {
         $this->authorize('reschedule', $booking);
-
         return view('dashboard.bookings.reschedule', compact('booking'));
     }
 
-
-
     /**
-     * Mark booking as completed (employee)
+     * Mark as completed
      */
     public function complete(Booking $booking)
     {
-     
-
         $this->authorize('complete', $booking);
-
         $booking = $this->employeeBookingService->complete($booking);
 
         return redirect()
@@ -147,70 +109,26 @@ class EmployeeBookingController extends Controller
             ->with('status', 'Booking completed');
     }
 
-
     /**
-     * Reject booking with reason (employee)
+     * Reject booking
      */
     public function reject(RejectBookingRequest $request, Booking $booking)
     {
-
-    
-
-
         $this->authorize('reject', $booking);
-
-        $booking = $this->employeeBookingService->reject(
-            $booking,
-            $request->reason
-        );
+        $booking = $this->employeeBookingService->reject($booking, $request->reason);
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking rejected');
-
-
-        // return redirect()->back()->with('status', 'Booking rejected');
-
     }
 
+    /**
+     * Employee's own bookings
+     */
     public function myBookings(Request $request)
     {
         $employee = $request->user();
-
-
-
         $status = $request->query('status');
-
-public function myBookings(Request $request)
-{
-    $employee = $request->user();
-
-
-
-    $status = $request->query('status');
-
-    $query = Booking::with(['user', 'property'])
-        ->where('employee_id', $employee->id);
-
-    if ($status && in_array($status, ['pending', 'approved', 'completed', 'rejected', 'canceled', 'rescheduled'])) {
-        $query->where('status', $status);
-    }
-
-    $bookings = $query->latest()->paginate(6);
-
-
-    $counts = [
-        'all' => Booking::where('employee_id', $employee->id)->count(),
-        'pending' => Booking::where('employee_id', $employee->id)->where('status', 'pending')->count(),
-        'approved' => Booking::where('employee_id', $employee->id)->where('status', 'approved')->count(),
-        'rescheduled' => Booking::where('employee_id', $employee->id)->where('status', 'rescheduled')->count(),
-        'completed' => Booking::where('employee_id', $employee->id)->where('status', 'completed')->count(),
-        'rejected' => Booking::where('employee_id', $employee->id)->where('status', 'rejected')->count(),
-        'canceled' => Booking::where('employee_id', $employee->id)->where('status', 'canceled')->count(),
-    ];
-
-    return view('dashboard.bookings.employeebookings', compact('bookings', 'employee', 'counts'));
-}
 
         $query = Booking::with(['user', 'property'])
             ->where('employee_id', $employee->id);
@@ -220,7 +138,6 @@ public function myBookings(Request $request)
         }
 
         $bookings = $query->latest()->paginate(6);
-
 
         $counts = [
             'all' => Booking::where('employee_id', $employee->id)->count(),
@@ -235,10 +152,8 @@ public function myBookings(Request $request)
         return view('dashboard.bookings.employeebookings', compact('bookings', 'employee', 'counts'));
     }
 
-
     /**
-     * pdning booking that  have not assigned to any employee
-     * @return \Illuminate\Contracts\View\View
+     * Pending bookings (unassigned)
      */
     public function pending()
     {
