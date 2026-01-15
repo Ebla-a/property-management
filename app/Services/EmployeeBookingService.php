@@ -42,7 +42,7 @@ class EmployeeBookingService
     public function cancel(Booking $booking)
     {
 
-        if (! in_array($booking->status, ['pending', 'approved'])) {
+        if (! in_array($booking->status, ['pending', 'approved','rescheduled'])) {
             abort(422, 'Action not allowed');
         }
 

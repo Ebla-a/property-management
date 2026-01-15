@@ -164,50 +164,6 @@ Route::middleware(['auth', 'check.active', 'role:admin|employee'])
         Route::patch('change-password', [AdminController::class, 'changePassword'])
             ->name('admin.change-password');
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Employee Routes
-    |--------------------------------------------------------------------------
-    */
-    Route::middleware(['role:employee'])->group(function () {
-        // Bookings List
-        Route::get('bookings', [EmployeeBookingController::class, 'index'])
-            ->name('bookings.index');
-
-        // My Bookings
-        Route::get('bookings/my', [EmployeeBookingController::class, 'myBookings'])
-            ->name('bookings.my');
-
-        // Pending Bookings
-        Route::get('bookings/pending', [EmployeeBookingController::class, 'pending'])
-            ->name('bookings.pending');
-
-        // Booking Details
-        Route::get('bookings/{id}', [EmployeeBookingController::class, 'show'])
-            ->name('bookings.show');
-
-        // Actions
-        Route::get('bookings/{booking}/reschedule', [EmployeeBookingController::class, 'rescheduleForm'])
-            ->name('reschedule.form');
-
-        Route::patch('bookings/{id}/approve', [EmployeeBookingController::class, 'approve'])
-            ->name('bookings.approve');
-
-        Route::patch('bookings/{id}/cancel', [EmployeeBookingController::class, 'cancel'])
-            ->name('bookings.cancel');
-
-        Route::patch('bookings/{id}/reschedule', [EmployeeBookingController::class, 'reschedule'])
-            ->name('bookings.reschedule');
-
-        Route::patch('bookings/{id}/complete', [EmployeeBookingController::class, 'complete'])
-            ->name('bookings.complete');
-
-        Route::patch('bookings/{id}/reject', [EmployeeBookingController::class, 'reject'])
-            ->name('bookings.reject');
-    });
-});
-
 /*
 |--------------------------------------------------------------------------
 | Profile Routes (Authenticated Users)
@@ -217,8 +173,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
+    });
+    
+    });
 /*
 |--------------------------------------------------------------------------
 | Auth & Employee Routes
@@ -226,3 +184,4 @@ Route::middleware('auth')->group(function () {
 */
 require __DIR__ . '/auth.php';
 require __DIR__ . '/employee.php';
+    

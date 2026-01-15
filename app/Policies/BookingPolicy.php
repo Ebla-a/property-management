@@ -8,9 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingPolicy
 {
+    /**
+     * admin see every thing
+     * emloyee sees his booking 
+     * and bookings that not assigned to any employee
+     */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin');
+        return   $user->hasRole('admin');
     }
 
     /**
@@ -24,11 +29,12 @@ class BookingPolicy
             $booking->user_id === $user->id ||
 
             // assigned employee can view
-            ($user->hasRole('employee')
-                && $booking->employee_id === $user->id) ||
+            $user->hasRole('employee') && (
+                $booking->employee_id == $user->id || is_null($booking->employee_id));
 
-            // admin can view all
-            $user->hasRole('admin');
+
+        // admin can view all
+        $user->hasRole('admin');
     }
 
 
@@ -38,7 +44,7 @@ class BookingPolicy
     public function cancel(User $user, Booking $booking): bool
     {
         return
-            $user->hasRole('employee') &&
+            $user->hasRole('customer') &&
             $booking->user_id === $user->id &&
             $booking->status === 'pending';
     }
@@ -49,10 +55,9 @@ class BookingPolicy
      */
     public function approve(User $user, Booking $booking): bool
     {
-        return
-            $user->hasRole('employee') &&
-            $booking->employee_id  === $user->id &&
-            in_array($booking->status, ['pending', 'rescheduled']);
+
+        $isAuthorized = $user->hasRole('employee') && ($booking->employee_id == $user->id || is_null($booking->employee_id));
+        return $isAuthorized && in_array($booking->status, ['pending', 'rescheduled']);
     }
 
 
@@ -76,7 +81,7 @@ class BookingPolicy
         return
             $user->hasRole('employee') &&
             $booking->employee_id === $user->id  &&
-            in_array($booking->status, ['pending', 'approved','rescheduled']);
+            in_array($booking->status, ['pending', 'approved', 'rescheduled']);
     }
 
 

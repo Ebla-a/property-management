@@ -9,6 +9,8 @@ use App\Models\Booking;
 use App\Models\User;
 use App\Services\EmployeeBookingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 
 class EmployeeBookingController extends Controller
 {
@@ -25,7 +27,7 @@ class EmployeeBookingController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', Booking::class);
-        
+
         $user   = $request->user();
         $status = $request->get('status');
 
@@ -38,8 +40,6 @@ class EmployeeBookingController extends Controller
 
             return view('dashboard.bookings.index', compact('bookings', 'status'));
         }
-
-        abort(403);
     }
 
     /**
@@ -57,6 +57,10 @@ class EmployeeBookingController extends Controller
     public function approve(Booking $booking)
     {
         $this->authorize('approve', $booking);
+
+        if (is_null($booking->employee_id)) {
+            $booking->update(['employee_id' => Auth::id()]);
+        }
         $booking = $this->employeeBookingService->approve($booking);
 
         return redirect()
@@ -158,7 +162,9 @@ class EmployeeBookingController extends Controller
     public function pending()
     {
         $bookings = Booking::whereNull('employee_id')
-            ->where('status', 'pending')->latest()->paginate(6);
+            ->where('status', 'pending')
+            ->latest()
+            ->paginate(6);
 
         return view('dashboard.bookings.pending', compact('bookings'));
     }
