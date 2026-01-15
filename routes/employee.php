@@ -59,4 +59,3 @@ Route::middleware(['auth', 'role:admin|employee'])
 
 
     });
-
