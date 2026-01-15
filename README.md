@@ -197,6 +197,7 @@ npm run dev           # Compile frontend assets with Vite
             "customer": null,
             "employee": null
         },
+]
 ```
 
 ## 🔑 Sample Credentials
@@ -231,12 +232,14 @@ For their commitment to student growth and learning opportunities.
 - Support throughout development
 
 **Supervisors**
-Ms Nourhan almohammed & Ms Muna alrays
+
+**Ms Nourhan almohammed** & **Ms Muna alrays**
 Technical support and daily follow-up
 
 **Focal X Team**  
 For building and supporting this educational journey
-ceo and founder Alaa Darwish
+
+ceo and founder **Alaa Darwish**
 
 ### Development Team
 | Role | Name |
