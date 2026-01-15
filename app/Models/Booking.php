@@ -19,12 +19,13 @@ class Booking extends Model
         'scheduled_at',
         'status',
         'notes',
+        'rejection_reason'
     ];
     protected $casts = [
-    'scheduled_at' => 'datetime',
-];
+        'scheduled_at' => 'datetime',
+    ];
 
-/*
+    /*
     |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
@@ -32,14 +33,15 @@ class Booking extends Model
 
     public function user()
     {
-         return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function property()
     {
-        return $this->belongsTo(Property::class ,'property_id');
+        return $this->belongsTo(Property::class, 'property_id');
     }
-    public function employee(){
-        return $this->belongsTo(User::class,'employee_id');
+    public function employee()
+    {
+        return $this->belongsTo(User::class, 'employee_id');
     }
 
     public function review()

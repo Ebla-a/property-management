@@ -16,34 +16,7 @@ Route::middleware(['auth', 'role:admin|employee'])
    Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
             ->name('dashboard.employee');
 
-        // Bookings List
-        Route::get('/bookings', [EmployeeBookingController::class, 'index'])
-            ->name('bookings.index');
-
-
-
-
-        // Actions
-        // reschedual
-        Route::get('/bookings/{booking}/reschedule',
-            [EmployeeBookingController::class, 'rescheduleForm']
-        )->name('reschedule.form');
-          // apprve
-        Route::patch('/bookings/{id}/approve', [EmployeeBookingController::class, 'approve'])
-            ->name('bookings.approve');
-         // cancel
-        Route::patch('/bookings/{id}/cancel', [EmployeeBookingController::class, 'cancel'])
-            ->name('bookings.cancel');
-
-        Route::patch('/bookings/{id}/reschedule', [EmployeeBookingController::class, 'reschedule'])
-            ->name('bookings.reschedule');
-
-        Route::patch('/bookings/{id}/complete', [EmployeeBookingController::class, 'complete'])
-            ->name('bookings.complete');
-
-        Route::patch('/bookings/{id}/reject', [EmployeeBookingController::class, 'reject'])
-            ->name('bookings.reject');
-
+            
         // My Bookings
       Route::get('/bookings/my', [EmployeeBookingController::class, 'myBookings'])
     ->name('bookings.my');
@@ -53,8 +26,34 @@ Route::middleware(['auth', 'role:admin|employee'])
         Route::get('/bookings/pending', [EmployeeBookingController::class, 'pending'])
             ->name('bookings.pending');
 
+        //Bookings List
+        // Route::get('/bookings', [EmployeeBookingController::class, 'index'])
+        //     ->name('bookings.index');
+
+        // Actions
+        // reschedual
+        Route::get('/bookings/{booking}/reschedule',
+            [EmployeeBookingController::class, 'rescheduleForm']
+        )->name('reschedule.form');
+          // apprve
+        Route::patch('/bookings/{booking}/approve', [EmployeeBookingController::class, 'approve'])
+            ->name('bookings.approve');
+         // cancel
+        Route::patch('/bookings/{booking}/cancel', [EmployeeBookingController::class, 'cancel'])
+            ->name('bookings.cancel');
+
+        Route::patch('/bookings/{booking}/reschedule', [EmployeeBookingController::class, 'reschedule'])
+            ->name('bookings.reschedule');
+
+        Route::patch('/bookings/{booking}/complete', [EmployeeBookingController::class, 'complete'])
+            ->name('bookings.complete');
+
+        Route::patch('/bookings/{booking}/reject', [EmployeeBookingController::class, 'reject'])
+            ->name('bookings.reject');
+
+
              // Booking Details
-        Route::get('/bookings/{id}', [EmployeeBookingController::class, 'show'])
+        Route::get('/bookings/{booking}', [EmployeeBookingController::class, 'show'])
             ->name('bookings.show');
 
 

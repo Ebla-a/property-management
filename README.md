@@ -219,17 +219,22 @@ For their commitment to student growth and learning opportunities.
 **Mr. Ayham Ibrahim**  
 - Support throughout development
 
+**Supervisors**
+Ms Nourhan almohammed & Ms Muna alrays
+Technical support and daily follow-up
+
 **Focal X Team**  
 For building and supporting this educational journey
+ceo and founder Alaa Darwish
 
 ### Development Team
 | Role | Name |
 |------|------|
 | Lead Developer | Ebla zyab ali |
 | Assistant Developer | Hasan Dayoub |
-| Backend Developer | Wajd Heshme |
+| Frontend Specialist | Wajd Heshme |
 | Backend Developer | Amin Ali |
-| Backend Developer | Enas |
+| Database Specialist | Enas |
 | Backend Developer | Abdullah Shuraitah |
 
 ---

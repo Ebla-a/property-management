@@ -1,8 +1,10 @@
-<?php 
+<?php
+
 namespace App\Services;
 
 use App\Models\Booking;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeBookingService
 {
@@ -13,14 +15,14 @@ class EmployeeBookingService
             ->paginate(10);
     }
 
-    public function getBookingDetails($id)
-    {
-        return Booking::findOrFail($id);
-    }
+  
 
-    public function approve($id)
+    public function approve(Booking $booking)
     {
-        $booking = Booking::findOrFail($id);
+        
+        if (!in_array($booking->status, ['pending', 'rescheduled'])) {
+            abort(422, 'Action not allowed. Booking must be pending or rescheduled.');
+        }
 
         if ($this->hasTimeConflict(
             $booking->employee_id,
@@ -30,22 +32,19 @@ class EmployeeBookingService
             abort(422, 'Employee has another booking at this time');
         }
 
-        if ($booking->status !== 'pending') {
-            abort(422, 'Action not allowed');
-        }
-
         $booking->update([
-            'status' => 'approved'
+            'status' => 'approved',
+            'rescheduled_at' => null
+
         ]);
 
         return $booking;
     }
 
-    public function cancel($id)
+    public function cancel(Booking $booking)
     {
-        $booking = Booking::findOrFail($id);
 
-        if (! in_array($booking->status, ['pending','approved'])) {
+        if (! in_array($booking->status, ['pending', 'approved'])) {
             abort(422, 'Action not allowed');
         }
 
@@ -56,9 +55,8 @@ class EmployeeBookingService
         return $booking;
     }
 
-    public function reschedule($id, $scheduleAt)
+    public function reschedule(Booking $booking, $scheduleAt)
     {
-        $booking = Booking::findOrFail($id);
 
         if ($this->hasTimeConflict(
             $booking->employee_id,
@@ -68,32 +66,36 @@ class EmployeeBookingService
             abort(422, 'Employee already has booking at this time');
         }
 
-        if (! in_array($booking->status, ['pending','approved'])) {
+
+        if (! in_array($booking->status, ['pending', 'approved'])) {
             abort(422, 'Action not allowed');
         }
 
         $booking->update([
             'status' => 'rescheduled',
-            'scheduled_at' => $scheduleAt
+            'scheduled_at' => $scheduleAt,
+            'rescheduled_at' => now()
         ]);
 
         return $booking;
     }
+    /**
+     * complete booking
+     */
 
-    public function complete($id)
+    public function complete(Booking $booking)
     {
-        $booking = Booking::findOrFail($id);
-         
-        if ($booking->employee_id !== auth('sanctum')->id()) {
-        abort(403, 'Forbidden');
+
+        if ($booking->employee_id !== Auth::id()) {
+            abort(403, 'Forbidden');
         }
 
-        if ( !in_array($booking->status, ['approved','rescheduled'])) {
-            abort(422,'Action not allowed');
+        if (!in_array($booking->status, ['approved', 'rescheduled'])) {
+            abort(422, 'Action not allowed');
         }
 
         $booking->update([
-            'status' =>'completed',
+            'status' => 'completed',
             'completed_at' => now()
         ]);
 
@@ -104,8 +106,14 @@ class EmployeeBookingService
      */
     public function hasTimeConflict($employeeId, $scheduledAt, $excludeId = null)
     {
+        if (empty($employeeId)) {
+            return false;
+        }
+
         return Booking::where('employee_id', $employeeId)
-            ->when($excludeId, fn($q) =>
+            ->when(
+                $excludeId,
+                fn($q) =>
                 $q->where('id', '!=', $excludeId)
             )
             ->whereBetween('scheduled_at', [
@@ -114,21 +122,22 @@ class EmployeeBookingService
             ])
             ->exists();
     }
-   
-    public function reject($id, $reason = null)
+    /**
+     * reject a booking
+     */
+
+    public function reject(Booking $booking, $reason = null)
     {
-        $booking = Booking::findOrFail($id );
-        if($booking->employee_id !== auth('sanctum')->id())
-        {
-              abort(403, 'You are not allowed to reject this booking');
+        if ($booking->employee_id !== Auth::id()) {
+            abort(403, 'You are not allowed to reject this booking');
         }
         // reject only if status pending
-        if($booking->status !== 'pending'){
-            abort(422 , 'action is not allowed');
+        if ($booking->status !== 'pending') {
+            abort(422, 'action is not allowed');
         }
 
         $booking->update([
-            'status' =>'rejected',
+            'status' => 'rejected',
             'rejection_reason' => $reason,
             'rejected_at' => now(),
         ]);

@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Booking;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class BookingPolicy
 {
@@ -24,7 +25,7 @@ class BookingPolicy
 
             // assigned employee can view
             ($user->hasRole('employee')
-             && $booking->employee_id === $user->id) ||
+                && $booking->employee_id === $user->id) ||
 
             // admin can view all
             $user->hasRole('admin');
@@ -37,6 +38,7 @@ class BookingPolicy
     public function cancel(User $user, Booking $booking): bool
     {
         return
+            $user->hasRole('employee') &&
             $booking->user_id === $user->id &&
             $booking->status === 'pending';
     }
@@ -49,8 +51,8 @@ class BookingPolicy
     {
         return
             $user->hasRole('employee') &&
-            $booking->employee_id === $user->id &&
-            $booking->status === 'pending';
+            $booking->employee_id  === $user->id &&
+            in_array($booking->status, ['pending', 'rescheduled']);
     }
 
 
@@ -62,7 +64,7 @@ class BookingPolicy
         return
             $user->hasRole('employee') &&
             $booking->employee_id === $user->id &&
-            in_array($booking->status , ['pending','approved']);
+            in_array($booking->status, ['pending', 'approved', 'rescheduled']);
     }
 
 
@@ -73,8 +75,8 @@ class BookingPolicy
     {
         return
             $user->hasRole('employee') &&
-            $booking->employee_id === $user->id &&
-            in_array($booking->status , ['pending','approved']);
+            $booking->employee_id === $user->id  &&
+            in_array($booking->status, ['pending', 'approved','rescheduled']);
     }
 
 
@@ -87,5 +89,13 @@ class BookingPolicy
             $user->hasRole('employee') &&
             $booking->employee_id === $user->id &&
             $booking->status === 'approved';
+    }
+
+    public function reject(User $user, Booking $booking)
+    {
+        return
+            $user->hasRole('employee') &&
+            $booking->employee_id === $user->id &&
+            $booking->status  === 'pending';
     }
 }

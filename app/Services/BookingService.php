@@ -40,6 +40,11 @@ class BookingService
             return $booking->load(['property', 'employee']);
         });
     }
+     /**
+      * derails of booking
+      * @param Booking $booking
+      * @return Booking
+      */
      public function show(Booking $booking)
     {
         return $booking->load([
@@ -48,6 +53,9 @@ class BookingService
             'customer',
         ]);
     }
+    /**
+     * cancel booking
+     */
 
     public function cancel(Booking $booking)
     {
