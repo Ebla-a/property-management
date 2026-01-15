@@ -33,6 +33,10 @@ class EmployeeBookingController extends Controller
         $user   = $request->user();
         $status = $request->get('status');
 
+        // Admin
+        if ($user->hasRole('admin')) {
+
+
       $bookings = Booking::with(['user', 'property', 'employee', 'review.user'])
             ->when($status, fn($q) => $q->where('status', $status))
             ->latest()
@@ -164,6 +168,7 @@ class EmployeeBookingController extends Controller
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking rejected');
 
+
         // return redirect()->back()->with('status', 'Booking rejected');
 
     }
@@ -175,6 +180,37 @@ class EmployeeBookingController extends Controller
 
 
         $status = $request->query('status');
+
+public function myBookings(Request $request)
+{
+    $employee = $request->user();
+
+
+
+    $status = $request->query('status');
+
+    $query = Booking::with(['user', 'property'])
+        ->where('employee_id', $employee->id);
+
+    if ($status && in_array($status, ['pending', 'approved', 'completed', 'rejected', 'canceled', 'rescheduled'])) {
+        $query->where('status', $status);
+    }
+
+    $bookings = $query->latest()->paginate(6);
+
+
+    $counts = [
+        'all' => Booking::where('employee_id', $employee->id)->count(),
+        'pending' => Booking::where('employee_id', $employee->id)->where('status', 'pending')->count(),
+        'approved' => Booking::where('employee_id', $employee->id)->where('status', 'approved')->count(),
+        'rescheduled' => Booking::where('employee_id', $employee->id)->where('status', 'rescheduled')->count(),
+        'completed' => Booking::where('employee_id', $employee->id)->where('status', 'completed')->count(),
+        'rejected' => Booking::where('employee_id', $employee->id)->where('status', 'rejected')->count(),
+        'canceled' => Booking::where('employee_id', $employee->id)->where('status', 'canceled')->count(),
+    ];
+
+    return view('dashboard.bookings.employeebookings', compact('bookings', 'employee', 'counts'));
+}
 
         $query = Booking::with(['user', 'property'])
             ->where('employee_id', $employee->id);

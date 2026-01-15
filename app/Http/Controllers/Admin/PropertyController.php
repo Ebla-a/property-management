@@ -10,6 +10,7 @@ use App\Services\AmenityService;
 use App\Services\PropertyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Arr; 
 
 class PropertyController extends Controller
 {
@@ -27,48 +28,56 @@ class PropertyController extends Controller
      *
      * @return View
      */
-public function index(): View
-{
-    $filters = request()->only([
-        'amenity_ids',
-        'property_types',
-        'type',           
-        'city',
-        'min_price',
-        'max_price',
-        'sort',
-        'order',
-        'limit'
-    ]);
+    public function index(): View
+    {
+        $filters = collect(request()->only([
+            'amenity_ids',
+            'property_types',
+            'type',
+            'city',
+            'min_price',
+            'max_price',
+            'sort',
+            'order',
+            'limit'
+        ]));
 
-    // If legacy single `type` param exists but no `property_types`, map it to property_types[]
-    if (!empty($filters['type']) && empty($filters['property_types'])) {
-        // make sure it's an array (so service expects array)
-        $filters['property_types'] = is_array($filters['type']) ? $filters['type'] : [$filters['type']];
+        // If legacy single `type` param exists but no `property_types`, map it to property_types[]
+        $filters = $filters
+            ->when(
+                // condition: type present AND property_types not present
+                $filters->get('type') && ! $filters->has('property_types'),
+                function ($col) {
+                    // make sure it's an array (so service expects array)
+                    return $col->put('property_types', Arr::wrap($col->get('type')));
+                }
+            )
+            // Ensure amenity_ids is array (when select multiple disabled or single selected)
+            ->when(
+                $filters->has('amenity_ids') && ! is_array($filters->get('amenity_ids')),
+                function ($col) {
+                    return $col->put('amenity_ids', Arr::wrap($col->get('amenity_ids')));
+                }
+            )
+            ->all();
+
+        $properties = $this->propertyService->getPaginated($filters);
+
+        $amenities = $this->amenityService->getAll();
+        $propertyTypes = \App\Models\PropertyType::all();
+
+        return view('dashboard.properties.index', compact('properties', 'amenities', 'filters', 'propertyTypes'));
     }
 
-    // Ensure amenity_ids is array (when select multiple disabled or single selected)
-    if (!empty($filters['amenity_ids']) && !is_array($filters['amenity_ids'])) {
-        $filters['amenity_ids'] = [$filters['amenity_ids']];
+
+
+    public function create(): View
+    {
+        $amenities = $this->amenityService->getAll();
+        $propertyTypes = \App\Models\PropertyType::all();
+
+        return view('dashboard.properties.create', compact('amenities', 'propertyTypes'));
     }
-
-    $properties = $this->propertyService->getPaginated($filters);
-
-    $amenities = $this->amenityService->getAll();
-    $propertyTypes = \App\Models\PropertyType::all();
-
-    return view('dashboard.properties.index', compact('properties', 'amenities', 'filters', 'propertyTypes'));
-}
-
-
-
-public function create(): View
-{
-    $amenities = $this->amenityService->getAll();
-    $propertyTypes = \App\Models\PropertyType::all();
-
-    return view('dashboard.properties.create', compact('amenities', 'propertyTypes'));
-}
 
     public function store(StorePropertyRequest $request): RedirectResponse
     {
@@ -87,14 +96,14 @@ public function create(): View
         return redirect()->route('dashboard.properties.index')->with('success', 'Property created with images.');
     }
 
-public function edit(Property $property): View
-{
-    $property->load('amenities');
-    $amenities = $this->amenityService->getAll();
-    $propertyTypes = \App\Models\PropertyType::all();
+    public function edit(Property $property): View
+    {
+        $property->load('amenities');
+        $amenities = $this->amenityService->getAll();
+        $propertyTypes = \App\Models\PropertyType::all();
 
-    return view('dashboard.properties.edit', compact('property', 'amenities', 'propertyTypes'));
-}
+        return view('dashboard.properties.edit', compact('property', 'amenities', 'propertyTypes'));
+    }
 
 
     public function update(UpdatePropertyRequest $request, Property $property): RedirectResponse

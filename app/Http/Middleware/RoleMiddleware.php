@@ -1,38 +1,68 @@
 <?php
 
-namespace App\Http\Middleware;
+use App\Http\Controllers\BookingsReportController;
+use App\Http\Controllers\Customer\BookingController;
+use App\Http\Controllers\Employee\EmployeeBookingController;
+use App\Http\Controllers\PropertiesReportController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Employee\EmployeeDashboardController;
 
-use Closure;
-use Illuminate\Http\Request;
+/*
+|--------------------------------------------------------------------------
+| Employee Routes (fixed)
+|--------------------------------------------------------------------------
+| - Prefix: /dashboard
+| - Name prefix: employee.*
+| - Notes:
+|   * Use `role:employee` middleware to restrict these routes to employees only.
+|   * Use consistent route-model-binding parameter `{booking}` (not `{id}`).
+|   * Dashboard index should be `/` (because of the 'dashboard' prefix).
+|--------------------------------------------------------------------------
+*/
 
-class RoleMiddleware
-{
-    public function handle(Request $request, Closure $next, ...$roles)
-    {
-        $user = $request->user();
+Route::middleware(['auth', 'role:employee'])
+    ->prefix('dashboard')
+    ->name('employee.')
+    ->group(function () {
 
-        // Not logged in
-        if (! $user) {
-            // Web
-            if (! $request->expectsJson()) {
-                return redirect()->route('login');
-            }
+    // Employee home dashboard: GET /dashboard
+    Route::get('/', [EmployeeDashboardController::class, 'index'])
+        ->name('dashboard');
 
-            // API
-            return response()->json(['message' => 'Unauthenticated'], 401);
-        }
+    // Bookings List: GET /dashboard/bookings
+    Route::get('bookings', [EmployeeBookingController::class, 'index'])
+        ->name('bookings.index');
 
-        // User does not have required roles
-        if (! $user->hasAnyRole($roles)) {
-            // Web
-            if (! $request->expectsJson()) {
-                abort(403);
-            }
+    // My Bookings: GET /dashboard/bookings/my
+    Route::get('bookings/my', [EmployeeBookingController::class, 'myBookings'])
+        ->name('bookings.my');
 
-            // API
-            return response()->json(['message' => 'Forbidden - Access denied'], 403);
-        }
+    // Pending Bookings: GET /dashboard/bookings/pending
+    Route::get('bookings/pending', [EmployeeBookingController::class, 'pending'])
+        ->name('bookings.pending');
 
-        return $next($request);
-    }
-}
+    // Booking Details (use route-model-binding): GET /dashboard/bookings/{booking}
+    Route::get('bookings/{booking}', [EmployeeBookingController::class, 'show'])
+        ->name('bookings.show');
+
+    // Reschedule form (GET): /dashboard/bookings/{booking}/reschedule
+    Route::get('bookings/{booking}/reschedule', [EmployeeBookingController::class, 'rescheduleForm'])
+        ->name('reschedule.form');
+
+    // Actions (PATCH) - use {booking} for model binding
+    Route::patch('bookings/{booking}/approve', [EmployeeBookingController::class, 'approve'])
+        ->name('bookings.approve');
+
+    Route::patch('bookings/{booking}/cancel', [EmployeeBookingController::class, 'cancel'])
+        ->name('bookings.cancel');
+
+    Route::patch('bookings/{booking}/reschedule', [EmployeeBookingController::class, 'reschedule'])
+        ->name('bookings.reschedule');
+
+    Route::patch('bookings/{booking}/complete', [EmployeeBookingController::class, 'complete'])
+        ->name('bookings.complete');
+
+    Route::patch('bookings/{booking}/reject', [EmployeeBookingController::class, 'reject'])
+        ->name('bookings.reject');
+});

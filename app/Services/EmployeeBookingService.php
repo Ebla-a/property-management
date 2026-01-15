@@ -86,8 +86,15 @@ class EmployeeBookingService
     public function complete(Booking $booking)
     {
 
+
         if ($booking->employee_id !== Auth::id()) {
             abort(403, 'Forbidden');
+
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->employee_id !== auth('sanctum')->id()) {
+        abort(403, 'Forbidden');
+
         }
 
         if (!in_array($booking->status, ['approved', 'rescheduled'])) {
@@ -122,11 +129,16 @@ class EmployeeBookingService
             ])
             ->exists();
     }
+
     /**
      * reject a booking
      */
 
     public function reject(Booking $booking, $reason = null)
+
+
+    public function reject($id, $reason = null)
+
     {
         if ($booking->employee_id !== Auth::id()) {
             abort(403, 'You are not allowed to reject this booking');
