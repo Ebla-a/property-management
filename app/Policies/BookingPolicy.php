@@ -24,6 +24,8 @@ class BookingPolicy
     public function view(User $user, Booking $booking): bool
     {
         return
+         // admin can view all
+            $user->hasRole('admin')||
 
             // customer can view his booking
             $booking->user_id === $user->id ||
@@ -31,10 +33,6 @@ class BookingPolicy
             // assigned employee can view
             $user->hasRole('employee') && (
                 $booking->employee_id == $user->id || is_null($booking->employee_id));
-
-
-        // admin can view all
-        $user->hasRole('admin');
     }
 
 

@@ -43,7 +43,8 @@ class EmployeeBookingService
     {
 
         if (! in_array($booking->status, ['pending', 'approved','rescheduled'])) {
-            abort(422, 'Action not allowed');
+            throw new \Exception('Action not allowed');
+       
         }
 
         $booking->update([
@@ -61,7 +62,8 @@ class EmployeeBookingService
             $scheduleAt,
             $booking->id
         )) {
-            abort(422, 'Employee already has booking at this time');
+            throw new \Exception('Employee already has booking at this time');
+          
         }
 
 
