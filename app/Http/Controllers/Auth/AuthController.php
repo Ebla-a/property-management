@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -28,8 +29,7 @@ public function register(RegisterUserRequest $request)
         return response()->json([
             'message' => 'User registered successfully',
             'token'   => $token,
-            'role'    => $user->getRoleNames(),
-            'user'    => $user,
+            'user'    => new UserResource($user),
         ], 201);
     }
 
@@ -48,8 +48,8 @@ public function login(Request $request)
         $token=$user->createToken('auth_token',$user->getRoleNames()->toArray())->plainTextToken;
         return response()->json([
         'message'=>'Login Successfully',
-        'User'=>$user,
-        'Token'=>$token
+        'Token'=>$token,
+        'user'    => new UserResource($user),
     ],201);
 }
 
