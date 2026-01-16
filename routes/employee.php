@@ -17,6 +17,10 @@ Route::middleware(['auth', 'role:admin|employee'])
             ->name('dashboard.employee');
 
 
+
+                //Bookings List
+        Route::get('/bookings', [EmployeeBookingController::class, 'index'])
+            ->name('bookings.index');
         // My Bookings
       Route::get('/bookings/my', [EmployeeBookingController::class, 'myBookings'])
     ->name('bookings.my');
@@ -26,9 +30,7 @@ Route::middleware(['auth', 'role:admin|employee'])
         Route::get('/bookings/pending', [EmployeeBookingController::class, 'pending'])
             ->name('bookings.pending');
 
-        //Bookings List
-        // Route::get('/bookings', [EmployeeBookingController::class, 'index'])
-        //     ->name('bookings.index');
+
 
         // Actions
         // reschedual

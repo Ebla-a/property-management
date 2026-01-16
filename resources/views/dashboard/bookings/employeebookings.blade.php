@@ -9,6 +9,30 @@
         My Bookings
     </h1>
 
+    {{-- Feedback messages --}}
+@if(session('status'))
+    <div class="mb-4 p-3 rounded bg-green-50 text-green-800">
+        {{ session('status') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="mb-4 p-3 rounded bg-red-50 text-red-800">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="mb-4 p-3 rounded bg-red-50 text-red-800">
+        <ul class="list-disc pl-5">
+            @foreach ($errors->all() as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
     {{-- ================= Quick Tabs ================= --}}
     <div class="flex flex-wrap items-center gap-3 mb-8">
         @php
