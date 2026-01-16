@@ -56,16 +56,21 @@ class EmployeeBookingController extends Controller
      */
     public function approve(Booking $booking)
     {
+        try {
         $this->authorize('approve', $booking);
 
         if (is_null($booking->employee_id)) {
             $booking->update(['employee_id' => Auth::id()]);
         }
+       
+      
         $booking = $this->employeeBookingService->approve($booking);
-
-        return redirect()
+          return redirect()
             ->route('employee.bookings.show', $booking->id)
             ->with('status', 'Booking approved successfully');
+            } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+                return back()->with('error', $e->getMessage());
+    }
     }
 
     /**
