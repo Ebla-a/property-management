@@ -21,6 +21,7 @@ class PropertiesReportController extends Controller
     }
 
     public function export(Request $request){
+       
     $report = $this->getReportData($request);
 
     $pdf = PDF::loadView('dashboard.reports.properties-export', compact('report'));

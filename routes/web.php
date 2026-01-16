@@ -29,6 +29,7 @@ use App\Http\Controllers\Employee\EmployeeBookingController;
 */
 use App\Http\Controllers\Admin\Reports\BookingsReportController;
 use App\Http\Controllers\Admin\Reports\PropertiesReportController;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,17 @@ Route::get('/', function () {
 });
 
 Route::view('/team', 'team')->name('team.index');
+
+// change language
+   Route::get('lang/{locale}', function ($locale) {
+  
+    if (in_array($locale, ['ar', 'en'])) {
+        
+        Session::put('locale', $locale);
+    }
+    
+    return redirect()->back();
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +83,7 @@ Route::middleware(['auth', 'check.active', 'role:admin|employee'])
 
         abort(403, 'Unauthorized');
     })->name('index');
-
+  
     /*
     |--------------------------------------------------------------------------
     | Admin Routes

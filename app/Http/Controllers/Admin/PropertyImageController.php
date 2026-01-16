@@ -35,7 +35,7 @@ class PropertyImageController extends Controller
 
         return redirect()
             ->route('admin.properties.images.index', $property->id)
-            ->with('success', 'Images uploaded successfully');
+            ->with('success',  __(  'messages.images.images_uploaded'));
     }
 
     // Set as Main Image
@@ -48,7 +48,7 @@ class PropertyImageController extends Controller
     ) {
         $imageService->setMain($property, $image);
 
-        return back()->with('success', 'Main image has been set successfully');
+        return back()->with('success',  __('messages.images.main_image_set'));
     }
 
     // Soft Delete
@@ -59,7 +59,7 @@ class PropertyImageController extends Controller
     ) {
         $imageService->softDelete($property, $image);
 
-        return back()->with('success', 'Image has been soft deleted successfully');
+        return back()->with('success', __('messages.images.image_soft_deleted'));
     }
 
     // Permanent Delete
@@ -70,7 +70,7 @@ class PropertyImageController extends Controller
     ) {
         $imageService->forceDelete($property, $image);
 
-        return back()->with('success', 'Image has been permanently deleted');
+        return back()->with('success', __('messages.images.image_permanently_deleted'));
     }
 
     // Trashed Images Page (Blade)
@@ -99,6 +99,6 @@ class PropertyImageController extends Controller
 
         $imageService->restore($property, $img);
 
-        return back()->with('success', 'Image restored successfully.');
+        return back()->with('success', __('messages.images.image_restored'));
     }
 }

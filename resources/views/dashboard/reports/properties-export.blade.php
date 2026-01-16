@@ -1,123 +1,84 @@
-@extends('dashboard.layout')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Properties Report</title>
+    <style>
+        body { font-family: sans-serif; color: #333; padding: 25px; margin: 0; }
+        .header { border-bottom: 3px solid #111827; padding-bottom: 10px; margin-bottom: 25px; }
+        .header h1 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .summary-box { background-color: #f3f4f6; border-radius: 8px; padding: 20px; margin-bottom: 30px; }
+        .summary-item { display: inline-block; width: 18%; text-align: center; }
+        .summary-label { font-size: 10px; color: #6b7280; font-weight: bold; }
+        .summary-value { font-size: 16px; font-weight: bold; margin-top: 5px; }
 
-@section('content')
-<div class="px-6 py-8 space-y-8" style="direction:ltr">
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background-color: #111827; color: white; padding: 12px 8px; text-align: left; }
+        td { padding: 10px 8px; border-bottom: 1px solid #e5e7eb; }
+        tr:nth-child(even) { background-color: #f9fafb; }
 
-    {{-- Page Title + Actions --}}
-    <div class="mb-6 flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 pb-2">Properties Report</h1>
-            <p class="text-sm text-gray-500">Generated at: {{ now()->format('Y-m-d H:i') }}</p>
-        </div>
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .available { background-color: #dcfce7; color: #166534; }
+        .booked { background-color: #fef9c3; color: #854d0e; }
+        .rented { background-color: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
 
-        {{-- Export Button --}}
-        <a href="{{ route('dashboard.reports.properties.export', request()->all()) }}"
-           class="px-4 py-2 rounded-xl text-sm font-medium
-                  bg-indigo-600 text-white
-                  hover:bg-indigo-700 transition">
-            Export Report
-        </a>
+    <div class="header">
+        <h1>Properties Inventory Report</h1>
+        <p style="font-size: 11px; color: #666;">Generated: {{ now()->format('M d, Y | H:i') }}</p>
     </div>
 
-    {{-- Filters --}}
-    <form method="GET"
-          class="bg-white border rounded-2xl p-5 shadow-sm grid grid-cols-1 md:grid-cols-4 gap-4">
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select name="status" class="w-full border rounded-lg px-3 py-2 text-sm">
-                <option value="">All</option>
-                <option value="available" {{ request('status')=='available' ? 'selected' : '' }}>Available</option>
-                <option value="booked" {{ request('status')=='booked' ? 'selected' : '' }}>Booked</option>
-                <option value="rented" {{ request('status')=='rented' ? 'selected' : '' }}>Rented</option>
-                <option value="hidden" {{ request('status')=='hidden' ? 'selected' : '' }}>Hidden</option>
-            </select>
+    <div class="summary-box">
+        <div class="summary-item">
+            <div class="summary-label">TOTAL</div>
+            <div class="summary-value">{{ $report['total_properties'] }}</div>
         </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
-            <input type="text" name="city" value="{{ request('city') }}"
-                   class="w-full border rounded-lg px-3 py-2 text-sm" placeholder="City name">
+        <div class="summary-item">
+            <div class="summary-label">AVAILABLE</div>
+            <div class="summary-value">{{ $report['by_status']['available'] ?? 0 }}</div>
         </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">From date</label>
-            <input type="date" name="from" value="{{ request('from') }}"
-                   class="w-full border rounded-lg px-3 py-2 text-sm">
+        <div class="summary-item">
+            <div class="summary-label">BOOKED</div>
+            <div class="summary-value">{{ $report['by_status']['booked'] ?? 0 }}</div>
         </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">To date</label>
-            <input type="date" name="to" value="{{ request('to') }}"
-                   class="w-full border rounded-lg px-3 py-2 text-sm">
+        <div class="summary-item">
+            <div class="summary-label">RENTED</div>
+            <div class="summary-value">{{ $report['by_status']['rented'] ?? 0 }}</div>
         </div>
-
-        <div class="md:col-span-4 flex justify-end">
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">
-                Apply Filters
-            </button>
-        </div>
-    </form>
-
-    {{-- Statistics --}}
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div class="bg-white border rounded-xl p-4 shadow-sm text-center">
-            <p class="text-sm text-gray-500">Total Properties</p>
-            <p class="text-2xl font-bold text-gray-900">{{ $report['total_properties'] }}</p>
-        </div>
-        <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
-            <p class="text-sm text-green-700">Available</p>
-            <p class="text-2xl font-bold text-green-800">{{ $report['by_status']['available'] }}</p>
-        </div>
-        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
-            <p class="text-sm text-yellow-700">Booked</p>
-            <p class="text-2xl font-bold text-yellow-800">{{ $report['by_status']['booked'] }}</p>
-        </div>
-        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-            <p class="text-sm text-blue-700">Rented</p>
-            <p class="text-2xl font-bold text-blue-800">{{ $report['by_status']['rented'] }}</p>
-        </div>
-        <div class="bg-gray-100 border border-gray-300 rounded-xl p-4 text-center">
-            <p class="text-sm text-gray-700">Hidden</p>
-            <p class="text-2xl font-bold text-gray-800">{{ $report['by_status']['hidden'] }}</p>
+        <div class="summary-item">
+            <div class="summary-label">HIDDEN</div>
+            <div class="summary-value">{{ $report['by_status']['hidden'] ?? 0 }}</div>
         </div>
     </div>
 
-    {{-- Properties Table --}}
-    <div class="bg-white border rounded-2xl shadow-sm overflow-hidden mt-6">
-        <div class="px-5 py-4 border-b">
-            <h2 class="font-semibold text-gray-800">Properties List</h2>
-        </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Property Title</th>
+                <th>City</th>
+                <th>Status</th>
+                <th>Listing Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($report['properties'] as $property)
+            <tr>
+                <td style="font-weight: bold;">{{ $property->title }}</td>
+                <td>{{ $property->city }}</td>
+                <td>
+                    <span class="badge {{ $property->status }}">
+                        {{ $property->status }}
+                    </span>
+                </td>
+                <td>{{ $property->created_at->format('Y-m-d') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm divide-y">
-                <thead class="bg-gray-50 text-gray-600">
-                    <tr>
-                        <th class="px-4 py-3 text-left">Title</th>
-                        <th class="px-4 py-3 text-left">City</th>
-                        <th class="px-4 py-3 text-left">Status</th>
-                        <th class="px-4 py-3 text-left">Created At</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y">
-                    @forelse($report['properties'] as $property)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 font-medium text-gray-800">{{ $property->title }}</td>
-                            <td class="px-4 py-3">{{ $property->city }}</td>
-                            <td class="px-4 py-3 capitalize">{{ $property->status }}</td>
-                            <td class="px-4 py-3 text-gray-500">{{ $property->created_at->format('Y-m-d') }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="px-4 py-6 text-center text-gray-500">
-                                No properties found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-</div>
-@endsection
+</body>
+</html>

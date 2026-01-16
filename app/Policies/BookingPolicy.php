@@ -97,8 +97,8 @@ class BookingPolicy
     public function reject(User $user, Booking $booking)
     {
         return
-            $user->hasRole('employee') &&
+            $user->hasRole('employee') || is_null($booking->employee_id) &&
             $booking->employee_id === $user->id &&
-            $booking->status  === 'pending';
+            $booking->status === 'pending';
     }
 }

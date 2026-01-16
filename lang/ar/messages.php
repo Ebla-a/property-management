@@ -13,22 +13,50 @@ return [
         'last_6_months' => 'آخر 6 أشهر',
         'pending_6m' => 'قيد الانتظار (6 أشهر)',
         'dashboard_preview' => 'لوحة التحكم • معاينة البيانات',
+      
+    'this_week' => 'هذا الأسبوع',
+    'this_month' => 'هذا الشهر',
+    'pending' => 'قيد الانتظار',
+    'approved' => 'تمت الموافقة',
+    'today' => 'اليوم',
+    'weekly_overview' => 'نظرة عامة أسبوعية',
+    'monthly_overview' => 'نظرة عامة شهرية',
+    'latest_bookings' => 'أحدث الحجوزات',
+    'no_weekly_data' => 'لا توجد حجوزات في آخر 7 أيام',
+    'no_monthly_data' => 'لا توجد حجوزات هذا الشهر بعد',
+    'id' => 'المعرف',
+    'user' => 'المستخدم',
+    'property' => 'العقار',
+    'status' => 'الحالة',
+    'scheduled_at' => 'موعد الحجز',
+    'status_pending' => 'قيد الانتظار',
+    'status_approved' => 'مقبول',
+    'status_completed' => 'مكتمل',
     ],
     
     // Sidebar
     'sidebar' => [
-        'system_name' => 'نظام إدارة العقارات',
-        'home' => 'الرئيسية',
-        'properties' => 'العقارات',
-        'amenities' => 'المرافق',
-        'bookings' => 'الحجوزات',
-        'reports' => 'التقارير',
-        'properties_report' => 'تقرير العقارات',
-        'bookings_report' => 'تقرير الحجوزات',
-        'users' => 'المستخدمون',
-        'my_bookings' => 'حجوزاتي',
-        'pending_bookings' => 'الحجوزات قيد الانتظار',
-        'copyright' => '© :year نظام العقارات',
+    'system_name' => 'نظام إدارة العقارات',
+    'home' => 'الرئيسية',
+    'properties' => 'العقارات',
+    'amenities' => 'المرافق',
+    'bookings' => 'الحجوزات',
+    'reports' => 'التقارير',
+    'properties_report' => 'تقرير العقارات',
+    'bookings_report' => 'تقرير الحجوزات',
+    'users' => 'المستخدمين',
+    'my_bookings' => 'حجوزاتي',
+    'pending_bookings' => 'حجوزات قيد الانتظار',
+    'logout' => 'تسجيل الخروج',
+
+],
+'header' => [
+    'language' => 'اللغة',
+    'arabic' => 'العربية',
+    'english' => 'الإنجليزية',
+    'new_property' => 'عقار جديد',
+    'admin_badge' => 'مدير',
+    'employee_badge' => 'موظف',
     ],
     
     // Reports
@@ -36,7 +64,7 @@ return [
         'bookings_report' => 'تقرير الحجوزات',
         'properties_report' => 'تقرير العقارات',
         'generated_at' => 'تم الإنشاء في',
-        'export_report' => 'تصدير التقرير',
+        'export' => 'تصدير التقرير',
         'total_bookings' => 'إجمالي الحجوزات',
         'total_properties' => 'إجمالي العقارات',
         'pending' => 'قيد الانتظار',
@@ -61,6 +89,16 @@ return [
         'total' => 'الإجمالي',
         'unknown' => 'غير معروف',
         'no_data' => 'لا توجد بيانات متاحة',
+     
+        'time_stats' => 'إحصائيات زمنية',
+       
+        'all' => 'الكل',
+        'from_date' => 'من تاريخ',
+        'to_date' => 'إلى تاريخ',
+        'apply_filters' => 'تطبيق الفلتر',
+      
+        'created_at' => 'تاريخ الإنشاء',
+       
     ],
     
     // Property
@@ -68,7 +106,7 @@ return [
         'created' => 'تم إنشاء العقار بنجاح',
         'updated' => 'تم تحديث العقار بنجاح',
         'deleted' => 'تم حذف العقار بنجاح',
-        'title' => 'العقارات',
+        'title' => 'العنوان',
         'add_property' => 'إضافة عقار جديد',
         'edit_property' => 'تعديل العقار',
         'property_images' => 'صور العقار',
@@ -90,10 +128,6 @@ return [
         'description_label' => 'الوصف',
         'images_label' => 'صور العقار',
         'amenities_label' => 'المرافق',
-        'status_available' => 'متاح',
-        'status_booked' => 'محجوز',
-        'status_rented' => 'مؤجر',
-        'status_hidden' => 'مخفي',
         'title_placeholder' => 'عنوان العقار',
         'city_placeholder' => 'المدينة',
         'neighborhood_placeholder' => 'الحي',
@@ -148,45 +182,58 @@ return [
         'force_delete_confirm' => 'حذف نهائيًا؟',
         'delete_image_confirm' => 'حذف؟',
         'upload_new_images' => 'رفع صور جديدة',
+        'status' => 'الحالة',
+        'city' => 'المدينة',
+        'status_list' => [
+            'available' => 'متاح',
+            'booked' => 'محجوز',
+            'rented' => 'مؤجر',
+            'hidden' => 'مخفي',
+    ],
+
     ],
     
     // Booking
     'booking' => [
-        'approved' => 'تمت الموافقة على الحجز بنجاح',
-        'cancelled' => 'تم إلغاء الحجز',
-        'completed' => 'تم إتمام الحجز',
-        'rejected' => 'تم رفض الحجز',
-        'rescheduled' => 'تم إعادة جدولة الحجز بنجاح',
-        'created' => 'تم إرسال الطلب بنجاح',
-        'list' => 'قائمة الحجوزات',
-        'pending' => 'قيد الانتظار',
-        'canceled' => 'ملغى',
+        'all' => 'الكل',
         'all_status' => 'جميع الحالات',
-        'all_bookings' => 'جميع الحجوزات',
-        'customer' => 'العميل',
-        'property' => 'العقار',
-        'scheduled_visit' => 'الزيارة المجدولة',
-        'assigned_employee' => 'الموظف المعين',
-        'current_schedule' => 'الجدول الحالي',
-        'new_date_time' => 'التاريخ والوقت الجديد',
-        'notes' => 'ملاحظات',
+        'assigned_to' => 'مُسند إلى',
         'view_details' => 'عرض التفاصيل',
-        'back_to_list' => 'العودة للقائمة',
-        'save_changes' => 'حفظ التغييرات',
         'approve' => 'موافقة',
         'reject' => 'رفض',
+        'cancel' => 'إلغاء',
         'reschedule' => 'إعادة جدولة',
         'complete' => 'إكمال',
-        'cancel' => 'إلغاء',
-        'reschedule_booking' => 'إعادة جدولة الحجز',
+        'no_bookings_found' => 'لم يتم العثور على حجوزات',
+        'reject_booking' => 'رفض الحجز',
+        'rejection_reason_label' => 'سبب الرفض',
+        'reason_placeholder' => 'اكتب سبب الرفض هنا...',
+        'confirm_reject' => 'تأكيد الرفض',
         'booking_details' => 'تفاصيل الحجز',
-        'pending_bookings' => 'الحجوزات قيد الانتظار',
-        'update_visit_date' => 'تحديث تاريخ ووقت الزيارة',
-        'review_before_changes' => 'يرجى مراجعة الجدول الحالي قبل التغييرات',
-        'review_after_completion' => 'التقييم سيكون متاحًا بعد الإكمال',
-        'awaiting_customer_review' => 'بانتظار تقييم العميل',
-        'no_pending_bookings' => 'لا توجد حجوزات قيد الانتظار',
+    'details_subtitle' => 'معلومات الحجز الكاملة وإجراءات الإدارة',
+    'customer' => 'العميل',
+    'property' => 'العقار',
+    'scheduled_visit' => 'موعد الزيارة',
+    'assigned_employee' => 'الموظف المسؤول',
+    'no_reason_recorded' => 'لم يتم تسجيل سبب للرفض.',
+    'customer_review' => 'تقييم العميل',
+    'back_to_list' => 'العودة للقائمة',
+    'review_after_completion' => 'سيظهر التقييم هنا بعد إتمام الحجز.',
+    'awaiting_customer_review' => 'بانتظار تقييم العميل',
+   'Pending_Bookings' => 'الحجوزات المنتظرة',
+
+
+    'status' => [
+        'pending' => 'قيد الانتظار',
+        'approved' => 'تمت الموافقة',
+        'completed' => 'مكتمل',
+        'rejected' => 'مرفوض',
+        'canceled' => 'ملغى',
+        'rescheduled' => 'تمت إعادة الجدولة',
     ],
+],
+
+    
     
     // Status
     'status' => [
@@ -251,10 +298,6 @@ return [
         'amenity_added' => 'تمت إضافة الميزة بنجاح',
         'amenity_updated' => 'تم تحديث الميزة بنجاح',
         'amenity_deleted' => 'تم حذف الميزة بنجاح',
-        'title' => 'المرافق',
-        'list_title' => 'قائمة المرافق',
-        'add_title' => 'إضافة مرفق',
-        'edit_title' => 'تعديل المرفق',
         'name_label' => 'اسم المرفق',
         'name_placeholder' => 'أدخل اسم المرفق...',
         'actions_label' => 'الإجراءات',
@@ -269,6 +312,14 @@ return [
         'delete_confirm_message' => 'هل أنت متأكد من حذف هذا المرفق؟ لا يمكن التراجع عن هذا الإجراء.',
         'delete_confirm_button' => 'حذف',
         'cancel_confirm_button' => 'إلغاء',
+        'amenities_list' => 'قائمة المرافق',
+'add_amenity' => 'إضافة مرفق',
+'edit_amenity' => 'تعديل مرفق',
+'amenity_name' => 'اسم المرفق',
+'save' => 'حفظ',
+'update' => 'تحديث',
+'delete' => 'حذف',
+'confirm_delete_msg' => 'هل أنت متأكد من عملية الحذف؟ لا يمكن التراجع عن هذا الإجراء.',
     ],
     
     // Images
@@ -293,14 +344,8 @@ return [
         'rating_added' => 'تمت إضافة التقييم بنجاح',
     ],
     
-    // Header
-    'header' => [
-        'logout' => 'تسجيل الخروج',
-        'admin' => 'مدير',
-        'employee' => 'موظف',
-    ],
     
-    // User UI (للملفات الجديدة)
+    // User UI 
     'user_ui' => [
         'users_management' => 'إدارة المستخدمين',
         'users_subtitle' => 'إدارة الموظفين والأدوار وحالة الحساب',
@@ -338,4 +383,4 @@ return [
         'save_changes' => 'حفظ التغييرات',
         'role_hint' => 'سيتم تحديث صلاحيات المستخدم مباشرة بعد تغيير الدور.',
     ],
-];
+    ];

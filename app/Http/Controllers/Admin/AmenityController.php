@@ -57,7 +57,7 @@ class AmenityController extends Controller
 
         $this->amenityService->create($data);
 
-        return redirect()->route('dashboard.amenities.index')->with('success', 'Amenity added.');
+        return redirect()->route('dashboard.amenities.index')->with('success',   __('messages.amenity.amenity_added') ) ;
     }
 
     /**
@@ -84,7 +84,7 @@ class AmenityController extends Controller
 
         $this->amenityService->update($amenity, $data);
 
-        return redirect()->route('dashboard.amenities.index')->with('success', 'Amenity updated.');
+        return redirect()->route('dashboard.amenities.index')->with('success', __('messages.amenity.amenity_updated'));
     }
 
     /**
@@ -97,6 +97,6 @@ class AmenityController extends Controller
     {
         $this->amenityService->delete($amenity);
 
-        return redirect()->route('dashboard.amenities.index')->with('success', 'Amenity deleted.');
+        return redirect()->route('dashboard.amenities.index')->with('success', __('messages.amenity.amenity_updated'));
     }
 }

@@ -25,7 +25,7 @@ class ReviewController extends Controller
         $review->load(['user', 'property']);
         
         return response()->json([
-            'message' => 'Rating added successfully',
+            'message' => __('messages.api.rating_added'),
             'rating' => new ReviewResource($review),
         ]);
     }
