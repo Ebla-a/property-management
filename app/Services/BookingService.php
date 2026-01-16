@@ -28,13 +28,14 @@ class BookingService
         // Create the booking inside a transaction
         return DB::transaction(function () use ($data, $userId, $property) {
 
-            $booking = Booking::create([
-                'property_id'  => $property->id,
-                'user_id'      => $userId,
-                'scheduled_at' => $data['scheduled_at'],
-                'status'       => 'pending',
-                // Keep other fields from $data if needed
-            ]);
+$booking = Booking::create([
+    'property_id'  => $property->id,
+    'user_id'      => $userId,
+    'employee_id'  => $property->employee_id ?? null, // assign employee if exists
+    'scheduled_at' => $data['scheduled_at'],
+    'status'       => 'pending',
+]);
+
 
             // Load property and employee relationships before returning
             return $booking->load(['property', 'employee']);
@@ -50,7 +51,7 @@ class BookingService
         return $booking->load([
             'property',
             'employee',
-            'customer',
+            'user',
         ]);
     }
     /**

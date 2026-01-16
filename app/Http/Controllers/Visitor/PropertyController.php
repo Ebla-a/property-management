@@ -37,11 +37,18 @@ class PropertyController extends Controller
      * Display the specified resource.
      * GET /admin/properties/{property}
      */
-    public function show(Property $property)
-    {
-        return new PropertyResource(
-            $property->load(['propertyType', 'mainImage', 'amenities'])
-        );
+public function show($id)
+{
+    $property = Property::with(['propertyType', 'mainImage', 'amenities'])->find($id);
+
+    if (!$property) {
+        return response()->json([
+            'message' => 'Property not found'
+        ], 404);
     }
+
+    return new PropertyResource($property);
+}
+
 
 }

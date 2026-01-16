@@ -59,11 +59,13 @@ class EmployeeBookingController extends Controller
         try {
         $this->authorize('approve', $booking);
 
-        if (is_null($booking->employee_id)) {
-            $booking->update(['employee_id' => Auth::id()]);
-        }
-       
-      
+if (is_null($booking->employee_id)) {
+    $booking->employee_id = Auth::id();
+    $booking->save();
+}
+
+
+
         $booking = $this->employeeBookingService->approve($booking);
           return redirect()
             ->route('employee.bookings.show', $booking->id)
@@ -139,8 +141,15 @@ class EmployeeBookingController extends Controller
         $employee = $request->user();
         $status = $request->query('status');
 
-        $query = Booking::with(['user', 'property'])
-            ->where('employee_id', $employee->id);
+$query = Booking::with(['user', 'property'])
+    ->where(function ($q) use ($employee) {
+        $q->where('employee_id', $employee->id)        // الحجوزات المخصصة له
+          ->orWhere(function($q2) {                   // أو الحجوزات الجديدة
+              $q2->whereNull('employee_id')
+                 ->where('status', 'pending');
+          });
+    });
+
 
         if ($status && in_array($status, ['pending', 'approved', 'completed', 'rejected', 'canceled', 'rescheduled'])) {
             $query->where('status', $status);
