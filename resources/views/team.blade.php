@@ -303,7 +303,7 @@
                 // members array with explicit emails and github links (no default fallback)
                 $members = $team ?? [
                 ['name' => 'Ebla Ali', 'role' => 'Team Leader & Backend Developer', 'initials' => 'EA', 'email' => 'eblaali520@gmail.com', 'github' => 'https://github.com/Ebla-a'],
-                ['name' => 'Hasan Dayoub', 'role' => 'Assistant', 'initials' => 'HD'],
+                ['name' => 'Hasan Dayoub', 'role' => 'Assistant', 'initials' => 'HD', 'email' => 'hasan123dayoub@gmail.com'],
                 ['name' => 'Ameen Fadel', 'role' => 'Backend Developer & Designer', 'initials' => 'AF'],
                 ['name' => 'Enas Alhamwi', 'role' => 'Backend Developer', 'initials' => 'EE'],
                 ['name' => 'Abdullah Shuraitah', 'role' => 'Backend Developer', 'initials' => 'AS'],

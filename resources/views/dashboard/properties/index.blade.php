@@ -10,13 +10,6 @@
         </a>
     </div>
 
-    {{-- flash --}}
-    @if(session('success'))
-        <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
-            {{ session('success') }}
-        </div>
-    @endif
-
     {{-- Filters --}}
     <form method="GET" class="mb-8 bg-white p-5 rounded-2xl shadow grid grid-cols-1 md:grid-cols-4 gap-4">
         {{-- City --}}

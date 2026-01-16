@@ -31,15 +31,6 @@
             </a>
         </div>
     </div>
-
-
-    {{-- Success & Error Messages --}}
-    @if(session('success'))
-        <div class="mb-4 p-3 rounded bg-green-50 text-green-800 border border-green-100">
-            {{ session('success') }}
-        </div>
-    @endif
-
     @if(session('error'))
         <div class="mb-4 p-3 rounded bg-red-50 text-red-800 border border-red-100">
             {{ session('error') }}
