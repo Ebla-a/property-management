@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\StoreEmployeeRequest;
+use App\Http\Requests\ToggleStatusRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -54,7 +57,7 @@ class AdminController extends Controller
         $this->adminService->addEmployee($data);
 
         return redirect()->route('dashboard.admin.employees.index')
-            ->with('success', 'Employee created successfully.');
+            ->with('success',  __('messages.user.create'));
     }
 
     /**
@@ -70,16 +73,13 @@ class AdminController extends Controller
     /**
      * Apply role change for a user.
      */
-    public function changeRole(Request $request, int $id)
+    public function changeRole(UpdateRoleRequest $request, int $id)
     {
-        $validated = $request->validate([
-            'role' => 'required|in:admin,employee,customer'
-        ]);
-
-        $this->adminService->changeRole($id, $validated['role']);
+        
+        $this->adminService->changeRole($id, $request->role);
 
         return redirect()->route('dashboard.admin.employees.index')
-            ->with('success', 'User role updated successfully.');
+            ->with('success', __('messages.user.role_updated'));
     }
 
     /**
@@ -95,34 +95,29 @@ class AdminController extends Controller
     /**
      * Toggle user activation state.
      */
-    public function toggleUserStatus(Request $request, int $userId)
+    public function toggleUserStatus(ToggleStatusRequest $request, int $userId)
     {
-        $request->validate([
-            'is_active' => 'required|boolean'
-        ]);
+       
 
-        $this->adminService->toggleUserStatus($userId, (bool) $request->input('is_active'));
+        $this->adminService->toggleUserStatus($userId, (bool) $request->is_active);
 
         return redirect()->route('dashboard.admin.employees.index')
-            ->with('success', 'User account status updated successfully.');
+            ->with('success', __('messages.user.status_updated'));
     }
 
     /**
      * Change current admin password.
      */
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
-        $request->validate([
-            'old_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
+       
 
         $admin = $request->user();
 
         $this->adminService->changePassword($admin, $request->old_password, $request->new_password);
 
         return redirect()->route('dashboard.profile.edit')
-            ->with('success', 'Password changed successfully.');
+            ->with('success', __('messages.user.password_changed'));
     }
 
     /**
@@ -138,7 +133,7 @@ class AdminController extends Controller
             $this->adminService->deleteUser($userId, $request->user());
 
             return redirect()->route('dashboard.admin.employees.index')
-                ->with('success', 'User deleted successfully.');
+                ->with('success', __('messages.user.deleted'));
         } catch (BadRequestHttpException $e) {
             // A purposeful check failed (e.g. trying to delete self or last admin)
             return redirect()->back()->with('error', $e->getMessage());
@@ -149,7 +144,7 @@ class AdminController extends Controller
                 'actorId' => $request->user()->id,
             ]);
 
-            return redirect()->back()->with('error', 'An unexpected error occurred while deleting the user.');
+            return redirect()->back()->with('error', __('messages.errors.unexpected_delete'));
         }
     }
 }
