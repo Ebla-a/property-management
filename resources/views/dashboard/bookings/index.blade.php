@@ -2,7 +2,8 @@
 
 @section('content')
 
-<div class="lg:ml-50 px-6 py-8 text-left" style="direction:ltr">
+{{-- ملاحظة: تم تغيير direction حسب لغة النظام بشكل ديناميكي --}}
+<div class="lg:ml-50 px-6 py-8 {{ app()->getLocale() == 'ar' ? 'text-right' : 'text-left' }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 
     {{-- ================= Filters Bar ================= --}}
     <div class="flex flex-wrap items-center gap-3 w-full justify-center mb-10">
@@ -13,13 +14,13 @@
                     onchange="this.form.submit()"
                     class="border rounded-xl px-3 py-2 text-sm bg-white shadow-sm hover:border-gray-400 focus:ring-1 focus:ring-indigo-300 transition">
 
-                <option value="">All Status</option>
-                <option value="pending"      {{ request('status')=='pending' ? 'selected' : '' }}>Pending</option>
-                <option value="approved"     {{ request('status')=='approved' ? 'selected' : '' }}>Approved</option>
-                <option value="rescheduled"  {{ request('status')=='rescheduled' ? 'selected' : '' }}>Rescheduled</option>
-                <option value="completed"    {{ request('status')=='completed' ? 'selected' : '' }}>Completed</option>
-                <option value="rejected"     {{ request('status')=='rejected' ? 'selected' : '' }}>Rejected</option>
-                <option value="canceled"     {{ request('status')=='canceled' ? 'selected' : '' }}>Canceled</option>
+                <option value="">{{ __('messages.booking.all_status') }}</option>
+                <option value="pending"      {{ request('status')=='pending' ? 'selected' : '' }}>{{ __('messages.status.pending') }}</option>
+                <option value="approved"     {{ request('status')=='approved' ? 'selected' : '' }}>{{ __('messages.status.approved') }}</option>
+                <option value="rescheduled"  {{ request('status')=='rescheduled' ? 'selected' : '' }}>{{ __('messages.status.rescheduled') }}</option>
+                <option value="completed"    {{ request('status')=='completed' ? 'selected' : '' }}>{{ __('messages.status.completed') }}</option>
+                <option value="rejected"     {{ request('status')=='rejected' ? 'selected' : '' }}>{{ __('messages.status.rejected') }}</option>
+                <option value="canceled"     {{ request('status')=='canceled' ? 'selected' : '' }}>{{ __('messages.status.canceled') }}</option>
 
             </select>
         </form>
@@ -32,7 +33,7 @@
                {{ !request('status')
                     ? 'bg-indigo-50 text-indigo-700 border-indigo-300 font-semibold'
                     : 'text-gray-600 hover:bg-gray-50' }}">
-                All
+                {{ __('messages.booking.all_bookings') }}
             </a>
 
             <a href="?status=pending"
@@ -40,7 +41,7 @@
                {{ request('status')=='pending'
                     ? 'bg-yellow-50 text-yellow-700 border-yellow-300 font-semibold'
                     : 'text-gray-600 hover:bg-gray-50' }}">
-                Pending
+                {{ __('messages.status.pending') }}
             </a>
 
             <a href="?status=approved"
@@ -48,7 +49,7 @@
                {{ request('status')=='approved'
                     ? 'bg-green-50 text-green-700 border-green-300 font-semibold'
                     : 'text-gray-600 hover:bg-gray-50' }}">
-                Approved
+                {{ __('messages.status.approved') }}
             </a>
 
             <a href="?status=rejected"
@@ -56,7 +57,7 @@
                {{ request('status')=='rejected'
                     ? 'bg-red-50 text-red-700 border-red-300 font-semibold'
                     : 'text-gray-600 hover:bg-gray-50' }}">
-                Rejected
+                {{ __('messages.status.rejected') }}
             </a>
 
             <a href="?status=canceled"
@@ -64,7 +65,7 @@
                {{ request('status')=='canceled'
                     ? 'bg-gray-100 text-gray-700 border-gray-300 font-semibold'
                     : 'text-gray-600 hover:bg-gray-50' }}">
-                Canceled
+                {{ __('messages.status.canceled') }}
             </a>
 
         </div>
@@ -91,8 +92,6 @@
                         </p>
                     </div>
 
-
-
                     {{-- Status Badge --}}
                     <span class="px-3 py-1 rounded-lg text-xs border font-medium
                         @if($booking->status=='pending')
@@ -108,7 +107,7 @@
                         @elseif($booking->status=='canceled')
                             bg-gray-100 text-gray-700 border-gray-300
                         @endif">
-                        {{ ucfirst($booking->status) }}
+                        {{ __('messages.status.' . $booking->status) }}
                     </span>
 
                 </div>
@@ -117,13 +116,9 @@
 
                 {{-- Customer --}}
                 <div class="flex items-center gap-2">
-
                     <svg class="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
-                        <path fill-rule="evenodd"
-                              d="M12 2.25a4.5 4.5 0 014.5 4.5v.75a4.5 4.5 0 11-9 0V6.75a4.5 4.5 0 014.5-4.5zm-7.5 17.1a7.5 7.5 0 0115 0v.15A2.25 2.25 0 0117.25 21h-10.5A2.25 2.25 0 014.5 19.5v-.15z"
-                              clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M12 2.25a4.5 4.5 0 014.5 4.5v.75a4.5 4.5 0 11-9 0V6.75a4.5 4.5 0 014.5-4.5zm-7.5 17.1a7.5 7.5 0 0115 0v.15A2.25 2.25 0 0117.25 21h-10.5A2.25 2.25 0 014.5 19.5v-.15z" clip-rule="evenodd" />
                     </svg>
-
                     <div>
                         <p class="text-sm font-medium text-gray-800">
                             {{ $booking->user->name }}
@@ -132,113 +127,98 @@
                             {{ $booking->user->email }}
                         </p>
                     </div>
-
                 </div>
 
                 {{-- Admin Assigned Employee --}}
                 @if(auth()->user()->hasRole('admin') && $booking->employee)
                     <div class="mt-2 text-sm text-indigo-700 font-semibold">
-                        Assigned To: {{ $booking->employee->name }}
+                        {{ __('messages.booking.assigned_employee') }}: {{ $booking->employee->name }}
                     </div>
                 @endif
 
                 {{-- Schedule --}}
                 <div class="mt-3 flex items-center gap-2">
-
                     <svg class="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
-                        <path fill-rule="evenodd"
-                              d="M6.75 2.25a.75.75 0 01.75.75V4.5h9V3a.75.75 0 011.5 0v1.5h.75A2.25 2.25 0 0121 6.75v12A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75v-12A2.25 2.25 0 015.25 4.5H6V3a.75.75 0 01.75-.75zM3.75 9h16.5v9.75a.75.75 0 01-.75.75H4.5a.75.75 0 01-.75-.75V9z"
-                              clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M6.75 2.25a.75.75 0 01.75.75V4.5h9V3a.75.75 0 011.5 0v1.5h.75A2.25 2.25 0 0121 6.75v12A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75v-12A2.25 2.25 0 015.25 4.5H6V3a.75.75 0 01.75-.75zM3.75 9h16.5v9.75a.75.75 0 01-.75.75H4.5a.75.75 0 01-.75-.75V9z" clip-rule="evenodd" />
                     </svg>
-
                     <p class="text-sm text-gray-700">
                         <span class="font-medium">{{ $booking->scheduled_at }}</span>
                     </p>
-
                 </div>
 
                 {{-- ================= Actions ================= --}}
                  <div class="mt-6 flex flex-wrap gap-2">
 
-                    {{-- Always available --}}
                     <a href="{{ route('employee.bookings.show', $booking->id) }}"
                        class="px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition">
-                        View Details
+                        {{ __('messages.booking.view_details') }}
                     </a>
 
-                    {{-- Admin OR Assigned Employee --}}
                     @if( $booking->employee_id == auth()->id())
 
-                        {{-- PENDING --}}
                         @if($booking->status == 'pending')
-
                             <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100">
-                                    Approve
+                                    {{ __('messages.booking.approve') }}
                                 </button>
                             </form>
 
                             <form method="POST" action="{{ route('employee.bookings.reject', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 hover:bg-red-100">
-                                    Reject
+                                    {{ __('messages.booking.reject') }}
                                 </button>
                             </form>
 
                             <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-gray-100 border rounded-lg text-sm text-gray-700 hover:bg-gray-200">
-                                    Cancel
+                                    {{ __('messages.booking.cancel') }}
                                 </button>
                             </form>
 
-                        {{-- APPROVED --}}
                         @elseif($booking->status == 'approved')
-
                             <a href="{{ route('employee.reschedule.form', $booking->id) }}"
                                class="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100">
-                                Reschedule
+                                {{ __('messages.booking.reschedule') }}
                             </a>
 
                             <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-700 hover:bg-emerald-100">
-                                    Complete
+                                    {{ __('messages.booking.complete') }}
                                 </button>
                             </form>
 
                             <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-gray-100 border rounded-lg text-sm text-gray-700 hover:bg-gray-200">
-                                    Cancel
+                                    {{ __('messages.booking.cancel') }}
                                 </button>
                             </form>
 
-                        {{-- RESCHEDULED --}}
                         @elseif($booking->status == 'rescheduled')
-
                             <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100">
-                                    Approve
+                                    {{ __('messages.booking.approve') }}
                                 </button>
                             </form>
 
                             <form method="POST" action="{{ route('employee.bookings.complete', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-700 hover:bg-emerald-100">
-                                    Complete
+                                    {{ __('messages.booking.complete') }}
                                 </button>
                             </form>
 
                             <form method="POST" action="{{ route('employee.bookings.cancel', $booking->id) }}">
                                 @csrf @method('PATCH')
                                 <button class="px-3 py-1.5 bg-gray-100 border rounded-lg text-sm text-gray-700 hover:bg-gray-200">
-                                    Cancel
+                                    {{ __('messages.booking.cancel') }}
                                 </button>
                             </form>
-
                         @endif
 
                     @endif
@@ -248,6 +228,9 @@
             </div>
 
         @empty
+            <div class="col-span-full text-center py-10 text-gray-500 italic">
+                {{ __('messages.booking.no_pending_bookings') }}
+            </div>
         @endforelse
 
     </div>

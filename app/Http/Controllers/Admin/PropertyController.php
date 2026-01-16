@@ -93,7 +93,7 @@ class PropertyController extends Controller
             );
         }
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'Property created with images.');
+        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.add_property'));
     }
 
     public function edit(Property $property): View
@@ -112,14 +112,14 @@ class PropertyController extends Controller
 
         $this->propertyService->update($property, $data);
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'Property updated.');
+        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.updated'));
     }
 
     public function destroy(Property $property): RedirectResponse
     {
         $this->propertyService->delete($property);
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'Property deleted.');
+        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.deleted'));
     }
 
     public function show(Property $property): View

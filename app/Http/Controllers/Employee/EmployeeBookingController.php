@@ -67,7 +67,7 @@ class EmployeeBookingController extends Controller
         $booking = $this->employeeBookingService->approve($booking);
           return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking approved successfully');
+            ->with('status', __('messages.booking.approved'));
             } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
                 return back()->with('error', $e->getMessage());
     }
@@ -83,7 +83,7 @@ class EmployeeBookingController extends Controller
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking cancelled');
+            ->with('status', __('messages.booking.cancelled') );
     }
 
     /**
@@ -96,7 +96,7 @@ class EmployeeBookingController extends Controller
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking rescheduled successfully');
+            ->with('status',  __('messages.booking.reschedule'));
     }
 
     public function rescheduleForm(Booking $booking)
@@ -115,7 +115,7 @@ class EmployeeBookingController extends Controller
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking completed');
+            ->with('status',  __('messages.booking.completed'));
     }
 
     /**
@@ -128,7 +128,7 @@ class EmployeeBookingController extends Controller
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking rejected');
+            ->with('status',  __('messages.booking.rejected'));
     }
 
     /**

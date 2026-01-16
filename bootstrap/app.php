@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
     'permission' => RoleOrPermissionMiddleware::class,
     'role_or_permission' =>RoleOrPermissionMiddleware::class,
     'check.active'=>CheckActive::class,
+   $middleware->web(append: [
+        \App\Http\Middleware\SetLocale::class,
+    ])
 
 
 ]);
