@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
- public function up(): void
+    public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('is_active')->default(true)->after('password');

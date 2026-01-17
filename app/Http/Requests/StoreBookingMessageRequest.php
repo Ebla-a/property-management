@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RejectBookingRequest extends FormRequest
+class StoreBookingMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,16 @@ class RejectBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reason' => ['required', 'string', 'min:5', 'max:500'],
+            'message' => 'required|string|max:1000',
+        ];
+
+    }
+
+    public function messages(): array
+    {
+        return [
+            'message.required' => 'you can not send an empty nessage',
+            'message.max' => 'the meesage is too long the maximum is 1000 characters ',
         ];
     }
 }

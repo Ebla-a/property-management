@@ -7,11 +7,11 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\ToggleStatusRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Models\User;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * AdminController
@@ -57,7 +57,7 @@ class AdminController extends Controller
         $this->adminService->addEmployee($data);
 
         return redirect()->route('dashboard.admin.employees.index')
-            ->with('success',  __('messages.user.create'));
+            ->with('success', __('messages.user.create'));
     }
 
     /**
@@ -75,7 +75,7 @@ class AdminController extends Controller
      */
     public function changeRole(UpdateRoleRequest $request, int $id)
     {
-        
+
         $this->adminService->changeRole($id, $request->role);
 
         return redirect()->route('dashboard.admin.employees.index')
@@ -97,7 +97,6 @@ class AdminController extends Controller
      */
     public function toggleUserStatus(ToggleStatusRequest $request, int $userId)
     {
-       
 
         $this->adminService->toggleUserStatus($userId, (bool) $request->is_active);
 
@@ -110,7 +109,6 @@ class AdminController extends Controller
      */
     public function changePassword(ChangePasswordRequest $request)
     {
-       
 
         $admin = $request->user();
 
@@ -123,8 +121,6 @@ class AdminController extends Controller
     /**
      * Destroy (delete) a user.
      *
-     * @param Request $request
-     * @param int $userId
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request, int $userId)
@@ -139,7 +135,7 @@ class AdminController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
             // Unexpected error
-            Log::error('Failed to delete user: ' . $e->getMessage(), [
+            Log::error('Failed to delete user: '.$e->getMessage(), [
                 'userId' => $userId,
                 'actorId' => $request->user()->id,
             ]);

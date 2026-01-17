@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\BookingController as CustomerBookingController;
+use App\Http\Controllers\Customer\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
@@ -18,7 +18,7 @@ Route::middleware(['auth:sanctum'])->prefix('bookings')->group(function () {
     Route::get('/{booking}', [CustomerBookingController::class, 'show']);
     // cancel the booking befor appointment
     Route::delete('/{booking}', [CustomerBookingController::class, 'cancel']);
-    //show booking
+    // show booking
     Route::get('/bookings/{booking}', [CustomerBookingController::class, 'show'])
         ->name('bookings.show');
 });

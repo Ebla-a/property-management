@@ -10,13 +10,13 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasRoles, Notifiable , HasFactory;
+    use HasApiTokens, HasFactory, HasRoles , Notifiable;
 
     protected $fillable = [
         'name',
         'email',
         'password',
-        'is_active'
+        'is_active',
     ];
 
     protected $hidden = [
@@ -26,12 +26,11 @@ class User extends Authenticatable
 
     public function bookings()
     {
-         return $this->hasMany(Booking::class,'user_id');
+        return $this->hasMany(Booking::class, 'user_id');
     }
 
     public function assignedBookings()
     {
-        return $this->hasMany(Booking::class,'employee_id');
+        return $this->hasMany(Booking::class, 'employee_id');
     }
-
 }

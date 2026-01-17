@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Amenity;
 use Illuminate\Database\Seeder;
 
-class AmenitiesSeeder  extends Seeder
+class AmenitiesSeeder extends Seeder
 {
     /**
      * Run the database seeds.

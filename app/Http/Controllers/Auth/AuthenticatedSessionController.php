@@ -8,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\Http\Controllers\Auth\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -23,36 +22,33 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-   public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
-    $request->session()->regenerate();
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+        $request->session()->regenerate();
 
-    $user = $request->user();   
+        $user = $request->user();
 
-    if (!$user->is_active) {
-        Auth::logout();
+        if (! $user->is_active) {
+            Auth::logout();
 
-        return back()->withErrors([
-            'email' => 'Your account is disabled by admin.',
-        ]);
-    }
+            return back()->withErrors([
+                'email' => 'Your account is disabled by admin.',
+            ]);
+        }
 
-    $request->session()->regenerate();
+        $request->session()->regenerate();
 
-    return redirect()->intended('/dashboard');
+        return redirect()->intended('/dashboard');
 
-    // redirect dashbord
-    if ($user->hasRole('employee') || $user->hasRole('admin') ) {
+        // redirect dashbord
+        if ($user->hasRole('employee') || $user->hasRole('admin')) {
+            return redirect()->route('dashboard');
+
+        }
+
         return redirect()->route('dashboard');
-
     }
-
-    return redirect()->route('dashboard');
-}
-
- 
-
 
     /**
      * Destroy an authenticated session.

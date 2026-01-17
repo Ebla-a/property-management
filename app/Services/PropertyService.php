@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Property;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class PropertyService
 {
@@ -16,7 +16,7 @@ class PropertyService
         return Property::with([
             'propertyType',
             'mainImage',
-            'amenities'
+            'amenities',
         ])->get();
     }
 
@@ -39,7 +39,7 @@ class PropertyService
             'propertyType',
             'mainImage',
             'amenities',
-            'images'
+            'images',
         ]);
 
         /*
@@ -48,7 +48,7 @@ class PropertyService
         |----------------------------------------------------------------------
         */
         $query->when(
-            !empty($filters['property_types']),
+            ! empty($filters['property_types']),
             fn ($q) => $q->whereIn(
                 'property_type_id',
                 (array) $filters['property_types']
@@ -61,11 +61,11 @@ class PropertyService
         |----------------------------------------------------------------------
         */
         $query->when(
-            !empty($filters['city']),
+            ! empty($filters['city']),
             fn ($q) => $q->where(
                 'city',
                 'like',
-                '%' . $filters['city'] . '%'
+                '%'.$filters['city'].'%'
             )
         );
 
@@ -90,7 +90,7 @@ class PropertyService
         |----------------------------------------------------------------------
         */
         $query->when(
-            !empty($filters['amenity_ids']),
+            ! empty($filters['amenity_ids']),
             function ($q) use ($filters) {
                 foreach ((array) $filters['amenity_ids'] as $amenityId) {
                     $q->whereHas('amenities', function ($sub) use ($amenityId) {
@@ -137,11 +137,11 @@ class PropertyService
         $query = Property::with([
             'propertyType',
             'mainImage',
-            'amenities'
+            'amenities',
         ])->latest();
 
         $query->when(
-            !empty($filters['amenity_ids']),
+            ! empty($filters['amenity_ids']),
             function ($q) use ($filters) {
                 foreach ((array) $filters['amenity_ids'] as $id) {
                     $q->whereHas('amenities', function ($sub) use ($id) {
@@ -161,7 +161,7 @@ class PropertyService
 
         $property = Property::create($data);
 
-        if (!empty($amenities)) {
+        if (! empty($amenities)) {
             $property->amenities()->sync($amenities);
         }
 

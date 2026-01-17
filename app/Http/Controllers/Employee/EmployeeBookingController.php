@@ -28,13 +28,12 @@ class EmployeeBookingController extends Controller
     {
         $this->authorize('viewAny', Booking::class);
 
-        $user   = $request->user();
+        $user = $request->user();
         $status = $request->get('status');
 
-        // Admin logic
         if ($user->hasRole('admin')) {
             $bookings = Booking::with(['user', 'property', 'employee', 'review.user'])
-                ->when($status, fn($q) => $q->where('status', $status))
+                ->when($status, fn ($q) => $q->where('status', $status))
                 ->latest()
                 ->paginate(6);
 
@@ -48,6 +47,7 @@ class EmployeeBookingController extends Controller
     public function show(Booking $booking)
     {
         $this->authorize('view', $booking);
+
         return view('dashboard.bookings.show', compact('booking'));
     }
 
@@ -65,7 +65,7 @@ class EmployeeBookingController extends Controller
 
             $booking = $this->employeeBookingService->approve($booking);
 
-            // Notify admins and employees
+            // Notify admins and employees (Accepted from wajd)
             $by = auth()->user() ? auth()->user()->name : 'System';
             $users = User::role(['admin', 'employee'])->get();
             foreach ($users as $user) {
@@ -88,7 +88,6 @@ class EmployeeBookingController extends Controller
         $this->authorize('employeeCancel', $booking);
         $booking = $this->employeeBookingService->cancel($booking);
 
-        // Notify admins and employees
         $by = auth()->user() ? auth()->user()->name : 'System';
         $users = User::role(['admin', 'employee'])->get();
         foreach ($users as $user) {
@@ -108,7 +107,6 @@ class EmployeeBookingController extends Controller
         $this->authorize('reschedule', $booking);
         $booking = $this->employeeBookingService->reschedule($booking, $request->scheduled_at);
 
-        // Notify admins and employees
         $by = auth()->user() ? auth()->user()->name : 'System';
         $users = User::role(['admin', 'employee'])->get();
         foreach ($users as $user) {
@@ -123,6 +121,7 @@ class EmployeeBookingController extends Controller
     public function rescheduleForm(Booking $booking)
     {
         $this->authorize('reschedule', $booking);
+
         return view('dashboard.bookings.reschedule', compact('booking'));
     }
 
@@ -134,7 +133,6 @@ class EmployeeBookingController extends Controller
         $this->authorize('complete', $booking);
         $booking = $this->employeeBookingService->complete($booking);
 
-        // Notify admins and employees
         $by = auth()->user() ? auth()->user()->name : 'System';
         $users = User::role(['admin', 'employee'])->get();
         foreach ($users as $user) {
@@ -154,7 +152,6 @@ class EmployeeBookingController extends Controller
         $this->authorize('reject', $booking);
         $booking = $this->employeeBookingService->reject($booking, $request->reason);
 
-        // Notify admins and employees
         $by = auth()->user() ? auth()->user()->name : 'System';
         $users = User::role(['admin', 'employee'])->get();
         foreach ($users as $user) {

@@ -11,12 +11,14 @@ use App\Services\AmenityService;
 use App\Services\PropertyService;
 use App\Notifications\PropertyActionNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Illuminate\Support\Arr;
 
 class PropertyController extends Controller
 {
     protected PropertyService $propertyService;
+
     protected AmenityService $amenityService;
 
     public function __construct(PropertyService $propertyService, AmenityService $amenityService)
@@ -27,8 +29,6 @@ class PropertyController extends Controller
 
     /**
      * Display a listing of properties with optional filters (paginated).
-     *
-     * @return View
      */
     public function index(): View
     {
@@ -41,7 +41,7 @@ class PropertyController extends Controller
             'max_price',
             'sort',
             'order',
-            'limit'
+            'limit',
         ]));
 
         // If legacy single `type` param exists but no `property_types`, map it to property_types[]

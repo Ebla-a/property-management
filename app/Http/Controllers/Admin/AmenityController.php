@@ -16,8 +16,6 @@ class AmenityController extends Controller
 
     /**
      * Constructor.
-     *
-     * @param AmenityService $amenityService
      */
     public function __construct(AmenityService $amenityService)
     {
@@ -26,19 +24,16 @@ class AmenityController extends Controller
 
     /**
      * Display a listing of amenities.
-     *
-     * @return View
      */
     public function index(): View
     {
         $amenities = $this->amenityService->getAll();
+
         return view('dashboard.amenities.index', compact('amenities'));
     }
 
     /**
      * Show the form for creating a new amenity.
-     *
-     * @return View
      */
     public function create(): View
     {
@@ -47,9 +42,6 @@ class AmenityController extends Controller
 
     /**
      * Store a newly created amenity.
-     *
-     * @param StoreAmenityRequest $request
-     * @return RedirectResponse
      */
     public function store(StoreAmenityRequest $request): RedirectResponse
     {
@@ -57,14 +49,11 @@ class AmenityController extends Controller
 
         $this->amenityService->create($data);
 
-        return redirect()->route('dashboard.amenities.index')->with('success',   __('messages.amenity.amenity_added') ) ;
+        return redirect()->route('dashboard.amenities.index')->with('success', __('messages.amenity.amenity_added'));
     }
 
     /**
      * Show the form for editing the specified amenity.
-     *
-     * @param Amenity $amenity
-     * @return View
      */
     public function edit(Amenity $amenity): View
     {
@@ -73,10 +62,6 @@ class AmenityController extends Controller
 
     /**
      * Update the specified amenity.
-     *
-     * @param UpdateAmenityRequest $request
-     * @param Amenity $amenity
-     * @return RedirectResponse
      */
     public function update(UpdateAmenityRequest $request, Amenity $amenity): RedirectResponse
     {
@@ -89,9 +74,6 @@ class AmenityController extends Controller
 
     /**
      * Remove the specified amenity.
-     *
-     * @param Amenity $amenity
-     * @return RedirectResponse
      */
     public function destroy(Amenity $amenity): RedirectResponse
     {
