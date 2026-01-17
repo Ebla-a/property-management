@@ -59,7 +59,7 @@ class BookingController extends Controller
             $booking = $this->bookingService->create($request->validated());
 
             return response()->json([
-                'message' => 'The request has been sent successfully',
+                'message' => __('messages.booking.created'),
                 'data'    => new BookingResource($booking),
             ], 201);
 
@@ -111,7 +111,7 @@ class BookingController extends Controller
         $booking = $this->bookingService->cancel($booking);
 
         return response()->json([
-            'message' => 'Booking cancelled successfully',
+            'message' => __('messages.booking.canceled'),
             'data'    => new BookingResource($booking),
         ], 200);
     }

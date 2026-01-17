@@ -21,7 +21,7 @@ class SetLocale
             $locale = session('locale');
         }
          elseif ($request->hasHeader('Accept-Language')) {
-            $locale = $request->header('Accept-Language');
+            $locale = substr($request->header('Accept-Language'),0,2);
         }
         if (!in_array($locale, ['en', 'ar'])) {
             $locale = config('app.locale');

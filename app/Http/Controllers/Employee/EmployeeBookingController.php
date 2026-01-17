@@ -69,7 +69,7 @@ if (is_null($booking->employee_id)) {
         $booking = $this->employeeBookingService->approve($booking);
           return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking approved successfully');
+            ->with('status', __('messages.booking.approved'));
             } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
                 return back()->with('error', $e->getMessage());
     }
@@ -85,7 +85,7 @@ if (is_null($booking->employee_id)) {
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking cancelled');
+            ->with('status', __('messages.booking.cancelled') );
     }
 
     /**
@@ -98,7 +98,7 @@ if (is_null($booking->employee_id)) {
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking rescheduled successfully');
+            ->with('status',  __('messages.booking.reschedule'));
     }
 
     public function rescheduleForm(Booking $booking)
@@ -117,7 +117,7 @@ if (is_null($booking->employee_id)) {
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking completed');
+            ->with('status',  __('messages.booking.completed'));
     }
 
     /**
@@ -130,7 +130,7 @@ if (is_null($booking->employee_id)) {
 
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking rejected');
+            ->with('status',  __('messages.booking.rejected'));
     }
 
     /**

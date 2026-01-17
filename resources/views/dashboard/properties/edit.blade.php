@@ -3,171 +3,76 @@
 @section('content')
 <div class="container mx-auto p-6 max-w-4xl">
     <div class="bg-white shadow-xl rounded-2xl p-8">
-        <h1 class="text-3xl font-extrabold text-indigo-600 mb-6 text-center">Edit Property</h1>
-
-        @if($errors->any())
-            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl">
-                <ul class="list-disc ml-5">
-                    @foreach($errors->all() as $err)
-                        <li>{{ $err }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <h1 class="text-3xl font-extrabold text-indigo-600 mb-6 text-center">{{ __('messages.property.edit_property') }}</h1>
 
         <form action="{{ route('dashboard.properties.update', $property->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-            @csrf
-            @method('PUT')
+            @csrf @method('PUT')
 
-            <!-- Title -->
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Title</label>
-                <input name="title" value="{{ old('title', $property->title) }}"
-                       class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                       placeholder="Property Title" required>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.title_label') }}</label>
+                <input name="title" value="{{ old('title', $property->title) }}" class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 shadow-sm" required>
             </div>
 
-            <!-- Property Type -->
-            <div>
-                <label class="block mb-2 font-medium text-gray-700">Property Type</label>
-                <select name="property_type_id"
-                        class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm">
-                    <option value="">-- Select Type --</option>
-                    @foreach($propertyTypes as $type)
-                        <option value="{{ $type->id }}"
-                            {{ old('property_type_id', $property->property_type_id) == $type->id ? 'selected' : '' }}>
-                            {{ $type->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- City & Neighborhood -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">City</label>
-                    <input name="city" value="{{ old('city', $property->city) }}"
-                           class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="City">
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.status_label') }}</label>
+                    <select name="status" class="w-full border border-gray-300 rounded-xl p-3 shadow-sm">
+                        <option value="available" {{ $property->status == 'available' ? 'selected' : '' }}>{{ __('messages.property.status_available') }}</option>
+                        <option value="booked" {{ $property->status == 'booked' ? 'selected' : '' }}>{{ __('messages.property.status_booked') }}</option>
+                        <option value="rented" {{ $property->status == 'rented' ? 'selected' : '' }}>{{ __('messages.property.status_rented') }}</option>
+                        <option value="hidden" {{ $property->status == 'hidden' ? 'selected' : '' }}>{{ __('messages.property.status_hidden') }}</option>
+                    </select>
                 </div>
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">Neighborhood</label>
-                    <input name="neighborhood" value="{{ old('neighborhood', $property->neighborhood) }}"
-                           class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="Neighborhood">
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.sidebar.properties') }} (النوع)</label>
+                    <select name="property_type_id" class="w-full border border-gray-300 rounded-xl p-3 shadow-sm">
+                        @foreach($propertyTypes as $type)
+                            <option value="{{ $type->id }}" {{ $property->property_type_id == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
-            <!-- Address -->
-            <div>
-                <label class="block mb-2 font-medium text-gray-700">Full Address</label>
-                <input name="address" value="{{ old('address', $property->address) }}"
-                       class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                       placeholder="123 Street, City">
-            </div>
-
-            <!-- Rooms, Area, Price -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">Rooms</label>
-                    <input name="rooms" type="number" value="{{ old('rooms', $property->rooms) }}"
-                           class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="3">
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.city_label') }}</label>
+                    <input name="city" value="{{ old('city', $property->city) }}" class="w-full border border-gray-300 rounded-xl p-3 shadow-sm">
                 </div>
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">Area (m²)</label>
-                    <input name="area" type="text" value="{{ old('area', $property->area) }}"
-                           class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="120">
-                </div>
-                <div>
-                    <label class="block mb-2 font-medium text-gray-700">Price</label>
-                    <input name="price" type="text" value="{{ old('price', $property->price) }}"
-                           class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="$250,000">
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.neighborhood_label') }}</label>
+                    <input name="neighborhood" value="{{ old('neighborhood', $property->neighborhood) }}" class="w-full border border-gray-300 rounded-xl p-3 shadow-sm">
                 </div>
             </div>
 
-            <!-- Status -->
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Status</label>
-                <select name="status"
-                        class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm">
-                    <option value="available" {{ old('status', $property->status) == 'available' ? 'selected' : '' }}>Available</option>
-                    <option value="booked" {{ old('status', $property->status) == 'booked' ? 'selected' : '' }}>Booked</option>
-                    <option value="rented" {{ old('status', $property->status) == 'rented' ? 'selected' : '' }}>Rented</option>
-                    <option value="hidden" {{ old('status', $property->status) == 'hidden' ? 'selected' : '' }}>Hidden</option>
-                </select>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.description_label') }}</label>
+                <textarea name="description" rows="5" class="w-full border border-gray-300 rounded-xl p-3 shadow-sm">{{ old('description', $property->description) }}</textarea>
             </div>
 
-            <!-- Furnished -->
             <div>
-                <label class="inline-flex items-center">
-                    <input type="checkbox" name="is_furnished" value="1" {{ old('is_furnished', $property->is_furnished) ? 'checked' : '' }}
-                           class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-400">
-                    <span class="ml-2 text-gray-700">Furnished</span>
-                </label>
-            </div>
-
-            <!-- Description -->
-            <div>
-                <label class="block mb-2 font-medium text-gray-700">Description</label>
-                <textarea name="description" rows="5"
-                          class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                          placeholder="Add detailed description...">{{ old('description', $property->description) }}</textarea>
-            </div>
-
-            <!-- Property Images Dropzone -->
-            <div>
-                <label class="block mb-2 font-medium text-gray-700">Property Images</label>
-
-                <div id="dropzone"
-                     class="w-full border-2 border-dashed border-gray-300 rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-400 transition relative"
-                     onclick="document.getElementById('images').click()">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M7 16V4h10v12m-5-4v8m-4 0h8" />
-                    </svg>
-                    <p class="text-gray-500 text-center">Click or drag images here to upload</p>
-
-                    <div id="preview" class="mt-4 flex flex-wrap gap-4 w-full justify-center"></div>
-                </div>
-
-                <input id="images" type="file" name="images[]" multiple accept="image/*" class="hidden" onchange="previewImages()">
-            </div>
-
-            <!-- Amenities -->
-            <div>
-                <label class="block mb-2 font-medium text-gray-700">Amenities</label>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.amenities_label') }}</label>
                 <div class="flex flex-wrap gap-3">
                     @foreach($amenities as $a)
-                        <label class="inline-flex items-center bg-gray-100 rounded-xl px-3 py-2 hover:bg-indigo-50 cursor-pointer">
-                            <input type="checkbox" name="amenity_ids[]" value="{{ $a->id }}"
-                                   class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-400"
-                                   {{ in_array($a->id, $property->amenities->pluck('id')->toArray()) ? 'checked' : '' }}>
-                            <span class="ml-2 text-gray-700">{{ $a->name }}</span>
+                        <label class="inline-flex items-center bg-gray-50 border rounded-lg px-3 py-2 cursor-pointer">
+                            <input type="checkbox" name="amenity_ids[]" value="{{ $a->id }}" {{ in_array($a->id, $property->amenities->pluck('id')->toArray()) ? 'checked' : '' }}>
+                            <span class="ml-2 mr-2">{{ $a->name }}</span>
                         </label>
                     @endforeach
                 </div>
             </div>
 
-            <!-- Buttons -->
-            <div class="flex flex-wrap gap-4 justify-end">
-                <a href="{{ route('dashboard.properties.index') }}"
-                   class="px-6 py-3 bg-gray-200 rounded-full text-gray-700 font-semibold hover:bg-gray-300 transition">Cancel</a>
-                <button type="submit"
-                        class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-full font-bold shadow-2xl hover:scale-[1.05] transform transition focus:outline-none focus:ring-4 focus:ring-indigo-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Save Changes
+            <div class="flex justify-end gap-4 pt-4">
+                <a href="{{ route('dashboard.properties.index') }}" class="px-6 py-3 bg-gray-200 rounded-full text-gray-700 font-semibold">
+                    {{ __('messages.property.cancel_button') }}
+                </a>
+                <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-full font-bold shadow-lg hover:bg-indigo-700 transition">
+                    {{ __('messages.property.save_button') }}
                 </button>
             </div>
         </form>
     </div>
 </div>
+
 
 <script>
 function previewImages() {

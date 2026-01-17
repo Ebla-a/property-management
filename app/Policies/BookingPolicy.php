@@ -90,4 +90,11 @@ public function reject(User $user, Booking $booking): bool
     return $canAssign && $booking->status === 'pending';
 }
 
+    public function reject(User $user, Booking $booking)
+    {
+        return
+            $user->hasRole('employee') || is_null($booking->employee_id) &&
+            $booking->employee_id === $user->id &&
+            $booking->status === 'pending';
+    }
 }

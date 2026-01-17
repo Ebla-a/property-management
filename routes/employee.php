@@ -32,10 +32,6 @@ Route::middleware(['auth', 'role:admin|employee'])
 
             Route::get('/bookings/{booking}', [EmployeeBookingController::class, 'show'])->name('bookings.show');
 
-
-
-
-
         // Actions
         // reschedual
         Route::get('/bookings/{booking}/reschedule',
