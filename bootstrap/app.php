@@ -5,7 +5,6 @@ use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -16,19 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-       $middleware->alias([
-    'checkRole' => RoleMiddleware::class,
-    'role' => RoleOrPermissionMiddleware::class,
-    'permission' => RoleOrPermissionMiddleware::class,
-    'role_or_permission' =>RoleOrPermissionMiddleware::class,
-    'check.active'=>CheckActive::class,
-   $middleware->web(append: [
-        \App\Http\Middleware\SetLocale::class,
-    ])
+        $middleware->alias([
+            'checkRole' => RoleMiddleware::class,
+            'role' => RoleOrPermissionMiddleware::class,
+            'permission' => RoleOrPermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'check.active' => CheckActive::class,
+            $middleware->web(append: [
+                \App\Http\Middleware\SetLocale::class,
+            ]),
 
-
-]);
-
+        ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {

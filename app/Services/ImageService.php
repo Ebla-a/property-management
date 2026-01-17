@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Property;
 use App\Models\PropertyImage;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ImageService
 {
@@ -14,9 +14,7 @@ class ImageService
     /**
      * Upload images and save paths in DB
      *
-     * @param Property $property
-     * @param UploadedFile[] $images
-     * @param string|null $alt
+     * @param  UploadedFile[]  $images
      * @return PropertyImage[]
      */
     public function upload(Property $property, array $images, ?string $alt = null): array
@@ -34,7 +32,7 @@ class ImageService
             $created[] = PropertyImage::create([
                 'property_id' => $property->id,
                 'path' => $path,
-                'is_main' => (!$hasMain && $i === 0),
+                'is_main' => (! $hasMain && $i === 0),
                 'alt' => $alt,
             ]);
         }
@@ -88,7 +86,7 @@ class ImageService
             ->where('is_main', true)
             ->exists();
 
-        if (!$hasMain) {
+        if (! $hasMain) {
             PropertyImage::where('property_id', $property->id)->update(['is_main' => false]);
             $image->update(['is_main' => true]);
         }

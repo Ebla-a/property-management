@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Booking;
@@ -15,38 +16,38 @@ class BookingService
     {
         // Check if the property exists before using it
         $property = Property::find($data['property_id'] ?? null);
-        if (!$property) {
+        if (! $property) {
             throw new \Exception('Property not found');
         }
 
         // Ensure the user is authenticated
         $userId = auth('sanctum')->id();
-        if (!$userId) {
+        if (! $userId) {
             throw new \Exception('Unauthenticated');
         }
 
         // Create the booking inside a transaction
         return DB::transaction(function () use ($data, $userId, $property) {
 
-$booking = Booking::create([
-    'property_id'  => $property->id,
-    'user_id'      => $userId,
-    'employee_id'  => $property->employee_id ?? null, // assign employee if exists
-    'scheduled_at' => $data['scheduled_at'],
-    'status'       => 'pending',
-]);
-
+            $booking = Booking::create([
+                'property_id' => $property->id,
+                'user_id' => $userId,
+                'employee_id' => $property->employee_id ?? null, // assign employee if exists
+                'scheduled_at' => $data['scheduled_at'],
+                'status' => 'pending',
+            ]);
 
             // Load property and employee relationships before returning
             return $booking->load(['property', 'employee']);
         });
     }
-     /**
-      * derails of booking
-      * @param Booking $booking
-      * @return Booking
-      */
-     public function show(Booking $booking)
+
+    /**
+     * derails of booking
+     *
+     * @return Booking
+     */
+    public function show(Booking $booking)
     {
         return $booking->load([
             'property',
@@ -54,10 +55,10 @@ $booking = Booking::create([
             'user',
         ]);
     }
+
     /**
      * cancel booking
      */
-
     public function cancel(Booking $booking)
     {
         $booking->update([

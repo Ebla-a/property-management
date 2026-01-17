@@ -35,7 +35,7 @@ class StorePropertyImagesRequest extends FormRequest
             if (($existingCount + $newCount) > self::MAX_IMAGES_PER_PROPERTY) {
                 $validator->errors()->add(
                     'images',
-                    'Maximum ' . self::MAX_IMAGES_PER_PROPERTY . ' images allowed per property.'
+                    'Maximum '.self::MAX_IMAGES_PER_PROPERTY.' images allowed per property.'
                 );
             }
         });

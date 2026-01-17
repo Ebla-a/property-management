@@ -18,10 +18,10 @@ class EmployeeBookingService
         return Booking::with(['user', 'property'])
             ->where(function ($q) use ($employeeId) {
                 $q->where('employee_id', $employeeId)
-                  ->orWhere(function ($q2) {
-                      $q2->whereNull('employee_id')
-                         ->where('status', 'pending');
-                  });
+                    ->orWhere(function ($q2) {
+                        $q2->whereNull('employee_id')
+                            ->where('status', 'pending');
+                    });
             })
             ->latest()
             ->paginate(10);
@@ -32,9 +32,9 @@ class EmployeeBookingService
      */
     public function approve(Booking $booking)
     {
-        if (!in_array($booking->status, ['pending', 'rescheduled'])) {
+        if (! in_array($booking->status, ['pending', 'rescheduled'])) {
             throw ValidationException::withMessages([
-                'status' => 'Action not allowed. Booking must be pending or rescheduled.'
+                'status' => 'Action not allowed. Booking must be pending or rescheduled.',
             ]);
         }
 
@@ -51,13 +51,13 @@ class EmployeeBookingService
             $booking->id
         )) {
             throw ValidationException::withMessages([
-                'scheduled_at' => 'Employee has another booking at this time'
+                'scheduled_at' => 'Employee has another booking at this time',
             ]);
         }
 
         $booking->update([
             'status' => 'approved',
-            'rescheduled_at' => null
+            'rescheduled_at' => null,
         ]);
 
         return $booking;
@@ -68,9 +68,9 @@ class EmployeeBookingService
      */
     public function cancel(Booking $booking)
     {
-        if (! in_array($booking->status, ['pending', 'approved','rescheduled'])) {
+        if (! in_array($booking->status, ['pending', 'approved', 'rescheduled'])) {
             throw ValidationException::withMessages([
-                'status' => 'Action not allowed'
+                'status' => 'Action not allowed',
             ]);
         }
 
@@ -81,7 +81,7 @@ class EmployeeBookingService
         }
 
         $booking->update([
-            'status' => 'canceled'
+            'status' => 'canceled',
         ]);
 
         return $booking;
@@ -104,20 +104,20 @@ class EmployeeBookingService
             $booking->id
         )) {
             throw ValidationException::withMessages([
-                'scheduled_at' => 'Employee already has a booking at this time'
+                'scheduled_at' => 'Employee already has a booking at this time',
             ]);
         }
 
         if (! in_array($booking->status, ['pending', 'approved', 'rescheduled'])) {
             throw ValidationException::withMessages([
-                'status' => 'Action not allowed'
+                'status' => 'Action not allowed',
             ]);
         }
 
         $booking->update([
             'status' => 'rescheduled',
             'scheduled_at' => $scheduleAt,
-            'rescheduled_at' => now()
+            'rescheduled_at' => now(),
         ]);
 
         return $booking;
@@ -138,15 +138,15 @@ class EmployeeBookingService
             abort(403, 'Forbidden'); // authorization check
         }
 
-        if (!in_array($booking->status, ['approved', 'rescheduled'])) {
+        if (! in_array($booking->status, ['approved', 'rescheduled'])) {
             throw ValidationException::withMessages([
-                'status' => 'Action not allowed'
+                'status' => 'Action not allowed',
             ]);
         }
 
         $booking->update([
             'status' => 'completed',
-            'completed_at' => now()
+            'completed_at' => now(),
         ]);
 
         return $booking;
@@ -164,7 +164,7 @@ class EmployeeBookingService
         return Booking::where('employee_id', $employeeId)
             ->when(
                 $excludeId,
-                fn($q) => $q->where('id', '!=', $excludeId)
+                fn ($q) => $q->where('id', '!=', $excludeId)
             )
             ->whereBetween('scheduled_at', [
                 Carbon::parse($scheduledAt)->subHour(),
@@ -190,7 +190,7 @@ class EmployeeBookingService
 
         if ($booking->status !== 'pending') {
             throw ValidationException::withMessages([
-                'status' => 'Action is not allowed'
+                'status' => 'Action is not allowed',
             ]);
         }
 
