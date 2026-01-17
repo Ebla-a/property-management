@@ -83,13 +83,6 @@ public function complete(User $user, Booking $booking): bool
     return $canAssign && $booking->status === 'approved';
 }
 
-public function reject(User $user, Booking $booking): bool
-{
-    $canAssign = $user->hasRole('employee') && ($booking->employee_id == $user->id || is_null($booking->employee_id));
-
-    return $canAssign && $booking->status === 'pending';
-}
-
     public function reject(User $user, Booking $booking)
     {
         return
