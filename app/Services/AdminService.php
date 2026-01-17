@@ -16,17 +16,14 @@ class AdminService
 {
     /**
      * Create a new employee user and assign a role.
-     *
-     * @param array $data
-     * @return User
      */
     public function addEmployee(array $data): User
     {
         return DB::transaction(function () use ($data) {
             // Create the user
             $user = User::create([
-                'name'     => $data['name'],
-                'email'    => $data['email'],
+                'name' => $data['name'],
+                'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'is_active' => $data['is_active'] ?? true,
             ]);
@@ -47,10 +44,6 @@ class AdminService
     /**
      * Change a user's role using Spatie's role methods.
      * This will remove previous roles and set the provided one.
-     *
-     * @param int $userId
-     * @param string $role
-     * @return User
      */
     public function changeRole(int $userId, string $role): User
     {
@@ -70,10 +63,6 @@ class AdminService
 
     /**
      * Toggle user active status.
-     *
-     * @param int $userId
-     * @param bool $status
-     * @return User
      */
     public function toggleUserStatus(int $userId, bool $status): User
     {
@@ -89,11 +78,6 @@ class AdminService
     /**
      * Change the password for the given admin user after verifying old password.
      * Throws BadRequestHttpException if old password doesn't match.
-     *
-     * @param User $admin
-     * @param string $oldPassword
-     * @param string $newPassword
-     * @return void
      */
     public function changePassword(User $admin, string $oldPassword, string $newPassword): void
     {
@@ -112,9 +96,8 @@ class AdminService
      * - Prevent deleting yourself.
      * - Prevent deleting the last admin.
      *
-     * @param int $userId  The id of the user to delete
-     * @param User $requester The user performing the delete (for safety checks)
-     * @return void
+     * @param  int  $userId  The id of the user to delete
+     * @param  User  $requester  The user performing the delete (for safety checks)
      *
      * @throws BadRequestHttpException on invalid action
      */

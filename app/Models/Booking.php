@@ -4,23 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Property;
-
-
 
 class Booking extends Model
 {
     use HasFactory;
+
     protected $fillable =
-    [
-        'user_id',
-        'property_id',
-        'scheduled_at',
-        'status',
-        'notes',
-        'rejection_reason'
-    ];
+        [
+            'user_id',
+            'property_id',
+            'scheduled_at',
+            'status',
+            'notes',
+            'rejection_reason',
+        ];
+
     protected $casts = [
         'scheduled_at' => 'datetime',
     ];
@@ -35,10 +33,12 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
     public function property()
     {
         return $this->belongsTo(Property::class, 'property_id');
     }
+
     public function employee()
     {
         return $this->belongsTo(User::class, 'employee_id');
@@ -51,7 +51,6 @@ class Booking extends Model
 
     public function messages()
     {
-        return $this->hasMany(BookingMessage::class); 
+        return $this->hasMany(BookingMessage::class);
     }
-
 }

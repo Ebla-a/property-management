@@ -9,12 +9,13 @@ use App\Models\Property;
 use App\Services\AmenityService;
 use App\Services\PropertyService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
-use Illuminate\Support\Arr; 
 
 class PropertyController extends Controller
 {
     protected PropertyService $propertyService;
+
     protected AmenityService $amenityService;
 
     public function __construct(PropertyService $propertyService, AmenityService $amenityService)
@@ -25,8 +26,6 @@ class PropertyController extends Controller
 
     /**
      * Display a listing of properties with optional filters (paginated).
-     *
-     * @return View
      */
     public function index(): View
     {
@@ -39,7 +38,7 @@ class PropertyController extends Controller
             'max_price',
             'sort',
             'order',
-            'limit'
+            'limit',
         ]));
 
         // If legacy single `type` param exists but no `property_types`, map it to property_types[]
@@ -69,8 +68,6 @@ class PropertyController extends Controller
         return view('dashboard.properties.index', compact('properties', 'amenities', 'filters', 'propertyTypes'));
     }
 
-
-
     public function create(): View
     {
         $amenities = $this->amenityService->getAll();
@@ -93,7 +90,7 @@ class PropertyController extends Controller
             );
         }
 
-        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.add_property'));
+        return redirect()->route('dashboard.properties.index')->with('success', __('messages.property.add_property'));
     }
 
     public function edit(Property $property): View
@@ -105,21 +102,20 @@ class PropertyController extends Controller
         return view('dashboard.properties.edit', compact('property', 'amenities', 'propertyTypes'));
     }
 
-
     public function update(UpdatePropertyRequest $request, Property $property): RedirectResponse
     {
         $data = $request->validated();
 
         $this->propertyService->update($property, $data);
 
-        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.updated'));
+        return redirect()->route('dashboard.properties.index')->with('success', __('messages.property.updated'));
     }
 
     public function destroy(Property $property): RedirectResponse
     {
         $this->propertyService->delete($property);
 
-        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.deleted'));
+        return redirect()->route('dashboard.properties.index')->with('success', __('messages.property.deleted'));
     }
 
     public function show(Property $property): View

@@ -55,7 +55,7 @@ class StorePropertyRequest extends FormRequest
             'amenity_ids' => 'nullable|array',
             'amenity_ids.*' => 'exists:amenities,id',
 
-            //upload photo
+            // upload photo
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,gif,webp|max:5120', // 5MB لكل صورة
         ];

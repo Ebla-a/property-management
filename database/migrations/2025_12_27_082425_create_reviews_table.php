@@ -14,22 +14,22 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
-          ->constrained('users')
-          ->cascadeOnDelete();
+                ->constrained('users')
+                ->cascadeOnDelete();
 
-    $table->foreignId('property_id')
-          ->constrained('properties')
-          ->cascadeOnDelete();
+            $table->foreignId('property_id')
+                ->constrained('properties')
+                ->cascadeOnDelete();
 
-          $table->foreignId('booking_id')
-          ->constrained('bookings')
-          ->cascadeOnDelete();
+            $table->foreignId('booking_id')
+                ->constrained('bookings')
+                ->cascadeOnDelete();
 
-    $table->unsignedTinyInteger('rating');
-    $table->text(column: 'comment')->nullable();
+            $table->unsignedTinyInteger('rating');
+            $table->text(column: 'comment')->nullable();
             $table->timestamps();
 
-           $table->unique(['user_id', 'property_id']);
+            $table->unique(['user_id', 'property_id']);
         });
     }
 
