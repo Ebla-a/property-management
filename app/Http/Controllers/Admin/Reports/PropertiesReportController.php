@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Http\Controllers\Admin\Reports;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Property;
 use Barryvdh\DomPDF\Facade\PDF;
+use Illuminate\Support\Facades\Log;
 
 class PropertiesReportController extends Controller
 {
@@ -13,61 +14,86 @@ class PropertiesReportController extends Controller
         $this->middleware(['auth', 'check.active', 'role:admin']);
     }
 
-    public function index(Request $request)
+    // VIEW THE REPORT PAGE
+    public function index()
     {
-        
-    $report = $this->getReportData($request);
-    return view('dashboard.reports.properties', compact('report'));
+        try {
+            $stats = $this->getStats();
+            return view('dashboard.reports.properties', compact('stats'));
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Error loading properties report: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while loading the report.');
+        }
     }
 
-    public function export(Request $request){
-    $report = $this->getReportData($request);
+    // GET ALL THE STATS
+    public function getStats()
+    {
+        try {
+            return [
+                // BASIC COUNTS
+                'total' => Property::count(),
+                'available' => Property::where('status', 'available')->count(),
+                'booked'    => Property::where('status', 'booked')->count(),
+                'rented'    => Property::where('status', 'rented')->count(),
+                'hidden'    => Property::where('status', 'hidden')->count(),
 
-    $pdf = PDF::loadView('dashboard.reports.properties-export', compact('report'));
+                // TIME BASED COUNTS
+                'today' => Property::whereDate('created_at', today())->count(),
+                'this_week' => Property::whereBetween('created_at', [
+                    now()->startOfWeek(),
+                    now()->endOfWeek()
+                ])->count(),
+                'this_month' => Property::whereMonth('created_at', now()->month)->count(),
 
-    $fileName = 'properties_report_' . now()->format('Y-m-d_H-i-s') . '.pdf';
-    return $pdf->download($fileName);
+                // TOP EMPLOYEES (optional if properties have employee relation)
+                'top_employees' => Property::selectRaw('employee_id, COUNT(*) as total')
+                    ->whereNotNull('employee_id')
+                    ->groupBy('employee_id')
+                    ->with('employee:id,name')
+                    ->orderByDesc('total')
+                    ->limit(5)
+                    ->get(),
 
+                // PROPERTIES BY CITY
+                'by_city' => Property::selectRaw('city, COUNT(*) as total')
+                    ->groupBy('city')
+                    ->get(),
+
+                // LIST OF PROPERTIES
+                'properties' => Property::latest()->get(),
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error fetching properties stats: ' . $e->getMessage());
+            // Return empty stats in case of error
+            return [
+                'total' => 0,
+                'available' => 0,
+                'booked' => 0,
+                'rented' => 0,
+                'hidden' => 0,
+                'today' => 0,
+                'this_week' => 0,
+                'this_month' => 0,
+                'top_employees' => collect(),
+                'by_city' => collect(),
+                'properties' => collect(),
+            ];
+        }
     }
 
-    public function getReportData(Request $request)
-{
-    // Validation
-    $filters = $request->validate([
-        'status' => 'nullable|in:available,booked,rented,hidden',
-        'city'   => 'nullable|string',
-        'from'   => 'nullable|date',
-        'to'     => 'nullable|date',
-    ]);
-
-    $query = Property::query()
-        ->when($filters['status'] ?? null, function ($q, $status) {
-            $q->where('status', $status);
-        })
-        ->when($filters['city'] ?? null, function ($q, $city) {
-            $q->where('city', $city);
-        })
-        ->when(
-            !empty($filters['from']) && !empty($filters['to']),
-            function ($q) use ($filters) {
-                $q->whereBetween('created_at', [
-                    $filters['from'],
-                    $filters['to']
-                ]);
-            }
-        );
-
-    return [
-        'total_properties' => $query->count(),
-
-        'by_status' => [
-            'available' => Property::where('status', 'available')->count(),
-            'booked'    => Property::where('status', 'booked')->count(),
-            'rented'    => Property::where('status', 'rented')->count(),
-            'hidden'    => Property::where('status', 'hidden')->count(),
-        ],
-
-        'properties' => $query->latest()->get(),
-    ];
-}
+    // EXPORT THE REPORT AS PDF
+    public function export()
+    {
+        try {
+            $stats = $this->getStats();
+            $pdf = PDF::loadView('dashboard.reports.properties-export', compact('stats'));
+            $fileName = 'properties_report_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+            return $pdf->download($fileName);
+        } catch (\Exception $e) {
+            Log::error('Error exporting properties report PDF: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while generating the PDF.');
+        }
+    }
 }
