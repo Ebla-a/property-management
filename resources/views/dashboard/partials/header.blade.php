@@ -187,26 +187,45 @@
 </header>
 
 {{-- Logout Modal --}}
-<div x-data="{ open: false }" x-show="open" @open-modal.window="if($event.detail == 'logout-modal') open = true"
-     class="fixed inset-0 z-[100] overflow-y-auto" style="display: none;">
-    <div class="flex items-center justify-center min-h-screen px-4 text-center">
-        <div class="fixed inset-0 bg-gray-500 opacity-75"></div>
-        <div class="inline-block bg-white rounded-2xl overflow-hidden shadow-xl transform transition-all sm:max-w-md sm:w-full p-6 relative z-[110]">
-            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('messages.logout_modal.title') }}</h3>
-            <p class="text-sm text-gray-500 mb-6">{{ __('messages.logout_modal.message') }}</p>
-            <div class="flex gap-3 justify-center">
+<div id="logoutModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="toggleLogoutModal()"></div>
+
+        <div class="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+            
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 mb-4">
+                <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>
+            </div>
+
+            <div class="sm:flex sm:items-start">
+                <div class="mt-3 text-center sm:mt-0 sm:text-center w-full">
+                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                        {{ __('messages.logout_modal.title') }}
+                    </h3>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-500">
+                            {{ __('messages.logout_modal.message') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="bg-indigo-600 text-white px-8 py-2 rounded-xl font-medium hover:bg-indigo-700 transition">
+                    <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none sm:text-sm">
                         {{ __('messages.logout_modal.confirm') }}
                     </button>
                 </form>
-                <button @click="open = false" class="bg-gray-100 text-gray-700 px-8 py-2 rounded-xl font-medium hover:bg-gray-200 transition">
+                <button type="button" onclick="toggleLogoutModal()" class="mt-3 inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none sm:mt-0 sm:text-sm">
                     {{ __('messages.logout_modal.cancel') }}
                 </button>
             </div>
         </div>
     </div>
 </div>
+
 
 <div class="h-16"></div>

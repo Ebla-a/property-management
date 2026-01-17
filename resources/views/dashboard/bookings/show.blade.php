@@ -221,9 +221,11 @@
         </div>
 
         {{-- Right Column: Chat System --}}
-        <div class="lg:col-span-1">
-            @include('dashboard.bookings._chat')
-        </div>
+       @if(auth()->user()->hasRole('employee'))
+    <div class="lg:col-span-1">
+        @include('dashboard.bookings._chat')
+    </div>
+@endif
 
     </div>
 </div>
