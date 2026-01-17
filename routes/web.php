@@ -37,11 +37,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/chat/bookings/{booking}/messages', [BookingMessageController::class, 'index']);
-    Route::post('/chat/bookings/{booking}/messages', [BookingMessageController::class, 'store']);
+Route::middleware(['auth'])->prefix('chat')->group(function () {
+    Route::get('/bookings/{booking}/messages', [BookingMessageController::class, 'index']);
+    Route::post('/bookings/{booking}/messages', [BookingMessageController::class, 'store']);
 });
-
 Route::view('/team', 'team')->name('team.index');
 
 // change language

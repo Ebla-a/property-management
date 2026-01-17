@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Customer\ReviewController;
+use App\Http\Controllers\Employee\BookingMessageController;
 use App\Http\Controllers\Visitor\PropertyController as VisitorPropertyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,10 @@ Route::middleware(['auth:sanctum', 'check.active'])->group(function () {
             'message' => 'Welcome Admin to Dashboard',
         ]);
     });
+});
+Route::middleware(['auth:sanctum'])->prefix('bookings')->group(function () {
+    Route::get('/{booking}/messages', [BookingMessageController::class, 'index']);
+    Route::post('/{booking}/messages', [BookingMessageController::class, 'store']);
 });
 
 // Public Property endpoints (visitor – no auth)
