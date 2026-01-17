@@ -71,6 +71,12 @@ return [
         'placeholder' => '  write your letter...',
         'send' => 'send',
     ],
+    'logout_modal' => [
+        'title' => 'Confirm Logout',
+        'message' => 'Are you sure you want to log out of your account?',
+        'confirm' => 'Logout',
+        'cancel' => 'Cancel',
+    ],
 
     // Reports
     'reports' => [
