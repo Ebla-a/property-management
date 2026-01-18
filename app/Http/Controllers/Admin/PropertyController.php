@@ -14,7 +14,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
-
 class PropertyController extends Controller
 {
     protected PropertyService $propertyService;

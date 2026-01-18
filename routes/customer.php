@@ -18,7 +18,4 @@ Route::middleware(['auth:sanctum'])->prefix('bookings')->group(function () {
     Route::get('/{booking}', [CustomerBookingController::class, 'show']);
     // cancel the booking befor appointment
     Route::delete('/{booking}', [CustomerBookingController::class, 'cancel']);
-    // show booking
-    Route::get('/bookings/{booking}', [CustomerBookingController::class, 'show'])
-        ->name('bookings.show');
 });

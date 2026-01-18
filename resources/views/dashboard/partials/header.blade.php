@@ -45,12 +45,12 @@
                         window.addEventListener('resize', this._resizeHandler);
                         window.addEventListener('scroll', this._resizeHandler, true);
                     }
-                }" 
-                x-init="initListeners()" 
-                x-on:keydown.escape.window="open = false" 
-                x-cloak 
+                }"
+                x-init="initListeners()"
+                x-on:keydown.escape.window="open = false"
+                x-cloak
                 @click.outside="open = false">
-                
+
                 <button x-ref="btn" @click="open = !open; if(open){ $nextTick(()=> calculate()) }"
                     class="relative p-2 rounded-full hover:bg-indigo-50 transition focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,7 +83,7 @@
                         @endif
                     </div>
                     <div class="max-h-80 overflow-y-auto divide-y divide-gray-100 bg-white">
-                        @forelse($userNotifications->take(6) as $notification)
+                        @forelse($userNotifications as $notification)
                             <div class="px-4 py-3 flex items-start gap-3 hover:bg-indigo-50 transition cursor-pointer group">
                                 <span class="h-3 w-3 mt-1 rounded-full bg-indigo-600"></span>
                                 <div class="flex-1 min-w-0">
@@ -97,7 +97,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="px-6 py-8 text-center text-sm text-gray-500">No new notifications</div>
+                            <div class="px-6 py-8 text-center text-sm text-gray-500 flex items-center justify-between">No new notifications <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-off-icon lucide-bell-off"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M17 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 .258-1.742"/><path d="m2 2 20 20"/><path d="M8.668 3.01A6 6 0 0 1 18 8c0 2.687.77 4.653 1.707 6.05"/></svg></span></div>
                         @endforelse
                     </div>
                 </div>
@@ -192,7 +192,7 @@
         <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="toggleLogoutModal()"></div>
 
         <div class="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-            
+
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 mb-4">
                 <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
