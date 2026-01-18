@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto p-6 max-w-4xl">
     <div class="bg-white shadow-xl rounded-2xl p-8">
-        <h1 class="text-3xl font-extrabold text-indigo-600 mb-6 text-center">Add New Property</h1>
+        <h1 class="text-3xl font-extrabold text-indigo-600 mb-6 text-center">{{ __('messages.property.add_property') }}</h1>
 
         @if($errors->any())
             <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl">
@@ -18,9 +18,8 @@
         <form action="{{ route('dashboard.properties.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
-            <!-- Title -->
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Title</label>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.title_label') }}</label>
                 <input name="title" value="{{ old('title') }}"
                        class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
                        placeholder="{{ __('messages.property.title_placeholder') }}" required>
@@ -28,52 +27,49 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">City</label>
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.city_label') }}</label>
                     <input name="city" value="{{ old('city') }}"
                            class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="City">
+                           placeholder="{{ __('messages.property.city_placeholder') }}">
                 </div>
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">Neighborhood</label>
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.neighborhood_label') }}</label>
                     <input name="neighborhood" value="{{ old('neighborhood') }}"
                            class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="Neighborhood">
+                           placeholder="{{ __('messages.property.neighborhood_placeholder') }}">
                 </div>
             </div>
 
-            <!-- Address -->
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Full Address</label>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.address_label') }}</label>
                 <input name="address" value="{{ old('address') }}"
                        class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                       placeholder="123 Street, City">
+                       placeholder="{{ __('messages.property.address_placeholder') }}">
             </div>
 
-            <!-- Rooms, Area, Price -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">Rooms</label>
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.rooms_label') }}</label>
                     <input name="rooms" type="number" value="{{ old('rooms') }}"
                            class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="3">
+                           placeholder="{{ __('messages.property.rooms_placeholder') }}">
                 </div>
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">Area (m²)</label>
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.area_label') }}</label>
                     <input name="area" type="text" value="{{ old('area') }}"
                            class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="120">
+                           placeholder="{{ __('messages.property.area_placeholder') }}">
                 </div>
                 <div>
-                    <label class="block mb-2 font-medium text-gray-700">Price</label>
+                    <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.price_label') }}</label>
                     <input name="price" type="text" value="{{ old('price') }}"
                            class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                           placeholder="$250,000">
+                           placeholder="{{ __('messages.property.price_placeholder') }}">
                 </div>
             </div>
 
-            <!-- Status -->
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Status</label>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.status_label') }}</label>
                 <select name="status"
                         class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm">
                     <option value="available" {{ old('status') == 'available' ? 'selected' : '' }}>{{ __('messages.property.status_list.available') }}</option>
@@ -83,17 +79,12 @@
                 </select>
             </div>
 
-
-
-
-
             <div>
                 <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.description_label') }}</label>
                 <textarea name="description" rows="5"
                           class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                          placeholder="Add detailed description...">{{ old('description') }}</textarea>
+                          placeholder="{{ __('messages.property.description_placeholder') }}">{{ old('description') }}</textarea>
             </div>
-
 
             <div>
                 <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.images_label') }}</label>
@@ -129,7 +120,7 @@
 
             <div class="flex flex-wrap gap-4 justify-end">
                 <a href="{{ route('dashboard.properties.index') }}"
-                   class="px-6 py-3 bg-gray-200 rounded-full text-gray-700 font-semibold hover:bg-gray-300 transition">Cancel</a>
+                   class="px-6 py-3 bg-gray-200 rounded-full text-gray-700 font-semibold hover:bg-gray-300 transition">{{ __('messages.property.cancel_button') }}</a>
                 <button type="submit"
                         class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-full font-bold shadow-2xl hover:scale-[1.05] transform transition focus:outline-none focus:ring-4 focus:ring-indigo-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -144,6 +135,7 @@
 </div>
 
 <script>
+// Logic remains identical as requested
 function previewImages() {
     const preview = document.getElementById('preview');
     preview.innerHTML = '';
@@ -163,7 +155,6 @@ function previewImages() {
     });
 }
 
-// Drag & Drop
 const dropzone = document.getElementById('dropzone');
 dropzone.addEventListener('dragover', e => {
     e.preventDefault();
