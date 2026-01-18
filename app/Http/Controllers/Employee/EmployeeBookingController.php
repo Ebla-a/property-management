@@ -150,6 +150,9 @@ class EmployeeBookingController extends Controller
     public function reject(RejectBookingRequest $request, Booking $booking)
     {
         $this->authorize('reject', $booking);
+        if (is_null($booking->employee_id)) {
+        $booking->update(['employee_id' => Auth::id()]);
+    }
         $booking = $this->employeeBookingService->reject($booking, $request->reason);
 
         $by = auth()->user() ? auth()->user()->name : 'System';

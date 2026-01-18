@@ -7,11 +7,11 @@
     {{-- Header --}}
     <div class="mb-6">
         <h2 class="text-2xl font-bold text-gray-900">
-            Reschedule Booking
+            {{ __('messages.booking.reschedule') }}
         </h2>
 
         <p class="text-sm text-gray-500 mt-1">
-            Update the visit date & time for this booking
+            {{ __('messages.booking.reschedule_subtitle') }}
         </p>
     </div>
 
@@ -21,11 +21,11 @@
         {{-- Top Section --}}
         <div class="border-b px-6 py-4">
             <h3 class="text-lg font-semibold text-gray-900">
-                Booking #{{ $booking->id }}
+                {{ __('messages.booking.booking_id') }} #{{ $booking->id }}
             </h3>
 
             <p class="text-sm text-gray-500 mt-1">
-                Please review the current schedule before applying changes
+                {{ __('messages.booking.review_schedule_hint') }}
             </p>
         </div>
 
@@ -35,7 +35,7 @@
             {{-- Current Schedule --}}
             <div class="bg-gray-50 border rounded-xl px-4 py-3">
                 <p class="text-sm text-gray-600">
-                    Current Schedule
+                    {{ __('messages.booking.current_schedule') }}
                 </p>
 
                 <p class="font-medium text-gray-900 mt-1">
@@ -53,7 +53,7 @@
                 {{-- New Schedule --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                        New Date & Time
+                        {{ __('messages.booking.new_date_time') }}
                     </label>
 
                     <input type="datetime-local"
@@ -72,23 +72,19 @@
 
                 <button
                     class="px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-black">
-                    Save Changes
+                    {{ __('messages.user.save_changes') }}
                 </button>
 
                 <a href="{{ route('employee.bookings.show', $booking->id) }}"
                 class="px-3 py-2 rounded-lg border text-sm hover:bg-gray-50">
-                    Cancel
+                    {{ __('messages.booking.cancel') }}
                 </a>
 
             </div>
 
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @endsection

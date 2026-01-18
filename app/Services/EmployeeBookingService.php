@@ -179,19 +179,19 @@ class EmployeeBookingService
     public function reject(Booking $booking, $reason = null)
     {
         // Assign if unassigned
-        if (is_null($booking->employee_id)) {
-            $booking->employee_id = Auth::id();
-            $booking->save();
-        }
+       if (is_null($booking->employee_id)) {
+        $booking->employee_id = Auth::id();
+        $booking->save();
+    }
 
         if ($booking->employee_id !== Auth::id()) {
-            abort(403, 'You are not allowed to reject this booking');
-        }
+        abort(403, 'You are not allowed to reject this booking');
+    }
 
-        if ($booking->status !== 'pending') {
-            throw ValidationException::withMessages([
-                'status' => 'Action is not allowed',
-            ]);
+       if (! in_array($booking->status, ['pending', 'rescheduled'])) {
+        throw ValidationException::withMessages([
+            'status' => 'Action is not allowed. Booking must be pending or rescheduled.',
+        ]);
         }
 
         $booking->update([

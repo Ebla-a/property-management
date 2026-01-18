@@ -237,6 +237,14 @@ return [
         'awaiting_customer_review' => 'بانتظار تقييم العميل',
         'pending_bookings' => 'الحجوزات المنتظرة',
         'all_bookings' => 'كل الحجوزات',
+        'cancelled' => 'تم الغاء الحجز بنجاح',
+        'reschedule_subtitle' => 'تحديث تاريخ ووقت الزيارة لهذا الحجز',
+    'booking_id' => 'حجز رقم',
+    'review_schedule_hint' => 'يرجى مراجعة الجدول الحالي قبل تطبيق التغييرات',
+    'current_schedule' => 'الجدول الحالي',
+    'new_date_time' => 'التاريخ والوقت الجديد',
+    'completed'=> 'تم الاكتمال بنجاح',
+    'rejected'=> 'تم رفض الحجز بنجاح',
 
         'status' => [
             'pending' => 'قيد الانتظار',

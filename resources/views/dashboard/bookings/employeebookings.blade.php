@@ -12,7 +12,7 @@
         <div class="flex flex-wrap gap-2 justify-center">
             <a href="{{ route('employee.bookings.my') }}"
                class="px-3 py-1.5 rounded-xl text-sm border shadow-sm {{ !request('status') ? 'bg-indigo-50 text-indigo-700 border-indigo-300 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
-                {{ __('messages.booking.all') }} ({{ $counts['all'] }})
+                 {{ __('messages.booking.all') }} ({{ $counts['all'] }})
             </a>
             @foreach(['pending', 'approved', 'rescheduled', 'completed', 'rejected', 'canceled'] as $st)
                 <a href="?status={{ $st }}"
@@ -54,23 +54,26 @@
                     <span class="font-medium">{{ $booking->scheduled_at }}</span>
                 </div>
 
-              
                 <div class="mt-6 flex flex-wrap gap-2">
                     <a href="{{ route('employee.bookings.show', $booking->id) }}"
                        class="px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition">
                         {{ __('messages.booking.view_details') }}
                     </a>
+                    
                     @if($booking->status == 'pending' || $booking->status == 'rescheduled')
-    <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
-        @csrf 
-        @method('PATCH')
-        <button type="submit" class="px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100">
-            {{ __('messages.booking.approve') }}
-        </button>
-    </form>
-@endif
-
+                        <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}">
+                            @csrf 
+                            @method('PATCH')
+                            <button type="submit" class="px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100">
+                                {{ __('messages.booking.approve') }}
+                            </button>
+                        </form>
+                        
                    
+                        <button type="button" onclick="openRejectModal({{ $booking->id }})" class="px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 hover:bg-red-100">
+                            {{ __('messages.booking.reject') }}
+                        </button>
+                    @endif
 
                     @if($booking->status == 'approved')
                         <a href="{{ route('employee.reschedule.form', $booking->id) }}" class="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100">

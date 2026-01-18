@@ -84,9 +84,8 @@ class BookingPolicy
      */
     public function reject(User $user, Booking $booking): bool
     {
-        return
-            $user->hasRole('employee') &&
-            $booking->employee_id === $user->id &&
-            $booking->status === 'pending';
+        
+           $isAuthorized = $user->hasRole('employee') && ($booking->employee_id == $user->id || is_null($booking->employee_id));
+            return $isAuthorized && in_array($booking->status, ['pending', 'rescheduled']);
     }
 }
