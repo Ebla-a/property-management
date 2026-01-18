@@ -41,11 +41,11 @@
 
         {{-- Content --}}
         <h2 class="text-center text-lg font-semibold text-indigo-600 mb-2">
-            Confirm Logout
+           {{ __('messages.logout_modal.title') }}
         </h2>
 
         <p class="text-center text-sm text-gray-600 mb-6">
-            Are you sure you want to log out? You will need to sign in again to access the dashboard.
+            {{ __('messages.logout_modal.message') }}
         </p>
 
         {{-- Actions --}}
@@ -55,7 +55,7 @@
                 @click="open = false"
                 class="px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
             >
-                Cancel
+               {{ __('messages.logout_modal.cancel') }}
             </button>
 
             <form method="POST" action="{{ route('logout') }}">
@@ -64,7 +64,7 @@
                     type="submit"
                     class="px-5 py-2 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition"
                 >
-                    Logout
+                    {{ __('messages.logout_modal.confirm') }}
                 </button>
             </form>
         </div>
