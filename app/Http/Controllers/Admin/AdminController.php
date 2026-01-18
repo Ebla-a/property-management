@@ -75,8 +75,9 @@ class AdminController extends Controller
      */
     public function changeRole(UpdateRoleRequest $request, int $id)
     {
+        $validated = $request->validated();
 
-        $this->adminService->changeRole($id, $request->role);
+        $this->adminService->changeRole($id, $validated['role']);
 
         return redirect()->route('dashboard.admin.employees.index')
             ->with('success', __('messages.user.role_updated'));
@@ -97,8 +98,9 @@ class AdminController extends Controller
      */
     public function toggleUserStatus(ToggleStatusRequest $request, int $userId)
     {
+        $validated = $request->validated();
 
-        $this->adminService->toggleUserStatus($userId, (bool) $request->is_active);
+        $this->adminService->toggleUserStatus($userId, (bool) $validated['is_active']);
 
         return redirect()->route('dashboard.admin.employees.index')
             ->with('success', __('messages.user.status_updated'));
@@ -109,10 +111,10 @@ class AdminController extends Controller
      */
     public function changePassword(ChangePasswordRequest $request)
     {
-
+        $validated = $request->validated();
         $admin = $request->user();
 
-        $this->adminService->changePassword($admin, $request->old_password, $request->new_password);
+        $this->adminService->changePassword($admin, $validated['old_password'], $validated['new_password']);
 
         return redirect()->route('dashboard.profile.edit')
             ->with('success', __('messages.user.password_changed'));
