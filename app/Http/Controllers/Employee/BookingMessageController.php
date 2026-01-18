@@ -1,48 +1,70 @@
 <?php
-namespace App\Http\Controllers\Api;
+
+namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBookingMessageRequest;
 use App\Models\Booking;
 use App\Services\BookingCommunicationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Controller to manage booking-related chat messages.
+ */
 class BookingMessageController extends Controller
 {
     protected BookingCommunicationService $service;
 
+    /**
+     * Injecting the communication service and applying authentication middlewares.
+     */
     public function __construct(BookingCommunicationService $service)
     {
         $this->service = $service;
-        $this->middleware(['auth:sanctum', 'check.active']);
+        // Ensuring only active and authenticated users access these routes
+        $this->middleware(['auth', 'check.active']);
     }
 
-    // show convirsation
-    public function index(Booking $booking, Request $request)
+    /**
+     * Fetch all messages for a specific booking.
+     *
+     * @param  Booking  $booking  Route Model Binding for the booking
+     */
+    public function index(Booking $booking, Request $request): JsonResponse
     {
         $messages = $this->service->getMessages(
             $booking,
-            $request->user()->id
+            (int) $request->user()->id
         );
+        if ($messages instanceof \Illuminate\Database\Eloquent\Collection) {
+        $messages->load('sender:id,name'); 
+    }
 
         return response()->json($messages);
     }
 
-    // send message
-    public function store(Booking $booking, Request $request)
+    /**
+     * Store and broadcast a new message.
+     *
+     * @param  Booking  $booking  Route Model Binding for the booking
+     * @param  StoreBookingMessageRequest  $request  Validated request class
+     */
+    public function store(Booking $booking, StoreBookingMessageRequest $request): JsonResponse
     {
-        $request->validate([
-            'message' => 'required|string'
-        ]);
+        // Retrieve only validated data from the Request class
+        $data = $request->validated();
 
         $message = $this->service->sendMessage(
             $booking,
-            $request->user()->id,
-            $request->message
+            (int) $request->user()->id,
+            $data['message']
         );
 
         return response()->json([
+            'status' => 'success',
             'message' => 'Message sent successfully',
-            'data' => $message
+            'data' => $message->load('sender:id,name'),
         ], 201);
     }
 }

@@ -23,24 +23,9 @@
                 <label class="block mb-2 font-medium text-gray-700">Title</label>
                 <input name="title" value="{{ old('title') }}"
                        class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
-                       placeholder="Property Title" required>
+                       placeholder="{{ __('messages.property.title_placeholder') }}" required>
             </div>
 
-            <!-- Property Type -->
-            <div>
-                <label class="block mb-2 font-medium text-gray-700">Property Type</label>
-                <select name="property_type_id" required
-                        class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm">
-                    <option value="">-- Select Type --</option>
-                    @foreach($propertyTypes as $type)
-                        <option value="{{ $type->id }}" {{ old('property_type_id') == $type->id ? 'selected' : '' }}>
-                            {{ $type->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- City & Neighborhood -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block mb-2 font-medium text-gray-700">City</label>
@@ -91,10 +76,10 @@
                 <label class="block mb-2 font-medium text-gray-700">Status</label>
                 <select name="status"
                         class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm">
-                    <option value="available" {{ old('status') == 'available' ? 'selected' : '' }}>Available</option>
-                    <option value="booked" {{ old('status') == 'booked' ? 'selected' : '' }}>Booked</option>
-                    <option value="rented" {{ old('status') == 'rented' ? 'selected' : '' }}>Rented</option>
-                    <option value="hidden" {{ old('status') == 'hidden' ? 'selected' : '' }}>Hidden</option>
+                    <option value="available" {{ old('status') == 'available' ? 'selected' : '' }}>{{ __('messages.property.status_list.available') }}</option>
+                    <option value="booked" {{ old('status') == 'booked' ? 'selected' : '' }}>{{ __('messages.property.status_list.booked') }}</option>
+                    <option value="rented" {{ old('status') == 'rented' ? 'selected' : '' }}>{{ __('messages.property.status_list.rented') }}</option>
+                    <option value="hidden" {{ old('status') == 'hidden' ? 'selected' : '' }}>{{ __('messages.property.status_list.hidden') }}</option>
                 </select>
             </div>
 
@@ -109,7 +94,15 @@
 
             <!-- Description -->
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Description</label>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="is_furnished" value="1" {{ old('is_furnished') ? 'checked' : '' }}
+                           class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-400">
+                    <span class="ml-2 text-gray-700">{{ __('messages.property.furnished_label') }}</span>
+                </label>
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.description_label') }}</label>
                 <textarea name="description" rows="5"
                           class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm"
                           placeholder="Add detailed description...">{{ old('description') }}</textarea>
@@ -118,6 +111,8 @@
             <!-- Property Images Dropzone -->
             <div>
                 <label class="block mb-2 font-medium text-gray-700">Property Images</label>
+
+                <!-- Dropzone -->
                 <div id="dropzone"
                      class="w-full border-2 border-dashed border-gray-300 rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-400 transition relative"
                      onclick="document.getElementById('images').click()">
@@ -127,8 +122,12 @@
                               d="M7 16V4h10v12m-5-4v8m-4 0h8" />
                     </svg>
                     <p class="text-gray-500 text-center">Click or drag images here to upload</p>
+
+                    <!-- Preview inside dropzone -->
                     <div id="preview" class="mt-4 flex flex-wrap gap-4 w-full justify-center"></div>
                 </div>
+
+                <!-- Hidden input -->
                 <input id="images" type="file" name="images[]" multiple accept="image/*" class="hidden" onchange="previewImages()">
             </div>
 
@@ -146,7 +145,38 @@
                 </div>
             </div>
 
-            <!-- Buttons -->
+            <div>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.images_label') }}</label>
+
+                <div id="dropzone"
+                     class="w-full border-2 border-dashed border-gray-300 rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-400 transition relative"
+                     onclick="document.getElementById('images').click()">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 16V4h10v12m-5-4v8m-4 0h8" />
+                    </svg>
+                    <p class="text-gray-500 text-center">{{ __('messages.property.images_placeholder') }}</p>
+
+                    <div id="preview" class="mt-4 flex flex-wrap gap-4 w-full justify-center"></div>
+                </div>
+
+                <input id="images" type="file" name="images[]" multiple accept="image/*" class="hidden" onchange="previewImages()">
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium text-gray-700">{{ __('messages.property.amenities_label') }}</label>
+                <div class="flex flex-wrap gap-3">
+                    @foreach($amenities as $a)
+                        <label class="inline-flex items-center bg-gray-100 rounded-xl px-3 py-2 hover:bg-indigo-50 cursor-pointer">
+                            <input type="checkbox" name="amenity_ids[]" value="{{ $a->id }}"
+                                   class="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-400">
+                            <span class="ml-2 text-gray-700">{{ $a->name }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
             <div class="flex flex-wrap gap-4 justify-end">
                 <a href="{{ route('dashboard.properties.index') }}"
                    class="px-6 py-3 bg-gray-200 rounded-full text-gray-700 font-semibold hover:bg-gray-300 transition">Cancel</a>
@@ -156,7 +186,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 4v16m8-8H4"/>
                     </svg>
-                    Add Property
+                    {{ __('messages.property.add_button') }}
                 </button>
             </div>
         </form>
@@ -168,7 +198,9 @@ function previewImages() {
     const preview = document.getElementById('preview');
     preview.innerHTML = '';
     const files = document.getElementById('images').files;
+
     if(files.length === 0) return;
+
     Array.from(files).forEach(file => {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -181,14 +213,21 @@ function previewImages() {
     });
 }
 
+// Drag & Drop
 const dropzone = document.getElementById('dropzone');
-dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('border-indigo-400','bg-indigo-50'); });
-dropzone.addEventListener('dragleave', e => { dropzone.classList.remove('border-indigo-400','bg-indigo-50'); });
+dropzone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropzone.classList.add('border-indigo-400', 'bg-indigo-50');
+});
+dropzone.addEventListener('dragleave', e => {
+    dropzone.classList.remove('border-indigo-400', 'bg-indigo-50');
+});
 dropzone.addEventListener('drop', e => {
     e.preventDefault();
-    dropzone.classList.remove('border-indigo-400','bg-indigo-50');
+    dropzone.classList.remove('border-indigo-400', 'bg-indigo-50');
     const dt = e.dataTransfer;
-    document.getElementById('images').files = dt.files;
+    const files = dt.files;
+    document.getElementById('images').files = files;
     previewImages();
 });
 </script>

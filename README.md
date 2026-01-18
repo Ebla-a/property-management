@@ -4,6 +4,7 @@ A comprehensive and integrated platform for browsing, booking, and managing prop
 
 
 ## 📸 Screenshots
+![websit](screenshots/website.jpg)
 ![AboutUs](screenshots/about%20us.PNG)
 ![Admin Dashboard](screenshots/Home.PNG)
 ![Property Listing](screenshots/properties.PNG)
@@ -248,7 +249,7 @@ ceo and founder **Alaa Darwish**
 | Assistant Developer | Hasan Dayoub |
 | Frontend Specialist | Wajd Heshme |
 | Backend Developer | Amin Ali |
-| Database Specialist | Enas |
+| Database Specialist | Enas Alhmoy|
 | Backend Developer | Abdullah Shuraitah |
 
 ---

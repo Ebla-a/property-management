@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Customer\ReviewController;
+use App\Http\Controllers\Employee\BookingMessageController;
+use App\Http\Controllers\Visitor\PropertyController as VisitorPropertyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Admin\PropertyController;
-use App\Http\Controllers\Admin\PropertyImageController;
-use App\Http\Controllers\Customer\ReviewController;
-use App\Http\Controllers\Visitor\PropertyController as VisitorPropertyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,23 +22,23 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-
 Route::middleware(['auth:sanctum', 'check.active'])->group(function () {
 
-    Route::middleware(['role:admin'])->get('/dashboard', function() {
+    Route::middleware(['role:admin'])->get('/dashboard', function () {
         return response()->json([
-            'message' => 'Welcome Admin to Dashboard'
+            'message' => 'Welcome Admin to Dashboard',
         ]);
     });
 });
-
+Route::middleware(['auth:sanctum'])->prefix('bookings')->group(function () {
+    Route::get('/{booking}/messages', [BookingMessageController::class, 'index']);
+    Route::post('/{booking}/messages', [BookingMessageController::class, 'store']);
+});
 
 // Public Property endpoints (visitor – no auth)
 
-    Route::get('/properties', [VisitorPropertyController::class, 'index']);
-    Route::get('/properties/{property}', [VisitorPropertyController::class, 'show']);
-
-
+Route::get('/properties', [VisitorPropertyController::class, 'index']);
+Route::get('/properties/{property}', [VisitorPropertyController::class, 'show']);
 
 /*
 |--------------------------------------------------------------------------
@@ -56,12 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-            // Add a new review / rating
+    // Add a new review / rating
     Route::post('/reviews', [ReviewController::class, 'store']);
-    });
+});
 
-
-
-require __DIR__ . '/customer.php';
-
-
+require __DIR__.'/customer.php';

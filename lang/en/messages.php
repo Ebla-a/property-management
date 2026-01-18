@@ -1,4 +1,5 @@
 <?php
+
 return [
     // Dashboard
     'dashboard' => [
@@ -9,15 +10,39 @@ return [
         'pending_last_6m' => 'Pending (Last 6 Months)',
         'approved_last_6m' => 'Approved (Last 6 Months)',
         'booking_status_over_time' => 'Booking Status Over Time',
-        'properties_per_month' => 'Properties Per Month',
+        'properties_per_month' => 'Properties per Month',
         'last_6_months' => 'Last 6 Months',
         'pending_6m' => 'Pending (6 Months)',
         'dashboard_preview' => 'Dashboard • Data Preview',
+        'daily_bookings' => 'Daily Bookings',
+        'booking_count' => 'Number of Bookings',
+        'day_of_month' => 'Day of Month',
+
+        'this_week' => 'this_week',
+        'this_month' => 'this_month',
+        'pending' => 'pending',
+        'approved' => 'approved',
+        'today' => 'today',
+        'weekly_overview' => 'weekly_overview ',
+        'monthly_overview' => 'monthly_overview',
+        'latest_bookings' => 'latest bookings',
+        'no_weekly_data' => 'no weekly data',
+        'no_monthly_data' => 'no monthly data',
+        'id' => 'id',
+        'user' => 'user',
+        'property' => 'property',
+        'status' => 'status',
+        'scheduled_at' => ' scheduled_at',
+        'status_pending' => 'status_pending',
+        'status_approved' => 'status_approved',
+        'status_completed' => 'status_completed',
+        'Last_7_Days' => 'Last 7 Days',
+        'This_Month_(January 2026)' => '',
     ],
-    
+
     // Sidebar
     'sidebar' => [
-        'system_name' => 'Property Management System',
+        'system_name' => 'Real Estate Management System',
         'home' => 'Home',
         'properties' => 'Properties',
         'amenities' => 'Amenities',
@@ -28,15 +53,37 @@ return [
         'users' => 'Users',
         'my_bookings' => 'My Bookings',
         'pending_bookings' => 'Pending Bookings',
-        'copyright' => '© :year RealEstateSys',
+        'logout' => 'Logout',
     ],
-    
+
+    'header' => [
+        'language' => 'Language',
+        'arabic' => 'Arabic',
+        'english' => 'English',
+        'new_property' => 'New Property',
+        'admin_badge' => 'Admin',
+        'employee_badge' => 'Employee',
+    ],
+    // chat
+    'chat' => [
+        'title' => 'title',
+        'active_status' => 'active status',
+        'placeholder' => '  write your letter...',
+        'send' => 'send',
+    ],
+    'logout_modal' => [
+        'title' => 'Confirm Logout',
+        'message' => 'Are you sure you want to log out of your account?',
+        'confirm' => 'Logout',
+        'cancel' => 'Cancel',
+    ],
+
     // Reports
     'reports' => [
         'bookings_report' => 'Bookings Report',
         'properties_report' => 'Properties Report',
         'generated_at' => 'Generated at',
-        'export_report' => 'Export Report',
+        'export' => 'Export Report',
         'total_bookings' => 'Total Bookings',
         'total_properties' => 'Total Properties',
         'pending' => 'Pending',
@@ -61,8 +108,18 @@ return [
         'total' => 'Total',
         'unknown' => 'Unknown',
         'no_data' => 'No data available',
+
+        'time_stats' => 'time_stats',
+
+        'all' => 'all',
+        'from_date' => 'from_date',
+        'to_date' => 'to_date',
+        'apply_filters' => 'apply_filters',
+
+        'created_at' => 'created_at ',
+
     ],
-    
+
     // Property
     'property' => [
         'created' => 'Property created successfully',
@@ -91,9 +148,6 @@ return [
         'images_label' => 'Property Images',
         'amenities_label' => 'Amenities',
         'status_available' => 'Available',
-        'status_booked' => 'Booked',
-        'status_rented' => 'Rented',
-        'status_hidden' => 'Hidden',
         'title_placeholder' => 'Property Title',
         'city_placeholder' => 'City',
         'neighborhood_placeholder' => 'Neighborhood',
@@ -113,7 +167,7 @@ return [
         'delete_button' => 'Delete',
         'back_button' => 'Back',
         'upload_button' => 'Upload',
-        'set_main_button' => 'Set Main',
+        'set_main_button' => 'Set as Main',
         'move_to_trash_button' => 'Move to Trash',
         'restore_button' => 'Restore',
         'force_delete_button' => 'Force Delete',
@@ -121,48 +175,51 @@ return [
         'min_price_filter' => 'Min Price',
         'max_price_filter' => 'Max Price',
         'amenities_filter' => 'Amenities',
-        'all_status' => 'All Status',
-        'from_date' => 'From date',
-        'to_date' => 'To date',
-        'created_at' => 'Created at',
+        'all_status' => 'All Statuses',
+        'from_date' => 'From Date',
+        'to_date' => 'To Date',
+        'created_at' => 'Created At',
         'description_heading' => 'Description',
         'amenities_heading' => 'Amenities',
         'price_heading' => 'Price',
         'specs_heading' => 'Specifications',
-        'no_description' => 'No description provided.',
-        'no_amenities' => 'No amenities listed.',
+        'no_description' => 'No description available.',
+        'no_amenities' => 'No amenities added.',
         'rooms_spec' => 'Rooms',
         'area_spec' => 'Area',
-        'furnished_spec' => 'Furnished',
+        'furnished_spec' => 'Furnishing',
         'address_spec' => 'Address',
         'delete_confirm_title' => 'Delete Property',
         'delete_confirm_message' => 'Are you sure you want to delete this property? This action cannot be undone.',
         'delete_confirm_button' => 'Delete',
         'cancel_confirm_button' => 'Cancel',
-        'alt_placeholder' => 'alt text',
+        'alt_placeholder' => 'Alt text',
         'view_trashed_images' => 'View Trashed Images',
         'current_images' => 'Current Images',
         'id_label' => 'ID',
         'main_label' => 'Main',
-        'deleted_at_label' => 'Deleted at',
-        'force_delete_confirm' => 'Force delete permanently?',
+        'deleted_at_label' => 'Deleted At',
+        'force_delete_confirm' => 'Permanently delete?',
         'delete_image_confirm' => 'Delete?',
         'upload_new_images' => 'Upload New Images',
+
+        'status' => 'status',
+        'city' => 'city',
+
+        'status_list' => [
+            'available' => 'available',
+            'booked' => 'booked',
+            'rented' => 'rented',
+            'hidden' => 'hidden',
+        ],
     ],
-    
+
     // Booking
     'booking' => [
-        'approved' => 'Booking approved successfully',
-        'cancelled' => 'Booking cancelled',
-        'completed' => 'Booking completed',
-        'rejected' => 'Booking rejected',
-        'rescheduled' => 'Booking rescheduled successfully',
-        'created' => 'The request has been sent successfully',
-        'list' => 'Bookings List',
-        'pending' => 'Pending',
-        'canceled' => 'Canceled',
-        'all_status' => 'All Status',
-        'all_bookings' => 'All',
+
+        'created' => 'Request sent successfully',
+        'all' => 'all',
+        'all_status' => 'all_status',
         'customer' => 'Customer',
         'property' => 'Property',
         'scheduled_visit' => 'Scheduled Visit',
@@ -171,7 +228,7 @@ return [
         'new_date_time' => 'New Date & Time',
         'notes' => 'Notes',
         'view_details' => 'View Details',
-        'back_to_list' => 'Back to list',
+        'back_to_list' => 'Back to List',
         'save_changes' => 'Save Changes',
         'approve' => 'Approve',
         'reject' => 'Reject',
@@ -181,13 +238,23 @@ return [
         'reschedule_booking' => 'Reschedule Booking',
         'booking_details' => 'Booking Details',
         'pending_bookings' => 'Pending Bookings',
-        'update_visit_date' => 'Update the visit date & time for this booking',
-        'review_before_changes' => 'Please review the current schedule before applying changes',
+        'update_visit_date' => 'Update Visit Date & Time',
+        'review_before_changes' => 'Please review the current schedule before changes',
         'review_after_completion' => 'Review will be available after completion',
         'awaiting_customer_review' => 'Awaiting customer review',
-        'no_pending_bookings' => 'No pending bookings available',
+        'no_pending_bookings' => 'No pending bookings found',
+        'Pending_Bookings' => 'Pending Bookings',
+        'status' => [
+            'pending' => 'pending',
+            'approved' => ' approved',
+            'completed' => 'completed',
+            'cancelled' => 'cancelled',
+            'canceled' => 'canceled',
+            'rejected' => 'rejected',
+            'rescheduled' => ' rescheduled',
+        ],
     ],
-    
+
     // Status
     'status' => [
         'pending' => 'Pending',
@@ -196,16 +263,17 @@ return [
         'rejected' => 'Rejected',
         'canceled' => 'Canceled',
         'rescheduled' => 'Rescheduled',
+
     ],
-    
+
     // User
     'user' => [
         'created' => 'Employee created successfully',
-        'role_updated' => 'User role updated successfully',
+        'role_updated' => 'User role updated',
         'deleted' => 'User deleted successfully',
         'password_changed' => 'Password changed successfully',
         'status_updated' => 'User account status updated successfully',
-        'management' => 'Users Management',
+        'management' => 'User Management',
         'management_description' => 'Manage employees, roles and account status',
         'add_employee' => 'Add Employee',
         'name' => 'Name',
@@ -213,7 +281,7 @@ return [
         'role' => 'Role',
         'active' => 'Active',
         'actions' => 'Actions',
-        'joined' => 'Joined',
+        'joined' => 'Joined on',
         'inactive' => 'Inactive',
         'change_role' => 'Change Role',
         'account_status' => 'Account Status',
@@ -222,11 +290,11 @@ return [
         'delete_user' => 'Delete User',
         'delete_confirmation' => 'Are you sure you want to delete this user? This action cannot be undone.',
         'cancel' => 'Cancel',
-        'no_users_found' => 'No users found.',
+        'no_users_found' => 'No users found',
         'showing' => 'Showing',
         'to' => 'to',
         'of' => 'of',
-        'users' => 'users',
+        'users' => 'Users',
         'activate_account' => 'Activate this account',
         'current_status' => 'Current Status',
         'full_name' => 'Full Name',
@@ -240,17 +308,17 @@ return [
         'role_admin' => 'Admin',
         'role_employee' => 'Employee',
         'role_customer' => 'Customer',
-        'role_change_hint' => 'Changing the role will immediately update the user permissions.',
+        'role_change_hint' => 'User permissions will update immediately after changing the role.',
         'create_employee' => 'Create New Employee',
         'create' => 'Create',
         'save_changes' => 'Save Changes',
     ],
-    
+
     // Amenity
     'amenity' => [
-        'amenity_added' => 'Amenity added',
-        'amenity_updated' => 'Amenity updated',
-        'amenity_deleted' => 'Amenity deleted',
+        'amenity_added' => 'Amenity added successfully',
+        'amenity_updated' => 'Amenity updated successfully',
+        'amenity_deleted' => 'Amenity deleted successfully',
         'title' => 'Amenities',
         'list_title' => 'Amenities List',
         'add_title' => 'Add Amenity',
@@ -269,48 +337,44 @@ return [
         'delete_confirm_message' => 'Are you sure you want to delete this amenity? This action cannot be undone.',
         'delete_confirm_button' => 'Delete',
         'cancel_confirm_button' => 'Cancel',
+        'amenities_list' => 'amenities list',
+        'amenity_name' => 'amenity name',
+        'add_amenity' => 'add amenity',
     ],
-    
+
     // Images
     'images' => [
         'images_uploaded' => 'Images uploaded successfully',
-        'main_image_set' => 'Main image has been set successfully',
-        'image_soft_deleted' => 'Image has been soft deleted successfully',
-        'image_permanently_deleted' => 'Image has been permanently deleted',
+        'main_image_set' => 'Main image set successfully',
+        'image_soft_deleted' => 'Image moved to trash successfully',
+        'image_permanently_deleted' => 'Image permanently deleted',
         'image_restored' => 'Image restored successfully',
     ],
-    
+
     // Errors
     'errors' => [
-        'not_found' => 'Not found',
+        'not_found' => 'Not Found',
         'unauthorized' => 'Unauthorized',
         'unexpected_delete' => 'An unexpected error occurred while deleting the user',
     ],
-    
+
     // API
     'api' => [
         'booking_created' => 'Booking created successfully',
         'rating_added' => 'Rating added successfully',
     ],
-    
-    // Header
-    'header' => [
-        'logout' => 'Logout',
-        'admin' => 'Admin',
-        'employee' => 'Employee',
-    ],
-    
-    // User UI (for new files)
+
+    // User UI
     'user_ui' => [
-        'users_management' => 'Users Management',
-        'users_subtitle' => 'Manage employees, roles and account status',
+        'users_management' => 'User Management',
+        'users_subtitle' => 'Manage employees, roles, and account status',
         'add_employee' => 'Add Employee',
         'name' => 'Name',
         'email' => 'Email',
         'role' => 'Role',
         'active' => 'Active',
         'actions' => 'Actions',
-        'joined' => 'Joined',
+        'joined' => 'Joined on',
         'active_status' => 'Active',
         'inactive_status' => 'Inactive',
         'change_role' => 'Change Role',
@@ -323,7 +387,7 @@ return [
         'showing' => 'Showing',
         'to' => 'to',
         'of' => 'of',
-        'users' => 'users',
+        'users' => 'Users',
         'create_employee' => 'Create New Employee',
         'full_name' => 'Full Name',
         'email_address' => 'Email Address',
@@ -336,6 +400,6 @@ return [
         'create' => 'Create',
         'change_user_role' => 'Change User Role',
         'save_changes' => 'Save Changes',
-        'role_hint' => 'Changing the role will immediately update the user permissions.',
+        'role_hint' => 'User permissions will update directly after changing the role.',
     ],
 ];

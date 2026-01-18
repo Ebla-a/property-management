@@ -12,7 +12,7 @@ class PropertyFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->streetName . ' Apartment',
+            'title' => $this->faker->streetName.' Apartment',
             'city' => $this->faker->city,
             'address' => $this->faker->address,
             'price' => $this->faker->numberBetween(500, 3000),

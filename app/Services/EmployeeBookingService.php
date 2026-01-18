@@ -9,103 +9,152 @@ use Illuminate\Validation\ValidationException;
 
 class EmployeeBookingService
 {
+    /**
+     * Get bookings for an employee — include unassigned pending bookings
+     * so employee can see new API bookings as well.
+     */
     public function getEmployeeBooking($employeeId)
     {
-        return Booking::where('employee_id', $employeeId)
+        return Booking::with(['user', 'property'])
+            ->where(function ($q) use ($employeeId) {
+                $q->where('employee_id', $employeeId)
+                    ->orWhere(function ($q2) {
+                        $q2->whereNull('employee_id')
+                            ->where('status', 'pending');
+                    });
+            })
             ->latest()
             ->paginate(10);
     }
 
+    /**
+     * Approve booking — assign employee if unassigned, check time conflict.
+     */
     public function approve(Booking $booking)
     {
-        if (!in_array($booking->status, ['pending', 'rescheduled'])) {
+        if (! in_array($booking->status, ['pending', 'rescheduled'])) {
             throw ValidationException::withMessages([
-                'status' => 'Action not allowed. Booking must be pending or rescheduled.'
+                'status' => 'Action not allowed. Booking must be pending or rescheduled.',
             ]);
         }
 
-        // only treat as validation error (user-friendly) — keep 403 authorization elsewhere (policy/controller)
+        // Assign current employee if unassigned
+        if (is_null($booking->employee_id)) {
+            $booking->employee_id = Auth::id();
+            $booking->save();
+        }
+
+        // Time conflict check for the (now assigned) employee
         if ($this->hasTimeConflict(
             $booking->employee_id,
             $booking->scheduled_at,
             $booking->id
         )) {
             throw ValidationException::withMessages([
-                'scheduled_at' => 'Employee has another booking at this time'
+                'scheduled_at' => 'Employee has another booking at this time',
             ]);
         }
 
         $booking->update([
             'status' => 'approved',
-            'rescheduled_at' => null
-        ]);
-
-        return $booking;
-    }
-
-    public function cancel(Booking $booking)
-    {
-        if (! in_array($booking->status, ['pending', 'approved','rescheduled'])) {
-            throw new \Exception('Action not allowed');
-
-        }
-
-        $booking->update([
-            'status' => 'canceled'
-        ]);
-
-        return $booking;
-    }
-
-    public function reschedule(Booking $booking, $scheduleAt)
-    {
-        if ($this->hasTimeConflict(
-            $booking->employee_id,
-            $scheduleAt,
-            $booking->id
-        )) {
-            throw new \Exception('Employee already has booking at this time');
-
-        }
-
-        if (! in_array($booking->status, ['pending', 'approved', 'rescheduled'])) {
-            throw ValidationException::withMessages([
-                'status' => 'Action not allowed'
-            ]);
-        }
-
-        $booking->update([
-            'status' => 'rescheduled',
-            'scheduled_at' => $scheduleAt,
-            'rescheduled_at' => now()
+            'rescheduled_at' => null,
         ]);
 
         return $booking;
     }
 
     /**
-     * complete booking
+     * Cancel booking — assign employee if unassigned, then cancel
      */
-    public function complete(Booking $booking)
+    public function cancel(Booking $booking)
     {
-        if ($booking->employee_id !== Auth::id()) {
-            abort(403, 'Forbidden'); // keep as 403 (authorization)
-        }
-
-        if (!in_array($booking->status, ['approved', 'rescheduled'])) {
+        if (! in_array($booking->status, ['pending', 'approved', 'rescheduled'])) {
             throw ValidationException::withMessages([
-                'status' => 'Action not allowed'
+                'status' => 'Action not allowed',
             ]);
         }
 
+        // Assign current employee if unassigned (so employee "takes" the booking before cancelling)
+        if (is_null($booking->employee_id)) {
+            $booking->employee_id = Auth::id();
+            $booking->save();
+        }
+
         $booking->update([
-            'status' => 'completed',
-            'completed_at' => now()
+            'status' => 'canceled',
         ]);
 
         return $booking;
     }
 
+    /**
+     * Reschedule booking — assign employee if unassigned, check time conflict
+     */
+    public function reschedule(Booking $booking, $scheduleAt)
+    {
+        // Assign if unassigned
+        if (is_null($booking->employee_id)) {
+            $booking->employee_id = Auth::id();
+            $booking->save();
+        }
+
+        if ($this->hasTimeConflict(
+            $booking->employee_id,
+            $scheduleAt,
+            $booking->id
+        )) {
+            throw ValidationException::withMessages([
+                'scheduled_at' => 'Employee already has a booking at this time',
+            ]);
+        }
+
+        if (! in_array($booking->status, ['pending', 'approved', 'rescheduled'])) {
+            throw ValidationException::withMessages([
+                'status' => 'Action not allowed',
+            ]);
+        }
+
+        $booking->update([
+            'status' => 'rescheduled',
+            'scheduled_at' => $scheduleAt,
+            'rescheduled_at' => now(),
+        ]);
+
+        return $booking;
+    }
+
+    /**
+     * Complete booking — assign if unassigned, require approved status
+     */
+    public function complete(Booking $booking)
+    {
+        // Assign if unassigned
+        if (is_null($booking->employee_id)) {
+            $booking->employee_id = Auth::id();
+            $booking->save();
+        }
+
+        if ($booking->employee_id !== Auth::id()) {
+            abort(403, 'Forbidden'); // authorization check
+        }
+
+        if (! in_array($booking->status, ['approved', 'rescheduled'])) {
+            throw ValidationException::withMessages([
+                'status' => 'Action not allowed',
+            ]);
+        }
+
+        $booking->update([
+            'status' => 'completed',
+            'completed_at' => now(),
+        ]);
+
+        return $booking;
+    }
+
+    /**
+     * Check if employee already has a booking in +/-1 hour range
+     */
     public function hasTimeConflict($employeeId, $scheduledAt, $excludeId = null)
     {
         if (empty($employeeId)) {
@@ -115,7 +164,7 @@ class EmployeeBookingService
         return Booking::where('employee_id', $employeeId)
             ->when(
                 $excludeId,
-                fn($q) => $q->where('id', '!=', $excludeId)
+                fn ($q) => $q->where('id', '!=', $excludeId)
             )
             ->whereBetween('scheduled_at', [
                 Carbon::parse($scheduledAt)->subHour(),
@@ -125,17 +174,23 @@ class EmployeeBookingService
     }
 
     /**
-     * reject a booking
+     * Reject booking — assign if unassigned, allow only pending
      */
     public function reject(Booking $booking, $reason = null)
     {
+        // Assign if unassigned
+        if (is_null($booking->employee_id)) {
+            $booking->employee_id = Auth::id();
+            $booking->save();
+        }
+
         if ($booking->employee_id !== Auth::id()) {
             abort(403, 'You are not allowed to reject this booking');
         }
 
         if ($booking->status !== 'pending') {
             throw ValidationException::withMessages([
-                'status' => 'Action is not allowed'
+                'status' => 'Action is not allowed',
             ]);
         }
 

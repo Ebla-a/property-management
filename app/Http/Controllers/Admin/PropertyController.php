@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
 use App\Models\Property;
+use App\Models\User;
 use App\Services\AmenityService;
 use App\Services\PropertyService;
+use App\Notifications\PropertyActionNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
-use Illuminate\Support\Arr; 
 
 class PropertyController extends Controller
 {
     protected PropertyService $propertyService;
+
     protected AmenityService $amenityService;
 
     public function __construct(PropertyService $propertyService, AmenityService $amenityService)
@@ -25,8 +28,6 @@ class PropertyController extends Controller
 
     /**
      * Display a listing of properties with optional filters (paginated).
-     *
-     * @return View
      */
     public function index(): View
     {
@@ -39,7 +40,7 @@ class PropertyController extends Controller
             'max_price',
             'sort',
             'order',
-            'limit'
+            'limit',
         ]));
 
         // If legacy single `type` param exists but no `property_types`, map it to property_types[]
@@ -69,8 +70,6 @@ class PropertyController extends Controller
         return view('dashboard.properties.index', compact('properties', 'amenities', 'filters', 'propertyTypes'));
     }
 
-
-
     public function create(): View
     {
         $amenities = $this->amenityService->getAll();
@@ -93,7 +92,15 @@ class PropertyController extends Controller
             );
         }
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'Property created with images.');
+        // Notify admins and employees about the new property
+        $title = $property->title ?? "Property #{$property->id}";
+        $by = auth()->user() ? auth()->user()->name : 'System';
+        $users = User::role(['admin', 'employee'])->get();
+        foreach ($users as $user) {
+            $user->notify(new PropertyActionNotification('created', $title, $by));
+        }
+
+        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.add_property'));
     }
 
     public function edit(Property $property): View
@@ -105,21 +112,42 @@ class PropertyController extends Controller
         return view('dashboard.properties.edit', compact('property', 'amenities', 'propertyTypes'));
     }
 
-
     public function update(UpdatePropertyRequest $request, Property $property): RedirectResponse
     {
         $data = $request->validated();
 
         $this->propertyService->update($property, $data);
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'Property updated.');
+        // Refresh to get latest title (in case it was updated)
+        $property->refresh();
+
+        // Notify admins and employees about the update
+        $title = $property->title ?? "Property #{$property->id}";
+        $by = auth()->user() ? auth()->user()->name : 'System';
+        $users = User::role(['admin', 'employee'])->get();
+        foreach ($users as $user) {
+            $user->notify(new PropertyActionNotification('updated', $title, $by));
+        }
+
+        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.updated'));
     }
 
     public function destroy(Property $property): RedirectResponse
     {
+        // capture title before deletion
+        $title = $property->title ?? "Property #{$property->id}";
+        $id = $property->id;
+        $by = auth()->user() ? auth()->user()->name : 'System';
+
         $this->propertyService->delete($property);
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'Property deleted.');
+        // Notify admins and employees about the deletion
+        $users = User::role(['admin', 'employee'])->get();
+        foreach ($users as $user) {
+            $user->notify(new PropertyActionNotification('deleted', $title, $by));
+        }
+
+        return redirect()->route('dashboard.properties.index')->with('success',  __('messages.property.deleted'));
     }
 
     public function show(Property $property): View

@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Services\EmployeeBookingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Traits\HasRoles;
+use App\Notifications\BookingActionNotification;
 
 class EmployeeBookingController extends Controller
 {
@@ -28,13 +28,12 @@ class EmployeeBookingController extends Controller
     {
         $this->authorize('viewAny', Booking::class);
 
-        $user   = $request->user();
+        $user = $request->user();
         $status = $request->get('status');
 
-        // Admin logic
         if ($user->hasRole('admin')) {
             $bookings = Booking::with(['user', 'property', 'employee', 'review.user'])
-                ->when($status, fn($q) => $q->where('status', $status))
+                ->when($status, fn ($q) => $q->where('status', $status))
                 ->latest()
                 ->paginate(6);
 
@@ -48,6 +47,7 @@ class EmployeeBookingController extends Controller
     public function show(Booking $booking)
     {
         $this->authorize('view', $booking);
+
         return view('dashboard.bookings.show', compact('booking'));
     }
 
@@ -57,20 +57,27 @@ class EmployeeBookingController extends Controller
     public function approve(Booking $booking)
     {
         try {
-        $this->authorize('approve', $booking);
+            $this->authorize('approve', $booking);
 
-        if (is_null($booking->employee_id)) {
-            $booking->update(['employee_id' => Auth::id()]);
+            if (is_null($booking->employee_id)) {
+                $booking->update(['employee_id' => Auth::id()]);
+            }
+
+            $booking = $this->employeeBookingService->approve($booking);
+
+            // Notify admins and employees (Accepted from wajd)
+            $by = auth()->user() ? auth()->user()->name : 'System';
+            $users = User::role(['admin', 'employee'])->get();
+            foreach ($users as $user) {
+                $user->notify(new BookingActionNotification('approved', $booking->id, $by));
+            }
+
+            return redirect()
+                ->route('employee.bookings.show', $booking->id)
+                ->with('status', __('messages.booking.approved'));
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            return back()->with('error', $e->getMessage());
         }
-       
-      
-        $booking = $this->employeeBookingService->approve($booking);
-          return redirect()
-            ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking approved successfully');
-            } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
-                return back()->with('error', $e->getMessage());
-    }
     }
 
     /**
@@ -81,9 +88,15 @@ class EmployeeBookingController extends Controller
         $this->authorize('employeeCancel', $booking);
         $booking = $this->employeeBookingService->cancel($booking);
 
+        $by = auth()->user() ? auth()->user()->name : 'System';
+        $users = User::role(['admin', 'employee'])->get();
+        foreach ($users as $user) {
+            $user->notify(new BookingActionNotification('cancelled', $booking->id, $by));
+        }
+
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking cancelled');
+            ->with('status', __('messages.booking.cancelled'));
     }
 
     /**
@@ -94,14 +107,21 @@ class EmployeeBookingController extends Controller
         $this->authorize('reschedule', $booking);
         $booking = $this->employeeBookingService->reschedule($booking, $request->scheduled_at);
 
+        $by = auth()->user() ? auth()->user()->name : 'System';
+        $users = User::role(['admin', 'employee'])->get();
+        foreach ($users as $user) {
+            $user->notify(new BookingActionNotification('rescheduled', $booking->id, $by));
+        }
+
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking rescheduled successfully');
+            ->with('status', __('messages.booking.reschedule'));
     }
 
     public function rescheduleForm(Booking $booking)
     {
         $this->authorize('reschedule', $booking);
+
         return view('dashboard.bookings.reschedule', compact('booking'));
     }
 
@@ -113,9 +133,15 @@ class EmployeeBookingController extends Controller
         $this->authorize('complete', $booking);
         $booking = $this->employeeBookingService->complete($booking);
 
+        $by = auth()->user() ? auth()->user()->name : 'System';
+        $users = User::role(['admin', 'employee'])->get();
+        foreach ($users as $user) {
+            $user->notify(new BookingActionNotification('completed', $booking->id, $by));
+        }
+
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking completed');
+            ->with('status', __('messages.booking.completed'));
     }
 
     /**
@@ -126,9 +152,15 @@ class EmployeeBookingController extends Controller
         $this->authorize('reject', $booking);
         $booking = $this->employeeBookingService->reject($booking, $request->reason);
 
+        $by = auth()->user() ? auth()->user()->name : 'System';
+        $users = User::role(['admin', 'employee'])->get();
+        foreach ($users as $user) {
+            $user->notify(new BookingActionNotification('rejected', $booking->id, $by));
+        }
+
         return redirect()
             ->route('employee.bookings.show', $booking->id)
-            ->with('status', 'Booking rejected');
+            ->with('status', __('messages.booking.rejected'));
     }
 
     /**

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 class Property extends Model
 {
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      * These fields can be filled using create() or update().
@@ -79,7 +80,7 @@ class Property extends Model
     public function mainImage()
     {
         return $this->hasOne(PropertyImage::class, 'property_id')
-                    ->where('is_main', true);
+            ->where('is_main', true);
     }
 
     /**
