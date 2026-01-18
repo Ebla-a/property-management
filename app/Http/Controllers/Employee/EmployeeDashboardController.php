@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use Carbon\Carbon;
-use Carbon\Month;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Svg\Tag\Rect;
-use function Illuminate\Support\weeks;
 
 class EmployeeDashboardController extends Controller
 {
@@ -19,15 +16,15 @@ class EmployeeDashboardController extends Controller
         $stats = [
             'total' => Booking::where('employee_id', $employeeId)->count(),
             'pending' => Booking::where('employee_id', $employeeId)->where('status', 'pending')->count(),
-            'approved'  => Booking::where('employee_id', $employeeId)->where('status', 'approved')->count(),
+            'approved' => Booking::where('employee_id', $employeeId)->where('status', 'approved')->count(),
             'completed' => Booking::where('employee_id', $employeeId)->where('status', 'completed')->count(),
-            'today'     => Booking::where('employee_id', $employeeId)->whereDate('created_at', today())->count(),
+            'today' => Booking::where('employee_id', $employeeId)->whereDate('created_at', today())->count(),
             'this_week' => Booking::where('employee_id', $employeeId)->whereBetween('created_at', [
                 Carbon::now()->startOfWeek(),
-                Carbon::now()->endOfWeek()
+                Carbon::now()->endOfWeek(),
             ])->count(),
             'this_month' => Booking::where('employee_id', $employeeId)
-                ->whereMonth('created_at', Carbon::now()->month)->count()
+                ->whereMonth('created_at', Carbon::now()->month)->count(),
         ];
         $weeklyData = $this->getWeeklyChartData($employeeId);
 
@@ -38,8 +35,6 @@ class EmployeeDashboardController extends Controller
             ->latest()
             ->take(5)
             ->get();
-
-
 
         // dd([
         //     'weeklyData' => $weeklyData,
@@ -69,19 +64,20 @@ class EmployeeDashboardController extends Controller
 
         $labels = [];
         $data = [];
-       for ($i = 6; $i >= 0; $i--) {
-        $date = Carbon::today()->subDays($i);
-        $dateString = $date->format('Y-m-d');
-        
-        $labels[] = $date->translatedFormat('D') . "\n" . $date->format('d M');
-        $data[] = $weeklyBookings[$dateString]->total ?? 0;
-    }
-          return [
-                'labels' => $labels,
-                'data' => $data,
-                'title' => 'Last 7 Days',
-                'total' => array_sum($data)
-            ];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $dateString = $date->format('Y-m-d');
+
+            $labels[] = $date->translatedFormat('D')."\n".$date->format('d M');
+            $data[] = $weeklyBookings[$dateString]->total ?? 0;
+        }
+
+        return [
+            'labels' => $labels,
+            'data' => $data,
+            'title' => 'Last 7 Days',
+            'total' => array_sum($data),
+        ];
     }
 
     private function getMonthlyChartData($employeeId)
@@ -107,11 +103,12 @@ class EmployeeDashboardController extends Controller
             $labels[] = $day;
             $data[] = $monthlyBookings[$day]->total ?? 0;
         }
+
         return [
             'labels' => $labels,
             'data' => $data,
-            'title' => 'This Month (' . Carbon::now()->format('F Y') . ')',
-            'total' => array_sum($data)
+            'title' => 'This Month ('.Carbon::now()->format('F Y').')',
+            'total' => array_sum($data),
         ];
     }
 }

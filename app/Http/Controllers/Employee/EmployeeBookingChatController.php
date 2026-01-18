@@ -15,12 +15,12 @@ class EmployeeBookingChatController extends Controller
         $reservations = Booking::with('customer')
             ->where('employee_id', Auth::id())
             ->get()
-            ->map(function($booking){
-                return (object)[
+            ->map(function ($booking) {
+                return (object) [
                     'id' => $booking->id,
                     'customer_name' => $booking->customer->name ?? 'N/A',
                     'date' => $booking->scheduled_at->format('Y-m-d H:i'),
-                    'short_note' => $booking->notes ? substr($booking->notes,0,30) : '',
+                    'short_note' => $booking->notes ? substr($booking->notes, 0, 30) : '',
                 ];
             });
 

@@ -9,8 +9,6 @@ class AmenityService
 {
     /**
      * Get all amenities ordered by name.
-     *
-     * @return Collection
      */
     public function getAll(): Collection
     {
@@ -19,9 +17,6 @@ class AmenityService
 
     /**
      * Find an amenity by id.
-     *
-     * @param int $id
-     * @return Amenity|null
      */
     public function find(int $id): ?Amenity
     {
@@ -30,9 +25,6 @@ class AmenityService
 
     /**
      * Create a new amenity.
-     *
-     * @param array $data
-     * @return Amenity
      */
     public function create(array $data): Amenity
     {
@@ -41,22 +33,16 @@ class AmenityService
 
     /**
      * Update an existing amenity.
-     *
-     * @param Amenity $amenity
-     * @param array $data
-     * @return Amenity
      */
     public function update(Amenity $amenity, array $data): Amenity
     {
         $amenity->update($data);
+
         return $amenity;
     }
 
     /**
      * Delete an amenity and detach relations.
-     *
-     * @param Amenity $amenity
-     * @return void
      */
     public function delete(Amenity $amenity): void
     {

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -21,14 +21,13 @@ class UserSeeder extends Seeder
         // Employees
         // User::factory(4)->create()->each(function ($user) {
         //     $user->assignRole('employee');
-   
-            $employee = User::create([
-                'name' => 'Test Employee',
-                'email' => 'employee@test.com',
-                'password' => bcrypt('12345678'),
-            ]);
-            $employee->assignRole('employee');
 
+        $employee = User::create([
+            'name' => 'Test Employee',
+            'email' => 'employee@test.com',
+            'password' => bcrypt('12345678'),
+        ]);
+        $employee->assignRole('employee');
 
         // Customers
         User::factory(10)->create()->each(function ($user) {
@@ -36,5 +35,3 @@ class UserSeeder extends Seeder
         });
     }
 }
-
-

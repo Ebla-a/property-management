@@ -22,7 +22,7 @@ class RescheduleBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'scheduled_at' =>'required|date|after:now'
+            'scheduled_at' => 'required|date|after:now',
         ];
     }
 }

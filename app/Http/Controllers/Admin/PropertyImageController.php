@@ -35,7 +35,7 @@ class PropertyImageController extends Controller
 
         return redirect()
             ->route('admin.properties.images.index', $property->id)
-            ->with('success',  __(  'messages.images.images_uploaded'));
+            ->with('success', __('messages.images.images_uploaded'));
     }
 
     // Set as Main Image
@@ -48,7 +48,7 @@ class PropertyImageController extends Controller
     ) {
         $imageService->setMain($property, $image);
 
-        return back()->with('success',  __('messages.images.main_image_set'));
+        return back()->with('success', __('messages.images.main_image_set'));
     }
 
     // Soft Delete

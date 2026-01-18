@@ -40,12 +40,11 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center gap-4">
-                            {{-- رابط التفاصيل --}}
+                      
                             <a href="{{ route('employee.bookings.show', $booking->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
                                 {{ __('messages.booking.view_details') }}
                             </a>
 
-                            {{-- إظهار الأزرار إذا كان الحجز معلقاً --}}
                             @if($booking->status == 'pending')
                                 <form method="POST" action="{{ route('employee.bookings.approve', $booking->id) }}" class="inline">
                                     @csrf @method('PATCH')
@@ -117,7 +116,7 @@
     function openRejectModal(id) {
         const modal = document.getElementById('rejectModal');
         const form = document.getElementById('rejectForm');
-        // تأكد من صحة اسم الـ Route للرفض في ملف web.php
+        
         let url = "{{ route('employee.bookings.reject', ':id') }}";
         form.action = url.replace(':id', id);
         modal.classList.remove('hidden');

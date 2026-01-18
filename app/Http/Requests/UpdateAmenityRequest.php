@@ -10,8 +10,6 @@ class UpdateAmenityRequest extends FormRequest
      * Determine if the user is authorized to make this request.
      *
      * You may adapt this to check user permissions or roles.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {

@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\BookingController as CustomerBookingController;
+use App\Http\Controllers\Customer\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {

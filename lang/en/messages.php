@@ -1,4 +1,5 @@
 <?php
+
 return [
     // Dashboard
     'dashboard' => [
@@ -14,29 +15,31 @@ return [
         'pending_6m' => 'Pending (6 Months)',
         'dashboard_preview' => 'Dashboard • Data Preview',
         'daily_bookings' => 'Daily Bookings',
-    'booking_count' => 'Number of Bookings',
-    'day_of_month' => 'Day of Month',
-  
-    'this_week' => 'this_week',
-    'this_month' => 'this_month',
-    'pending' => 'pending',
-    'approved' => 'approved',
-    'today' => 'today',
-    'weekly_overview' => 'weekly_overview ',
-    'monthly_overview' => 'monthly_overview',
-    'latest_bookings' => 'latest bookings',
-    'no_weekly_data' => 'no weekly data',
-    'no_monthly_data' => 'no monthly data',
-    'id' => 'id',
-    'user' => 'user',
-    'property' => 'property',
-    'status' => 'status',
-    'scheduled_at' => ' scheduled_at',
-    'status_pending' => 'status_pending',
-    'status_approved' => 'status_approved',
-    'status_completed' => 'status_completed',
+        'booking_count' => 'Number of Bookings',
+        'day_of_month' => 'Day of Month',
+
+        'this_week' => 'this_week',
+        'this_month' => 'this_month',
+        'pending' => 'pending',
+        'approved' => 'approved',
+        'today' => 'today',
+        'weekly_overview' => 'weekly_overview ',
+        'monthly_overview' => 'monthly_overview',
+        'latest_bookings' => 'latest bookings',
+        'no_weekly_data' => 'no weekly data',
+        'no_monthly_data' => 'no monthly data',
+        'id' => 'id',
+        'user' => 'user',
+        'property' => 'property',
+        'status' => 'status',
+        'scheduled_at' => ' scheduled_at',
+        'status_pending' => 'status_pending',
+        'status_approved' => 'status_approved',
+        'status_completed' => 'status_completed',
+        'Last_7_Days' => 'Last 7 Days',
+        'This_Month_(January 2026)' => '',
     ],
-    
+
     // Sidebar
     'sidebar' => [
         'system_name' => 'Real Estate Management System',
@@ -61,7 +64,20 @@ return [
         'admin_badge' => 'Admin',
         'employee_badge' => 'Employee',
     ],
-    
+    // chat
+    'chat' => [
+        'title' => 'title',
+        'active_status' => 'active status',
+        'placeholder' => '  write your letter...',
+        'send' => 'send',
+    ],
+    'logout_modal' => [
+        'title' => 'Confirm Logout',
+        'message' => 'Are you sure you want to log out of your account?',
+        'confirm' => 'Logout',
+        'cancel' => 'Cancel',
+    ],
+
     // Reports
     'reports' => [
         'bookings_report' => 'Bookings Report',
@@ -94,16 +110,16 @@ return [
         'no_data' => 'No data available',
 
         'time_stats' => 'time_stats',
-     
+
         'all' => 'all',
         'from_date' => 'from_date',
         'to_date' => 'to_date',
         'apply_filters' => 'apply_filters',
-   
+
         'created_at' => 'created_at ',
-        
+
     ],
-    
+
     // Property
     'property' => [
         'created' => 'Property created successfully',
@@ -186,25 +202,24 @@ return [
         'force_delete_confirm' => 'Permanently delete?',
         'delete_image_confirm' => 'Delete?',
         'upload_new_images' => 'Upload New Images',
-       
+
         'status' => 'status',
         'city' => 'city',
-       
-     
+
         'status_list' => [
             'available' => 'available',
             'booked' => 'booked',
             'rented' => 'rented',
             'hidden' => 'hidden',
+        ],
     ],
-      ],
-    
+
     // Booking
     'booking' => [
-       
+
         'created' => 'Request sent successfully',
         'all' => 'all',
-        'all_status' =>'all_status',
+        'all_status' => 'all_status',
         'customer' => 'Customer',
         'property' => 'Property',
         'scheduled_visit' => 'Scheduled Visit',
@@ -230,16 +245,16 @@ return [
         'no_pending_bookings' => 'No pending bookings found',
         'Pending_Bookings' => 'Pending Bookings',
         'status' => [
-            'pending'     => 'pending',
-            'approved'    => ' approved',
-            'completed'   => 'completed',
-            'cancelled'   => 'cancelled',
-            'canceled'    => 'canceled', 
-            'rejected'    => 'rejected',
+            'pending' => 'pending',
+            'approved' => ' approved',
+            'completed' => 'completed',
+            'cancelled' => 'cancelled',
+            'canceled' => 'canceled',
+            'rejected' => 'rejected',
             'rescheduled' => ' rescheduled',
         ],
     ],
-    
+
     // Status
     'status' => [
         'pending' => 'Pending',
@@ -248,9 +263,9 @@ return [
         'rejected' => 'Rejected',
         'canceled' => 'Canceled',
         'rescheduled' => 'Rescheduled',
-      
+
     ],
-    
+
     // User
     'user' => [
         'created' => 'Employee created successfully',
@@ -298,7 +313,7 @@ return [
         'create' => 'Create',
         'save_changes' => 'Save Changes',
     ],
-    
+
     // Amenity
     'amenity' => [
         'amenity_added' => 'Amenity added successfully',
@@ -323,10 +338,10 @@ return [
         'delete_confirm_button' => 'Delete',
         'cancel_confirm_button' => 'Cancel',
         'amenities_list' => 'amenities list',
-       'amenity_name' => 'amenity name',
-       'add_amenity' => 'add amenity',
+        'amenity_name' => 'amenity name',
+        'add_amenity' => 'add amenity',
     ],
-    
+
     // Images
     'images' => [
         'images_uploaded' => 'Images uploaded successfully',
@@ -335,21 +350,21 @@ return [
         'image_permanently_deleted' => 'Image permanently deleted',
         'image_restored' => 'Image restored successfully',
     ],
-    
+
     // Errors
     'errors' => [
         'not_found' => 'Not Found',
         'unauthorized' => 'Unauthorized',
         'unexpected_delete' => 'An unexpected error occurred while deleting the user',
     ],
-    
+
     // API
     'api' => [
         'booking_created' => 'Booking created successfully',
         'rating_added' => 'Rating added successfully',
     ],
-    
-    // User UI 
+
+    // User UI
     'user_ui' => [
         'users_management' => 'User Management',
         'users_subtitle' => 'Manage employees, roles, and account status',

@@ -17,19 +17,19 @@ class ReviewResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'rating'  => $this->rating,
+            'rating' => $this->rating,
             'comment' => $this->comment,
 
             'user' => $this->whenLoaded('user', function () {
                 return [
-                    'id'   => $this->user->id,
+                    'id' => $this->user->id,
                     'name' => $this->user->name,
                 ];
             }),
 
             'property' => $this->whenLoaded('property', function () {
                 return [
-                    'id'    => $this->property->id,
+                    'id' => $this->property->id,
                     'title' => $this->property->title,
                 ];
             }),

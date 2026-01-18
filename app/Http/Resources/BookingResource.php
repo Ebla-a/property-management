@@ -16,26 +16,26 @@ class BookingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' =>$this->id,
-            'status' =>$this->status,
+            'id' => $this->id,
+            'status' => $this->status,
             'scheduled_at' => $this->scheduled_at?->format('Y-m-d H:i'),
-            'notes' =>$this->notes,
+            'notes' => $this->notes,
 
             'property' => $this->property ? [
-                'id'    => $this->property->id,
+                'id' => $this->property->id,
                 'title' => $this->property->title,
-                'city'  => $this->property->city,
+                'city' => $this->property->city,
             ] : null,
 
             'customer' => $this->customer ? [
-                'id'    => $this->customer->id,
-                'name'  => $this->customer->name,
+                'id' => $this->customer->id,
+                'name' => $this->customer->name,
                 'email' => $this->customer->email,
             ] : null,
 
             'employee' => $this->employee
                 ? [
-                    'id'   => $this->employee->id,
+                    'id' => $this->employee->id,
                     'name' => $this->employee->name,
                 ]
                 : null,
@@ -44,16 +44,17 @@ class BookingResource extends JsonResource
 
     /**
      * use meta data in dashbord
-     * @param mixed $request
+     *
+     * @param  mixed  $request
      * @return array{meta: array{created_at: mixed, updated_at: mixed}}
      */
     public function with($request)
     {
         return [
             'meta' => [
-                'created_at' =>$this->created_at?->diffForHumans(),
-                'updated_at' =>$this->updated_at?->diffForHumans(),
-            ]
+                'created_at' => $this->created_at?->diffForHumans(),
+                'updated_at' => $this->updated_at?->diffForHumans(),
+            ],
         ];
     }
 }

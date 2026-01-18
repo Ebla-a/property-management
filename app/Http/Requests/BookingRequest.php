@@ -22,16 +22,17 @@ class BookingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'property_id' =>'required|exists:properties,id',
-            'scheduled_at' =>'required|date|after:now',
-            'notes'=>'nullable|string|max:500'
+            'property_id' => 'required|exists:properties,id',
+            'scheduled_at' => 'required|date|after:now',
+            'notes' => 'nullable|string|max:500',
         ];
     }
-   public function messages()
-{
-    return [
-        'scheduled_at.after' => 'The booking date must be in the future',
-        'scheduled_at.date'  => 'Invalid date format',
-    ];
-}
+
+    public function messages()
+    {
+        return [
+            'scheduled_at.after' => 'The booking date must be in the future',
+            'scheduled_at.date' => 'Invalid date format',
+        ];
+    }
 }

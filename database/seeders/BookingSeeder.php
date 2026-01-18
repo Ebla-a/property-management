@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Booking;
-use App\Models\User;
 use App\Models\Property;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class BookingSeeder extends Seeder
 {
@@ -20,6 +20,7 @@ class BookingSeeder extends Seeder
         // ensure there are  properties
         if ($properties->isEmpty()) {
             $this->command->error('No properties found. Run PropertySeeder first.');
+
             return;
         }
 

@@ -13,284 +13,219 @@
             </a>
         </div>
 
-        {{-- Center (optional empty space for future search or breadcrumbs) --}}
+        {{-- Center Section --}}
         <div class="flex-1 hidden md:flex items-center justify-center"></div>
 
         {{-- Right Section --}}
         <div class="flex items-center gap-3">
 
-{{-- Notifications Dropdown (improved positioning & styling + nicer arrow) --}}
-<div class="relative" x-data="{
-        open: false,
-        left: '0px',
-        top: '0px',
-        calculate() {
-            const btn = this.$refs.btn;
-            const panel = this.$refs.panel;
-            if (!btn || !panel) return;
+            {{-- Notifications Dropdown --}}
+            <div class="relative" x-data="{
+                    open: false,
+                    left: '0px',
+                    top: '0px',
+                    calculate() {
+                        const btn = this.$refs.btn;
+                        const panel = this.$refs.panel;
+                        if (!btn || !panel) return;
+                        const btnRect = btn.getBoundingClientRect();
+                        const panelWidth = panel.offsetWidth;
+                        const margin = 12;
+                        let left = btnRect.left + (btnRect.width / 2) - (panelWidth / 2);
+                        const maxLeft = window.innerWidth - panelWidth - margin;
+                        const minLeft = margin;
+                        if (left < minLeft) left = minLeft;
+                        if (left > maxLeft) left = maxLeft;
+                        const top = btnRect.bottom + 12;
+                        this.left = left + 'px';
+                        this.top = top + 'px';
+                    },
+                    initListeners() {
+                        this._resizeHandler = () => this.open && this.calculate();
+                        window.addEventListener('resize', this._resizeHandler);
+                        window.addEventListener('scroll', this._resizeHandler, true);
+                    }
+                }"
+                x-init="initListeners()"
+                x-on:keydown.escape.window="open = false"
+                x-cloak
+                @click.outside="open = false">
 
-            const btnRect = btn.getBoundingClientRect();
-            const panelWidth = panel.offsetWidth;
-            const margin = 12; // gap from edges
+                <button x-ref="btn" @click="open = !open; if(open){ $nextTick(()=> calculate()) }"
+                    class="relative p-2 rounded-full hover:bg-indigo-50 transition focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0h6z" />
+                    </svg>
 
-            // center panel under button
-            let left = btnRect.left + (btnRect.width / 2) - (panelWidth / 2);
-            const maxLeft = window.innerWidth - panelWidth - margin;
-            const minLeft = margin;
-            if (left < minLeft) left = minLeft;
-            if (left > maxLeft) left = maxLeft;
+                    @php
+                        $userNotifications = auth()->user()->unreadNotifications;
+                        if(auth()->user()->hasRole('employee')) {
+                            $userNotifications = $userNotifications->where('data.type', 'booking');
+                        }
+                    @endphp
 
-            // vertical position just below button (fixed to viewport)
-            const top = btnRect.bottom + 12; // 12px gap
+                    @if($userNotifications->count())
+                        <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 rounded-full animate-pulse">
+                            {{ $userNotifications->count() }}
+                        </span>
+                    @endif
+                </button>
 
-            this.left = left + 'px';
-            this.top = top + 'px';
-        },
-        initListeners() {
-            // recalc on resize & scroll
-            this._resizeHandler = () => this.open && this.calculate();
-            window.addEventListener('resize', this._resizeHandler);
-            window.addEventListener('scroll', this._resizeHandler, true);
-        },
-        destroyListeners() {
-            window.removeEventListener('resize', this._resizeHandler);
-            window.removeEventListener('scroll', this._resizeHandler, true);
-        }
-    }"
-    x-init="initListeners()"
-    x-on:keydown.escape.window="open = false; $nextTick(()=>{})"
-    x-cloak
-    @click.outside="open = false"
->
-    <button
-        x-ref="btn"
-        @click="open = !open; if(open){ $nextTick(()=> calculate()) }"
-        class="relative p-2 rounded-full hover:bg-indigo-50 transition focus:outline-none"
-        aria-haspopup="true" aria-expanded="false"
-    >
-        {{-- Bell Icon --}}
-        <svg xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 text-indigo-600"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11
-                a6.002 6.002 0 00-4-5.659V5
-                a2 2 0 10-4 0v.341
-                C7.67 6.165 6 8.388 6 11v3.159
-                c0 .538-.214 1.055-.595 1.436L4 17h5m6 0
-                a3 3 0 11-6 0h6z" />
-        </svg>
-
-        {{-- Unread badge --}}
-        @php
-            $userNotifications = auth()->user()->unreadNotifications;
-            if(auth()->user()->hasRole('employee')) {
-                $userNotifications = $userNotifications->where('data.type', 'booking');
-            }
-        @endphp
-
-        @if($userNotifications->count())
-            <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 rounded-full animate-pulse">
-                {{ $userNotifications->count() }}
-            </span>
-        @endif
-    </button>
-
-    {{-- Floating dropdown panel (positioned via JS) --}}
-    <div
-        x-ref="panel"
-        x-show="open"
-        x-transition:enter="transition ease-out duration-150 transform"
-        x-transition:enter-start="opacity-0 scale-95"
-        x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-100 transform"
-        x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95"
-        style="position: fixed; left: 0; top: 0;"
-        :style="{ left: left, top: top }"
-        class="w-96 max-w-[90vw] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 overflow-hidden ring-1 ring-indigo-100"
-    >
-        {{-- Elegant arrow (SVG) --}}
-        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
-            <svg class="h-6 w-6 filter drop-shadow-sm" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <!-- white triangle background with soft border -->
-                <path d="M3 10L12 3l9 7H3z" fill="white" stroke="#E6E9F0" stroke-width="1"/>
-                <!-- subtle indigo accent line -->
-                <path d="M6.5 9.2L12 4.4l5.5 4.8" stroke="rgba(79,70,229,0.08)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
-
-        {{-- Header --}}
-        <div class="px-6 py-3 font-semibold text-gray-700 border-b border-gray-100 bg-indigo-50 flex items-center justify-between">
-            <span>Notifications</span>
-            @if($userNotifications->count())
-                <form method="POST" action="{{ route('notifications.read') }}">
-                    @csrf
-                    <button type="submit" class="text-indigo-600 text-xs hover:underline">
-                        Mark all as read
-                    </button>
-                </form>
-            @endif
-        </div>
-
-        {{-- Notifications List --}}
-        <div class="max-h-80 overflow-y-auto divide-y divide-gray-100 bg-white">
-            @forelse($userNotifications->take(6) as $notification)
-                @php $isUnread = is_null($notification->read_at); @endphp
-                <div class="px-4 py-3 flex items-start gap-3 hover:bg-indigo-50 transition cursor-pointer group">
-                    {{-- Unread indicator --}}
-                    <span class="h-3 w-3 mt-1 rounded-full {{ $isUnread ? 'bg-indigo-600' : 'bg-gray-300' }}"></span>
-
-                    {{-- Content --}}
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-800 truncate group-hover:underline">
-                            {{ $notification->data['message'] ?? 'No message' }}
-                        </p>
-                        <div class="mt-1 flex items-center gap-2 text-xs text-gray-500">
-                            <span>by <span class="text-gray-700 font-medium">{{ $notification->data['by'] ?? 'System' }}</span></span>
-                            <span class="text-gray-300">•</span>
-                            <span>{{ $notification->created_at->diffForHumans() }}</span>
-                        </div>
-                        @if($notification->data['extra'] ?? false)
-                            <div class="mt-2 text-xs text-gray-500">
-                                {{ Str::limit($notification->data['extra'], 120) }}
-                            </div>
+                <div x-ref="panel" x-show="open" x-transition style="position: fixed; left: 0; top: 0;" :style="{ left: left, top: top }"
+                    class="w-96 max-w-[90vw] bg-white border border-gray-100 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                    <div class="px-6 py-3 font-semibold text-gray-700 border-b border-gray-100 bg-indigo-50 flex items-center justify-between">
+                        <span>Notifications</span>
+                        @if($userNotifications->count())
+                            <form method="POST" action="{{ route('notifications.read') }}">
+                                @csrf
+                                <button type="submit" class="text-indigo-600 text-xs hover:underline">Mark all as read</button>
+                            </form>
                         @endif
                     </div>
-
-                    {{-- subtle action chevron --}}
-                    <div class="flex items-center">
-                        <svg class="h-4 w-4 text-gray-300 group-hover:text-indigo-400 transition" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                        </svg>
+                    <div class="max-h-80 overflow-y-auto divide-y divide-gray-100 bg-white">
+                        @forelse($userNotifications as $notification)
+                            <div class="px-4 py-3 flex items-start gap-3 hover:bg-indigo-50 transition cursor-pointer group">
+                                <span class="h-3 w-3 mt-1 rounded-full bg-indigo-600"></span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-800 truncate group-hover:underline">
+                                        {{ $notification->data['message'] ?? 'No message' }}
+                                    </p>
+                                    <div class="mt-1 flex items-center gap-2 text-xs text-gray-500">
+                                        <span>by <span class="text-gray-700 font-medium">{{ $notification->data['by'] ?? 'System' }}</span></span>
+                                        <span>• {{ $notification->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="px-6 py-8 text-center text-sm text-gray-500 flex items-center justify-between">No new notifications <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-off-icon lucide-bell-off"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M17 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 .258-1.742"/><path d="m2 2 20 20"/><path d="M8.668 3.01A6 6 0 0 1 18 8c0 2.687.77 4.653 1.707 6.05"/></svg></span></div>
+                        @endforelse
                     </div>
                 </div>
-            @empty
-                <div class="px-6 py-8 text-center text-sm text-gray-500">
-                    No new notifications
-                </div>
-            @endforelse
-        </div>
-
-        {{-- Footer --}}
-        @if($userNotifications->count() > 6)
-            <div class="px-6 py-2 text-center text-xs text-indigo-600 hover:bg-indigo-50 cursor-pointer transition">
-                View all notifications
             </div>
-        @endif
-    </div>
-</div>
 
-
-
-
-            {{-- Language Switcher --}}
+            {{-- Language Switcher (Clean Version) --}}
             <div class="flex items-center gap-2 {{ app()->getLocale() == 'ar' ? 'border-l pl-3' : 'border-r pr-3' }} border-gray-100">
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
                         class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 border border-gray-100 rounded-lg hover:bg-indigo-50 transition focus:outline-none">
-                        <span>{{ app()->getLocale() == 'ar' ? 'العربية' : 'English' }}</span>
-                        <svg class="h-3 w-3 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 9l-7 7-7-7" />
+                        <span>{{ app()->getLocale() == 'ar' ? __('messages.header.arabic') : __('messages.header.english') }}</span>
+                        <svg class="h-3 w-3 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
 
-                    {{-- Language Options --}}
                     <div x-show="open" @click.away="open = false" x-transition
                         class="absolute {{ app()->getLocale() == 'ar' ? 'left-0' : 'right-0' }} mt-2 w-32 bg-white border border-gray-100 rounded-lg shadow-xl z-[60] overflow-hidden">
-                        <a href="{{ url('lang/ar') }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition {{ app()->getLocale() == 'ar' ? 'bg-indigo-50 font-bold' : '' }}">
+                        <a href="{{ url('lang/ar') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition {{ app()->getLocale() == 'ar' ? 'bg-indigo-50 font-bold' : '' }}">
                             {{ __('messages.header.arabic') }}
                         </a>
-                        <a href="{{ url('lang/en') }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition {{ app()->getLocale() == 'en' ? 'bg-indigo-50 font-bold' : '' }}">
+                        <a href="{{ url('lang/en') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition {{ app()->getLocale() == 'en' ? 'bg-indigo-50 font-bold' : '' }}">
                             {{ __('messages.header.english') }}
                         </a>
                     </div>
                 </div>
             </div>
 
-            {{-- New Property Button (Admin Only) --}}
+            {{-- New Property Button --}}
             @role('admin')
                 <a href="{{ url('dashboard/properties/create') }}"
                     class="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-sm font-semibold shadow hover:scale-[1.02] transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     {{ __('messages.header.new_property') }}
                 </a>
             @endrole
 
-            {{-- User Menu --}}
+            {{-- User Menu (Merged & Fixed) --}}
             <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" aria-haspopup="true" aria-expanded="false"
-                    class="flex items-center gap-3 p-2 rounded-full hover:bg-indigo-50 transition focus:outline-none">
+                <button @click="open = !open" class="flex items-center gap-3 p-2 rounded-full hover:bg-indigo-50 transition focus:outline-none">
                     <div class="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-semibold">
                         {{ strtoupper(substr(auth()->user()?->name ?? 'G', 0, 1)) }}
                     </div>
                     <div class="hidden sm:flex flex-col {{ app()->getLocale() == 'ar' ? 'text-right' : 'text-left' }}">
-                        <span class="text-sm font-medium text-gray-700">{{ auth()->user()?->name ?? 'Guest' }}</span>
+                        <span class="text-sm font-medium text-gray-700">{{ auth()->user()?->name ?? __('messages.header.guest') }}</span>
                     </div>
-                    <svg class="h-4 w-4 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="h-4 w-4 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
 
-                {{-- Dropdown --}}
                 <div x-show="open" @click.away="open = false" x-transition
                     class="absolute {{ app()->getLocale() == 'ar' ? 'left-0' : 'right-0' }} mt-2 w-56 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-50">
-
                     <div class="px-4 py-3">
-                        {{-- Role Badge --}}
                         <div class="flex {{ app()->getLocale() == 'ar' ? 'justify-start' : 'justify-end' }} mb-1">
                             @role('admin')
-                                <span class="px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-700 font-semibold">
-                                    {{ __('messages.header.admin_badge') }}
-                                </span>
+                                <span class="px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-700 font-semibold">{{ __('messages.header.admin_badge') }}</span>
                             @elserole('employee')
-                                <span class="px-2 py-0.5 text-xs rounded-full bg-indigo-50 text-indigo-700 font-medium">
-                                    {{ __('messages.header.employee_badge') }}
-                                </span>
+                                <span class="px-2 py-0.5 text-xs rounded-full bg-indigo-50 text-indigo-700 font-medium">{{ __('messages.header.employee_badge') }}</span>
                             @endrole
                         </div>
-                        <p class="text-sm font-medium text-gray-800">{{ auth()->user()?->name ?? 'Guest' }}</p>
-                        <p class="text-xs text-gray-500">{{ auth()->user()?->email ?? 'guest@example.com' }}</p>
+                        <p class="text-sm font-medium text-gray-800">{{ auth()->user()?->name }}</p>
+                        <p class="text-xs text-gray-500">{{ auth()->user()?->email }}</p>
                     </div>
 
                     <div class="border-t border-gray-100"></div>
 
-                    {{-- Navigation Links --}}
                     @role('admin')
                         <a href="{{ url('dashboard/properties') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 text-start">{{ __('messages.sidebar.properties') }}</a>
-                        <a href="{{ url('dashboard/bookings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Bookings</a>
+                        <a href="{{ url('dashboard/bookings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 text-start">{{ __('messages.sidebar.bookings') }}</a>
                     @elserole('employee')
-                        <a href="{{ url('dashboard/my-own-bookings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Bookings</a>
+                        <a href="{{ url('dashboard/my-own-bookings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 text-start">{{ __('messages.sidebar.my_bookings') }}</a>
                     @endrole
 
                     <div class="border-t border-gray-100"></div>
 
-                    {{-- Logout --}}
-                    <button type="button"
-                        onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'logout-modal' }))"
-                        class="w-full text-center px-4 py-2 text-red-600 hover:bg-gray-50">
+                    <button type="button" @click="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'logout-modal' }))"
+                        class="w-full {{ app()->getLocale() == 'ar' ? 'text-right' : 'text-left' }} px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
                         {{ __('messages.sidebar.logout') }}
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 </header>
 
-<div class="h-16"></div>
+{{-- Logout Modal --}}
+<div id="logoutModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="toggleLogoutModal()"></div>
 
-{{-- cleanup listeners when Alpine component is destroyed --}}
-<script>
-    document.addEventListener('alpine:initialized', () => {
-        // no-op: listeners managed inside component; this script kept for safety if needed
-    });
-</script>
+        <div class="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 mb-4">
+                <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>
+            </div>
+
+            <div class="sm:flex sm:items-start">
+                <div class="mt-3 text-center sm:mt-0 sm:text-center w-full">
+                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                        {{ __('messages.logout_modal.title') }}
+                    </h3>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-500">
+                            {{ __('messages.logout_modal.message') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none sm:text-sm">
+                        {{ __('messages.logout_modal.confirm') }}
+                    </button>
+                </form>
+                <button type="button" onclick="toggleLogoutModal()" class="mt-3 inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none sm:mt-0 sm:text-sm">
+                    {{ __('messages.logout_modal.cancel') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="h-16"></div>
