@@ -7,6 +7,10 @@ use App\Models\Property;
 use Barryvdh\DomPDF\Facade\PDF;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * PropertiesReportController
+ * * Handles property analytics, data aggregation, and PDF report exportation.
+ */
 class PropertiesReportController extends Controller
 {
     public function __construct()
@@ -14,30 +18,39 @@ class PropertiesReportController extends Controller
         $this->middleware(['auth', 'check.active', 'role:admin']);
     }
 
-    // VIEW THE REPORT PAGE
+    /**
+     * Display the property report dashboard.
+     * * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function index()
     {
         try {
-            $stats = $this->getStats();
-            return view('dashboard.reports.properties', compact('stats'));
+            $report = $this->getStats();
+            return view('dashboard.reports.properties', compact('report'));
         } catch (\Exception $e) {
-            // Log the error for debugging
             Log::error('Error loading properties report: ' . $e->getMessage());
             return back()->with('error', 'An error occurred while loading the report.');
         }
     }
 
-    // GET ALL THE STATS
+    /**
+     * Aggregate property statistics including status counts, location data, and time-based metrics.
+     * * @return array
+     */
     public function getStats()
     {
         try {
             return [
-                // BASIC COUNTS
-                'total' => Property::count(),
-                'available' => Property::where('status', 'available')->count(),
-                'booked'    => Property::where('status', 'booked')->count(),
-                'rented'    => Property::where('status', 'rented')->count(),
-                'hidden'    => Property::where('status', 'hidden')->count(),
+                // Matches $report['total_properties'] in Blade
+                'total_properties' => Property::count(),
+                
+                // Matches $report['by_status'][...] in Blade
+                'by_status' => [
+                    'available' => Property::where('status', 'available')->count(),
+                    'booked'    => Property::where('status', 'booked')->count(),
+                    'rented'    => Property::where('status', 'rented')->count(),
+                    'hidden'    => Property::where('status', 'hidden')->count(),
+                ],
 
                 // TIME BASED COUNTS
                 'today' => Property::whereDate('created_at', today())->count(),
@@ -47,7 +60,7 @@ class PropertiesReportController extends Controller
                 ])->count(),
                 'this_month' => Property::whereMonth('created_at', now()->month)->count(),
 
-                // TOP EMPLOYEES (optional if properties have employee relation)
+                // TOP EMPLOYEES
                 'top_employees' => Property::selectRaw('employee_id, COUNT(*) as total')
                     ->whereNotNull('employee_id')
                     ->groupBy('employee_id')
@@ -66,13 +79,16 @@ class PropertiesReportController extends Controller
             ];
         } catch (\Exception $e) {
             Log::error('Error fetching properties stats: ' . $e->getMessage());
-            // Return empty stats in case of error
+            
+            // Return default structure on error to prevent view crashes
             return [
-                'total' => 0,
-                'available' => 0,
-                'booked' => 0,
-                'rented' => 0,
-                'hidden' => 0,
+                'total_properties' => 0,
+                'by_status' => [
+                    'available' => 0,
+                    'booked' => 0,
+                    'rented' => 0,
+                    'hidden' => 0,
+                ],
                 'today' => 0,
                 'this_week' => 0,
                 'this_month' => 0,
@@ -83,12 +99,15 @@ class PropertiesReportController extends Controller
         }
     }
 
-    // EXPORT THE REPORT AS PDF
+    /**
+     * Generate and download a PDF version of the property report.
+     * * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
     public function export()
     {
         try {
-            $stats = $this->getStats();
-            $pdf = PDF::loadView('dashboard.reports.properties-export', compact('stats'));
+            $report = $this->getStats();
+            $pdf = PDF::loadView('dashboard.reports.properties-export', compact('report'));
             $fileName = 'properties_report_' . now()->format('Y-m-d_H-i-s') . '.pdf';
             return $pdf->download($fileName);
         } catch (\Exception $e) {
