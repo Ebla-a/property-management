@@ -255,3 +255,17 @@ ceo and founder **Alaa Darwish**
 ---
 
 *Thank you to all educators, mentors, and contributors who made this project a reality.*
+---
+
+## 🙋 My contribution (Hasan Dayoub)
+
+This repository is my fork of the team project [Ebla-a/property-management](https://github.com/Ebla-a/property-management). I worked on the `hasan` branch.
+
+Merged pull requests in the team repository: [#7](https://github.com/Ebla-a/property-management/pull/7), [#8](https://github.com/Ebla-a/property-management/pull/8), [#15](https://github.com/Ebla-a/property-management/pull/15), [#27](https://github.com/Ebla-a/property-management/pull/27), [#34](https://github.com/Ebla-a/property-management/pull/34), [#40](https://github.com/Ebla-a/property-management/pull/40), [#71](https://github.com/Ebla-a/property-management/pull/71), [#86](https://github.com/Ebla-a/property-management/pull/86).
+
+Areas I worked on:
+
+- **Employee-to-customer communication:** booking messages (`BookingMessage` model and migration, `BookingCommunicationService`)
+- **Reviews and ratings:** `ReviewService`, `RatingService` and `ReviewResource`
+- **Admin and accounts:** `AdminService` and the user activation (`is_active`) migration
+- **Reports:** property reports (`PropertiesReportController`) and optimizing the auth and review controllers
