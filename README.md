@@ -255,3 +255,31 @@ ceo and founder **Alaa Darwish**
 ---
 
 *Thank you to all educators, mentors, and contributors who made this project a reality.*
+---
+
+## 🙋 My contribution (Hasan Dayoub)
+
+This repository is my fork of the team project [Ebla-a/property-management](https://github.com/Ebla-a/property-management). I worked on the `hasan` branch.
+
+Merged pull requests in the team repository: [#7](https://github.com/Ebla-a/property-management/pull/7), [#8](https://github.com/Ebla-a/property-management/pull/8), [#15](https://github.com/Ebla-a/property-management/pull/15), [#27](https://github.com/Ebla-a/property-management/pull/27), [#34](https://github.com/Ebla-a/property-management/pull/34), [#40](https://github.com/Ebla-a/property-management/pull/40), [#71](https://github.com/Ebla-a/property-management/pull/71), [#86](https://github.com/Ebla-a/property-management/pull/86).
+
+Areas I worked on:
+
+- **Employee-to-customer communication:** booking messages (`BookingMessage` model and migration, `BookingCommunicationService`)
+- **Reviews and ratings:** `ReviewService`, `RatingService` and `ReviewResource`
+- **Admin and accounts:** `AdminService` and the user activation (`is_active`) migration
+- **Reports:** property reports (`PropertiesReportController`) and optimizing the auth and review controllers
+
+### Endpoints I added
+
+| Method | Path | Purpose | PR |
+|---|---|---|---|
+| POST | `/ratings` | Customer adds a rating / review | [#7](https://github.com/Ebla-a/property-management/pull/7), [#8](https://github.com/Ebla-a/property-management/pull/8) |
+| POST | `/logout` | Log out (Sanctum token) | [#15](https://github.com/Ebla-a/property-management/pull/15), [#40](https://github.com/Ebla-a/property-management/pull/40) |
+| POST | `/employees` | Admin creates an employee account | [#15](https://github.com/Ebla-a/property-management/pull/15), [#27](https://github.com/Ebla-a/property-management/pull/27) |
+| PATCH | `/users/{id}/role` | Admin changes a user's role | [#15](https://github.com/Ebla-a/property-management/pull/15) |
+| PATCH | `/users/{userId}/status` | Admin activates / deactivates an account | [#15](https://github.com/Ebla-a/property-management/pull/15) |
+| PATCH | `/change-password` | Admin changes their password | [#15](https://github.com/Ebla-a/property-management/pull/15) |
+| GET, POST | `/bookings/{booking}/messages` | Employee-to-customer messages on a booking (`BookingMessageController`) | [#40](https://github.com/Ebla-a/property-management/pull/40) |
+| GET | `/reports/properties` | Admin property report | [#34](https://github.com/Ebla-a/property-management/pull/34), [#86](https://github.com/Ebla-a/property-management/pull/86) |
+| GET | `/reports/bookings` | Admin bookings report | [#34](https://github.com/Ebla-a/property-management/pull/34) |
