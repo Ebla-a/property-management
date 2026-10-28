@@ -269,3 +269,17 @@ Areas I worked on:
 - **Reviews and ratings:** `ReviewService`, `RatingService` and `ReviewResource`
 - **Admin and accounts:** `AdminService` and the user activation (`is_active`) migration
 - **Reports:** property reports (`PropertiesReportController`) and optimizing the auth and review controllers
+
+### Endpoints I added
+
+| Method | Path | Purpose | PR |
+|---|---|---|---|
+| POST | `/ratings` | Customer adds a rating / review | [#7](https://github.com/Ebla-a/property-management/pull/7), [#8](https://github.com/Ebla-a/property-management/pull/8) |
+| POST | `/logout` | Log out (Sanctum token) | [#15](https://github.com/Ebla-a/property-management/pull/15), [#40](https://github.com/Ebla-a/property-management/pull/40) |
+| POST | `/employees` | Admin creates an employee account | [#15](https://github.com/Ebla-a/property-management/pull/15), [#27](https://github.com/Ebla-a/property-management/pull/27) |
+| PATCH | `/users/{id}/role` | Admin changes a user's role | [#15](https://github.com/Ebla-a/property-management/pull/15) |
+| PATCH | `/users/{userId}/status` | Admin activates / deactivates an account | [#15](https://github.com/Ebla-a/property-management/pull/15) |
+| PATCH | `/change-password` | Admin changes their password | [#15](https://github.com/Ebla-a/property-management/pull/15) |
+| GET, POST | `/bookings/{booking}/messages` | Employee-to-customer messages on a booking (`BookingMessageController`) | [#40](https://github.com/Ebla-a/property-management/pull/40) |
+| GET | `/reports/properties` | Admin property report | [#34](https://github.com/Ebla-a/property-management/pull/34), [#86](https://github.com/Ebla-a/property-management/pull/86) |
+| GET | `/reports/bookings` | Admin bookings report | [#34](https://github.com/Ebla-a/property-management/pull/34) |
